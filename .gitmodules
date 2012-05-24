@@ -1,0 +1,12 @@
+[submodule "Libraries/JabbR.Client"]
+	path = Libraries/JabbR.Client
+	url = git://github.com/davidfowl/JabbR.Client.git
+[submodule "Libraries/Eto.Forms"]
+	path = Libraries/Eto.Forms
+	url = git://github.com/picoe/Eto.git
+[submodule "Libraries/SignalR"]
+	path = Libraries/SignalR
+	url = git://github.com/SignalR/SignalR.git
+[submodule "Libraries/Newtonsoft.Json"]
+	path = Libraries/Newtonsoft.Json
+	url = git://github.com/JamesNK/Newtonsoft.Json.git
