@@ -1,0 +1,82 @@
+
+html, body {
+	padding: 0;
+	margin: 0;
+}
+
+body {
+	font-family: Lucida Grande,Trebuchet MS;
+	font-size: 13px;
+}
+
+
+.messages {
+	margin: 0;
+	padding: 0;
+	background-color: white;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	overflow: hidden;
+	overflow-y: visible;
+	max-height: 100%;
+	min-width: 300px;
+}
+
+.messages li {
+	list-style-type: none;
+	position: relative;
+	padding: 0;
+	margin: 0;
+	border-bottom: 1px solid #EEE;
+}
+
+.message {
+	border-left: 155px solid #F1F1F1;
+}
+
+.message > .user {
+	display: block;
+	float: left;
+	width: 150px;
+	padding: 5px;
+	margin-left: -155px;
+}
+
+.message > .time, .notification > .time {
+	display: block;
+	position: absolute;
+	text-align: right;
+	padding: 5px;
+	right: 0;
+	top: 0;
+	color: #BBB;
+	width: 85px;
+}
+
+.message > .content, .notification > .content {
+	display: block;
+	margin-right: 95px;
+	padding: 5px;
+	word-wrap: break-word;
+}
+
+
+.notification {
+	color: #BBB;
+}
+
+
+li.clearfix {
+	display: list-item;
+}
+
+.clearfix::after {
+	clear: both;
+	display: block;
+	content: " ";
+	height: 0;
+	visibility: hidden;
+}

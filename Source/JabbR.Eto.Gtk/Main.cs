@@ -1,6 +1,6 @@
 using System;
 
-namespace JabbR.Eto.Client
+namespace JabbR.Eto.Gtk
 {
 	class MainClass
 	{

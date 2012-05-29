@@ -2,15 +2,15 @@
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{FE74236A-EB06-4280-BB28-3509DAF06A3F}</ProjectGuid>
+    <ProjectGuid>{BB32B45E-3CDB-4DA7-B664-BCCCF241C1DF}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>JabbR.Eto.Client</RootNamespace>
-    <AssemblyName>JabbR.Eto.Client</AssemblyName>
+    <RootNamespace>JabbR.Eto.Gtk</RootNamespace>
+    <AssemblyName>JabbR.Eto.Gtk</AssemblyName>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -18,17 +18,17 @@
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
     <PlatformTarget>x86</PlatformTarget>
-    <Externalconsole>true</Externalconsole>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
     <Externalconsole>true</Externalconsole>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -42,10 +42,6 @@
     <ProjectReference Include="..\JabbR.Eto\JabbR.Eto.csproj">
       <Project>{1CC5D427-7C46-44BB-ABE6-DA6F30828ED8}</Project>
       <Name>JabbR.Eto</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\Eto.Forms\Source\Eto.Platform.Windows\Eto.Platform.Windows.csproj">
-      <Project>{69D38C57-AD4B-4A16-A7B1-49BCFBE71491}</Project>
-      <Name>Eto.Platform.Windows</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Libraries\Eto.Forms\Source\Eto.Platform.Gtk\Eto.Platform.Gtk.csproj">
       <Project>{1FF7BE58-A6A2-4132-8CAF-AA2EF18122A1}</Project>

@@ -17,6 +17,7 @@ namespace JabbR.Eto.Actions
 		protected override void OnActivated (EventArgs e)
 		{
 			base.OnActivated (e);
+			// todo: implement about dialog
 		}
 	}
 }

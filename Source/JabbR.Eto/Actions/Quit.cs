@@ -19,6 +19,9 @@ namespace JabbR.Eto.Actions
 		protected override void OnActivated (EventArgs e)
 		{
 			base.OnActivated (e);
+			var form = Application.Instance.MainForm as MainForm;
+			if (form != null)
+				form.Disconnect();
 			Application.Instance.Quit ();
 		}
 	}

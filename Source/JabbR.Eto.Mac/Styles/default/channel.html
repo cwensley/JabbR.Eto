@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>JabbR.Eto</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <script type='text/javascript' src='http://code.jquery.com/jquery.js'></script>
+    <script type='text/javascript' src='jsrender.js'></script>
+    <script type='text/javascript' src='channel.js'></script>
+    <link rel='stylesheet' href='styles.css'/>
+</head>
+<body>
+	<div>
+        <script id='template-message' type='text/x-jsrender'>
+            <li class='message clearfix'>
+                <div class='user'>{{:User}}</div>
+                <div class='content'>{{:Content}}</div>
+                <div class='time'>{{:Time}}</div>
+            </li>
+        </script>
+        <script id='template-notification' type='text/x-jsrender'>
+            <li class='notification clearfix'>
+                <div class='content'>{{:Content}}</div>
+                <div class='time'>{{:Time}}</div>
+            </li>
+        </script>
+        <ul id='messages' class='messages'></ul>
+	</div>
+
+	<div>
+        <script type='text/javascript'>
+            /**
+            JabbREto.addMessage({Type: 'notification', Time: '10:30:00 AM', Content: 'User Joined', User: 'User'});
+            JabbREto.addMessage({Type: 'message', Time: '10:30:00 AM', Content: 'Hello there!', User: 'User'});
+            JabbREto.addMessage({Type: 'notification', Time: '10:31:00 AM', Content: 'Joe Joined', User: 'User'});
+            JabbREto.addMessage({Type: 'message', Time: '10:31:00 AM', Content: 'Hi!', User: 'Joe'});
+            JabbREto.addMessage({Type: 'message', Time: '10:32:00 AM', Content: 'What\'s your name?', User: 'User'});
+            JabbREto.addMessage({Type: 'message', Time: '10:33:00 AM', Content: 'Joe', User: 'Joe'});
+            JabbREto.addMessage({Type: 'notification', Time: '10:31:00 AM', Content: 'Joe Left', User: 'User'});
+            JabbREto.addMessage({Type: 'message', Time: '10:33:00 AM', User: 'User', Content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'});
+            /**/
+        </script>
+	</div>
+</body>
+</html>

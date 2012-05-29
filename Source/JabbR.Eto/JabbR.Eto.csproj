@@ -31,6 +31,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -43,6 +44,11 @@
     <Compile Include="Sections\ChannelSection.cs" />
     <Compile Include="Sections\LoginSection.cs" />
     <Compile Include="Sections\TopSection.cs" />
+    <Compile Include="ConnectionInfo.cs" />
+    <Compile Include="Sections\CommandEventArgs.cs" />
+    <Compile Include="Messages\BaseMessage.cs" />
+    <Compile Include="Messages\ChannelMessage.cs" />
+    <Compile Include="Messages\NotificationMessage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -50,14 +56,23 @@
       <Project>{16289D2F-044C-49EF-83E9-9391AFF8FD2B}</Project>
       <Name>Eto</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\JabbR.Client\JabbR.Client\JabbR.Client.csproj">
+    <ProjectReference Include="..\..\Libraries\JabbR.Client.Mono.csproj">
       <Project>{A4A1D183-FD80-4DBD-806F-883DDADD4967}</Project>
-      <Name>JabbR.Client</Name>
+      <Name>JabbR.Client.Mono</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Newtonsoft.Json.Mono.csproj">
+      <Project>{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}</Project>
+      <Name>Newtonsoft.Json.Mono</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\SignalR.Client.Mono.csproj">
+      <Project>{EB46B9C6-EE37-48F9-835E-E49580E40E0A}</Project>
+      <Name>SignalR.Client.Mono</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Actions\" />
     <Folder Include="Sections\" />
     <Folder Include="Controls\" />
+    <Folder Include="Messages\" />
   </ItemGroup>
 </Project>

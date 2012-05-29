@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FE74236A-EB06-4280-BB28-3509DAF06A3F}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>JabbR.Eto.Client</RootNamespace>
+    <AssemblyName>JabbR.Eto.Client</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Externalconsole>true</Externalconsole>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Main.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\Eto.Forms\Source\Eto.Platform.Wpf\Eto.Platform.Wpf.csproj">
+      <Project>{E3524178-5A24-47C0-B155-92314FE4B2B6}</Project>
+      <Name>Eto.Platform.Wpf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\JabbR.Eto\JabbR.Eto.csproj">
+      <Project>{1CC5D427-7C46-44BB-ABE6-DA6F30828ED8}</Project>
+      <Name>JabbR.Eto</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Eto.Forms\Source\Eto\Eto.csproj">
+      <Project>{16289D2F-044C-49EF-83E9-9391AFF8FD2B}</Project>
+      <Name>Eto</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\JabbR.Eto.Mac\Styles\default\channel.html">
+      <Link>Styles\default\channel.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\JabbR.Eto.Mac\Styles\default\channel.js">
+      <Link>Styles\default\channel.js</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\JabbR.Eto.Mac\Styles\default\jquery.min.js">
+      <Link>Styles\default\jquery.min.js</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\JabbR.Eto.Mac\Styles\default\jsrender.js">
+      <Link>Styles\default\jsrender.js</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\JabbR.Eto.Mac\Styles\default\styles.css">
+      <Link>Styles\default\styles.css</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>
