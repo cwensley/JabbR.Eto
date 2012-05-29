@@ -1,5 +1,54 @@
-bin/
-obj/
-*.suo
+#OS junk files
+[Tt]humbs.db
+*.DS_Store
+
+#Visual Studio files
+*.pidb
 *.user
 *.userprefs
+*.[Oo]bj
+*.exe
+*.pdb
+*.user
+*.aps
+*.pch
+*.vspscc
+*.vssscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.[Cc]ache
+*.ilk
+*.log
+*.lib
+*.sbr
+*.sdf
+ipch/
+[Oo]bj/
+[Bb]in
+[Dd]ebug*/
+[Rr]elease*/
+
+#Tooling
+_ReSharper*/
+*.resharper
+[Tt]est[Rr]esult*
+packages/
+
+#Project files
+[Bb]uild/
+deploy
+deploy/*
+artifacts/log
+artifacts/
+post-build*
+
+# Office Temp Files
+~$*
+
+#Unix temporary files
+*~
