@@ -83,5 +83,6 @@
     <Content Include="Styles\default\jsrender.js" />
     <Content Include="Styles\default\channel.html" />
     <Content Include="Styles\default\channel.js" />
+    <Content Include="JabbREto.icns" />
   </ItemGroup>
 </Project>

@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleIconFile</key>
+	<string>JabbREto.icns</string>
+	<key>CFBundleIconFiles</key>
+	<array>
+		<string>JabbREto.icns</string>
+	</array>
 	<key>CFBundleIdentifier</key>
 	<string>com.picoe.JabbR.Eto.Mac</string>
 	<key>CFBundleName</key>
