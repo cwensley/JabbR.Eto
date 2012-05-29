@@ -27,8 +27,7 @@ OS X:
 3. Install [MonoDevelop 3.0.2 for OS X](http://monodevelop.com/Download)
 4. In terminal.app: git clone --recursive git://github.com/cwensley/JabbR.Eto.git
 5. Open Source/JabbR.Eto.Mac.sln in MonoDevelop
-6. Select the "Mac Debug" or "Mac Release" build configuration
-7. Build & Run! 
+6. Build & Run! 
 
 Windows:
 
