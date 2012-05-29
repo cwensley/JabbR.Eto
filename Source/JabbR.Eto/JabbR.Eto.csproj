@@ -49,6 +49,7 @@
     <Compile Include="Messages\BaseMessage.cs" />
     <Compile Include="Messages\ChannelMessage.cs" />
     <Compile Include="Messages\NotificationMessage.cs" />
+    <Compile Include="Messages\MessageContent.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

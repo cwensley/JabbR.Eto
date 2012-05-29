@@ -7,6 +7,7 @@ using JabbR.Eto.Sections;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using JabbR.Eto.Messages;
 
 namespace JabbR.Eto
 {
@@ -151,6 +152,12 @@ namespace JabbR.Eto
 			};
 			info.Client.UserTyping += (user, room) => {
 				Console.WriteLine ("UserTyping, User: {0}, Room: {1}", user.Name, room);	
+			};
+			info.Client.AddMessageContent += (messageId, content, room) => {
+				Console.WriteLine ("AddMessageContent, Id: {0}, Room: {1}, Content: {2}", messageId, room, content);
+				if (channelCache.TryGetValue (room, out channel)) {
+					channel.AddMessageContent(new MessageContent { Id = messageId, Content = content });
+				}
 			};
 		}
 		

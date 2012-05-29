@@ -91,7 +91,7 @@ namespace JabbR.Eto.Sections
 			}
 			
 		}
-		
+
 		public void MessageReceived (Message message)
 		{
 			AddMessage (new ChannelMessage(message.Id, message.When, message.User.Name, message.Content));
@@ -117,8 +117,18 @@ namespace JabbR.Eto.Sections
 		
 		void AddMessage (BaseMessage message)
 		{
-			var msgString = JsonConvert.SerializeObject (message);
-			var script = string.Format ("JabbREto.addMessage({0})", msgString);
+			SendCommand("addMessage", message);
+		}
+
+		public void AddMessageContent (MessageContent content)
+		{
+			SendCommand("addMessageContent", content);
+		}
+		
+		void SendCommand(string command, object param)
+		{
+			var msgString = JsonConvert.SerializeObject (param);
+			var script = string.Format ("JabbREto.{0}({1})", command, msgString);
 			Application.Instance.Invoke (() => {
 				history.ExecuteScript (script);
 			}

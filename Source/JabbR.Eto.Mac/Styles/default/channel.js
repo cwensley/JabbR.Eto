@@ -22,6 +22,14 @@ var pub = {
 			m.append(msgContent);
 		}
 		m.prop({ scrollTop: m.prop('scrollHeight') });
+	},
+	
+	addMessageContent: function(msg) {
+		
+		var existingMsg = $('#m-' + msg.Id);
+		if (existingMsg.length > 0) {
+			existingMsg.append(msg.Content);
+		}
 	}
 };
 
