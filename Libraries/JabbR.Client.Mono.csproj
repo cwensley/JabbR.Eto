@@ -50,6 +50,7 @@
     <Compile Include="JabbR.Client\JabbR.Client\Models\UserStatus.cs" />
     <Compile Include="JabbR.Client\JabbR.Client\Properties\AssemblyInfo.cs" />
     <Compile Include="JabbR.Client\JabbR.Client\TaskAsyncHelper.cs" />
+    <Compile Include="JabbR.Client\JabbR.Client\Models\ClientMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="JabbR.Client\JabbR.Client\packages.config" />
@@ -74,4 +75,15 @@
       <Name>Newtonsoft.Json.Mono</Name>
     </ProjectReference>
   </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <TextStylePolicy FileWidth="120" inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/x-csharp" />
+          <CSharpFormattingPolicy IndentSwitchBody="True" AnonymousMethodBraceStyle="NextLine" PropertyBraceStyle="NextLine" PropertyGetBraceStyle="NextLine" PropertySetBraceStyle="NextLine" EventBraceStyle="NextLine" EventAddBraceStyle="NextLine" EventRemoveBraceStyle="NextLine" StatementBraceStyle="NextLine" ArrayInitializerBraceStyle="NextLine" BeforeMethodDeclarationParentheses="False" BeforeMethodCallParentheses="False" BeforeConstructorDeclarationParentheses="False" BeforeDelegateDeclarationParentheses="False" NewParentheses="False" inheritsSet="Mono" inheritsScope="text/x-csharp" scope="text/x-csharp" />
+          <TextStylePolicy FileWidth="120" TabWidth="4" RemoveTrailingWhitespace="False" EolMarker="Windows" inheritsSet="Mono" inheritsScope="text/plain" scope="text/plain" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>

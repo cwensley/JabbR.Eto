@@ -81,14 +81,12 @@ namespace JabbR.Eto.Sections
 		void LoadHistory (IEnumerable<Message> messages)
 		{
 			if (messages == null) return;
+			
+			// TODO: send this as an array instead of adding one at a time
 			foreach (var message in messages.OrderByDescending(r => r.When)) {
-				AddMessage (new ChannelMessage {
-					Time = message.When.ToString("h:MM:ss tt"),
-					User = message.User.Name,
-					Content = message.Content,
+				AddMessage (new ChannelMessage (message.Id, message.When, message.User.Name, message.Content) {
 					IsHistory = true
-				}
-				);
+				});
 				lastHistoryMessageId = message.Id;
 			}
 			
@@ -96,11 +94,7 @@ namespace JabbR.Eto.Sections
 		
 		public void MessageReceived (Message message)
 		{
-			AddMessage (new ChannelMessage {
-				Time = message.When.ToString("h:MM:ss tt"),
-				User = message.User.Name,
-				Content = message.Content}
-			);
+			AddMessage (new ChannelMessage(message.Id, message.When, message.User.Name, message.Content));
 		}
 		
 		public void UserJoined (User user)
@@ -151,11 +145,20 @@ namespace JabbR.Eto.Sections
 			
 			if (command.StartsWith ("/")) {
 				OnCommand (new CommandEventArgs (command));
-			} else if (RoomName != null) {
-				if (info != null)
-					info.Client.Send (command, RoomName);
+			} else if (RoomName != null && info != null) {
+				var message = new ClientMessage{
+					Id = Guid.NewGuid ().ToString (),
+					Room = RoomName,
+					Content = command
+				};
+				AddMessage(new ChannelMessage(message.Id, DateTimeOffset.Now, info.CurrentUser.Name, command));
+				info.Client.Send (message).ContinueWith(task => {
+					Application.Instance.Invoke(() => {
+						MessageBox.Show (this, string.Format ("Error sending message: {0}", task.Exception));
+					});
+				}, TaskContinuationOptions.OnlyOnFaulted);
 			}
-#if DEBUG
+/*#if DEBUG
 			else {
 				BaseMessage message;
 				if (command.StartsWith("notify"))
@@ -169,6 +172,7 @@ namespace JabbR.Eto.Sections
 				AddMessage (message);
 			}
 #endif
+*/
 		}
 	}
 }

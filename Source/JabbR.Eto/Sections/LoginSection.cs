@@ -11,7 +11,7 @@ namespace JabbR.Eto.Sections
 	public class LoginSection : Panel, IXmlReadable
 	{
 		public const string DefaultServer = "http://jabbr.net";
-		//public const string DefaultServer = "http://jabbr-staging.apphb.com/";
+		//public const string DefaultServer = "http://jabbr-staging.apphb.com";
 		
 		TextBox userName;
 		PasswordBox password;
@@ -171,7 +171,7 @@ namespace JabbR.Eto.Sections
 							Update (true);
 						});
 					}
-					var currentUser = Info.CurrentUser = task2.Result;
+					Info.CurrentUser = task2.Result;
 					
 					//Console.WriteLine ("User id is {0}. Don't share this!", LogOnInfo.UserId);
 					Application.Instance.Invoke (delegate {

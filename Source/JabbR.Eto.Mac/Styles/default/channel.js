@@ -6,6 +6,12 @@ var pub = {
 	addMessage: function(msg) {
 		var msgContent = $( "#template-" + msg.Type ).render(msg);
 
+		var existingMsg = $('#m-' + msg.Id);
+		if (existingMsg.length > 0) {
+			existingMsg.replaceWith(msgContent);
+			return;
+		}
+		
 		var m = $('#messages');
 		if (msg.IsHistory) {
 			this.messages.splice(0, msg);
