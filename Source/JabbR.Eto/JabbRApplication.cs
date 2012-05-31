@@ -5,15 +5,28 @@ using System.IO;
 
 namespace JabbR.Eto
 {
+	public interface IJabbRApplication : IApplication
+	{
+		string BadgeLabel { get; set; }
+	}
+	
 	public class JabbRApplication : Application
 	{
+		IJabbRApplication handler;
+		public static new JabbRApplication Instance
+		{
+			get { return Application.Instance as JabbRApplication; }
+		}
+		
 		public JabbRApplication ()
+			: base(Generator.Detect, typeof(IJabbRApplication))
 		{
 			this.Style = "application";
 			this.Name = "JabbR.Eto";
 			HandleEvent (TerminatingEvent);
+			handler = (IJabbRApplication)Handler;
 		}
-		
+
 		string SettingsFileName
 		{
 			get { 
@@ -29,7 +42,7 @@ namespace JabbR.Eto
 			if (File.Exists (SettingsFileName)) {
 				form.LoadXml (SettingsFileName);
 			}
-			
+			this.BadgeLabel = null;
 			this.MainForm = form;
 			this.MainForm.Show ();
 		}
@@ -40,6 +53,11 @@ namespace JabbR.Eto
 			var form = this.MainForm as IXmlReadable;
 			if (form != null)
 				form.SaveXml (SettingsFileName, "jabbreto");
+		}
+		
+		public string BadgeLabel {
+			get { return handler.BadgeLabel; }
+			set { handler.BadgeLabel = value; }
 		}
 	}
 }

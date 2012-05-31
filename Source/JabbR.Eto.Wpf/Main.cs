@@ -1,4 +1,5 @@
 using System;
+using Eto;
 
 namespace JabbR.Eto.Client
 {
@@ -7,6 +8,8 @@ namespace JabbR.Eto.Client
 		[STAThread]
 		public static void Main (string[] args)
 		{
+			Generator.Detect.AddAssembly (typeof (MainClass).Assembly);
+
 			var app = new JabbRApplication();
 			app.Run (args);
 		}

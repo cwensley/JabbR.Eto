@@ -37,19 +37,20 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="JabbRApplication.cs" />
     <Compile Include="MainForm.cs" />
-    <Compile Include="Channels.cs" />
     <Compile Include="Actions\Quit.cs" />
     <Compile Include="Actions\About.cs" />
-    <Compile Include="Controls\AboutDialog.cs" />
     <Compile Include="Sections\ChannelSection.cs" />
     <Compile Include="Sections\LoginSection.cs" />
     <Compile Include="Sections\TopSection.cs" />
     <Compile Include="ConnectionInfo.cs" />
     <Compile Include="Sections\CommandEventArgs.cs" />
-    <Compile Include="Messages\BaseMessage.cs" />
     <Compile Include="Messages\ChannelMessage.cs" />
     <Compile Include="Messages\NotificationMessage.cs" />
     <Compile Include="Messages\MessageContent.cs" />
+    <Compile Include="Controls\Channels.cs" />
+    <Compile Include="Dialogs\AboutDialog.cs" />
+    <Compile Include="Controls\UserList.cs" />
+    <Compile Include="Sections\MessageSection.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -75,5 +76,6 @@
     <Folder Include="Sections\" />
     <Folder Include="Controls\" />
     <Folder Include="Messages\" />
+    <Folder Include="Dialogs\" />
   </ItemGroup>
 </Project>

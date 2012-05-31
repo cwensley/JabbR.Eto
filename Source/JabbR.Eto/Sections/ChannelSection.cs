@@ -5,21 +5,17 @@ using JabbR.Client;
 using JabbR.Client.Models;
 using System.IO;
 using Eto;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using JabbR.Eto.Messages;
+using JabbR.Eto.Controls;
 
 namespace JabbR.Eto.Sections
 {
-	
-	public class ChannelSection : Panel
+	public class ChannelSection : MessageSection
 	{
-		WebView history;
-		TextBox text;
-		ConnectionInfo info;
-		string lastHistoryMessageId;
+		public UserList UserList { get; private set; }
 		
 		public event EventHandler<CommandEventArgs> Command;
 
@@ -32,157 +28,114 @@ namespace JabbR.Eto.Sections
 		public string RoomName { get; private set; }
 		
 		public ChannelSection (ConnectionInfo info, string roomName)
+			: base(info)
 		{
 			this.RoomName = roomName;
-			this.info = info;
-			
-			history = new WebView ();
-			history.DocumentLoaded += HandleDocumentLoaded;
-			
-			var layout = new DynamicLayout (this, Padding.Empty, Size.Empty);
-			
-			layout.Add (history, yscale: true);
-			layout.Add (DockLayout.CreatePanel (MessageEntry (), new Padding (10)));
 		}
 
-		void HandleDocumentLoading (object sender, WebViewLoadingEventArgs e)
+		protected override void CreateLayout (Container container)
 		{
-			e.Cancel = true;
-			Application.Instance.Open (e.Uri.AbsoluteUri);
-		}
-		
-		public override void OnLoadComplete (EventArgs e)
-		{
-			base.OnLoadComplete (e);
+			var split = new Splitter{
+				Size = new Size(200, 200),
+				Position = 50,
+				FixedPanel = SplitterFixedPanel.Panel2
+			};
 			
+			split.Panel1 = new Panel ();
+			split.Panel2 = UserList = new UserList (this.Info, this.RoomName);
 			
-			var resourcePath = EtoEnvironment.GetFolderPath (EtoSpecialFolder.ApplicationResources);
-			resourcePath = Path.Combine (
-				resourcePath,
-				"Styles",
-				"default",
-				"channel.html"
-			);
-			history.Url = new Uri (resourcePath);
+			base.CreateLayout (split.Panel1 as Panel);
+			
+			container.AddDockedControl (split);
 		}
 
-		void HandleDocumentLoaded (object sender, WebViewLoadedEventArgs e)
+		protected override void HandleDocumentLoaded (object sender, WebViewLoadedEventArgs e)
 		{
+			base.HandleDocumentLoaded (sender, e);
 			if (this.RoomName != null) {
-				history.DocumentLoading += HandleDocumentLoading;
 				// load up initial room history
-				info.Client.GetRoomInfo(this.RoomName).ContinueWith(task => {
-					LoadHistory (task.Result.RecentMessages);
+				Info.Client.GetRoomInfo (this.RoomName).ContinueWith (task => {
+					var room = task.Result;
+					Application.Instance.AsyncInvoke (delegate {
+						UserList.SetUsers (room.Users, room.Owners);
+					}
+					);
+					AddHistory (from m in room.RecentMessages select new ChannelMessage (
+						m.Id,
+						m.When,
+						m.User.Name,
+						m.Content
+					));
+					
 				}, TaskContinuationOptions.OnlyOnRanToCompletion);
 				
 			}
 		}
 		
-		void LoadHistory (IEnumerable<Message> messages)
-		{
-			if (messages == null) return;
-			
-			// TODO: send this as an array instead of adding one at a time
-			foreach (var message in messages.OrderByDescending(r => r.When)) {
-				AddMessage (new ChannelMessage (message.Id, message.When, message.User.Name, message.Content) {
-					IsHistory = true
-				});
-				lastHistoryMessageId = message.Id;
-			}
-			
-		}
-
-		public void MessageReceived (Message message)
-		{
-			AddMessage (new ChannelMessage(message.Id, message.When, message.User.Name, message.Content));
-		}
-		
 		public void UserJoined (User user)
 		{
-			AddMessage (new NotificationMessage {
-				Time = DateTimeOffset.Now.ToString("h:MM:ss tt"),
-				User = user.Name,
-				Content = string.Format ("{0} just entered {1}", user.Name, RoomName)}
-			);
+			Application.Instance.AsyncInvoke(delegate {
+				UserList.UserJoined (user);
+			});
+			AddNotification (new NotificationMessage (
+				DateTimeOffset.Now,
+				string.Format ("{0} just entered {1}", user.Name, RoomName)
+			));
 		}
 
 		public void UserLeft (User user)
 		{
-			AddMessage (new NotificationMessage {
-				Time = DateTimeOffset.Now.ToString("h:MM:ss tt"),
-				User = user.Name,
-				Content = string.Format ("{0} left {1}", user.Name, RoomName)}
-			);
-		}
-		
-		void AddMessage (BaseMessage message)
-		{
-			SendCommand("addMessage", message);
+			Application.Instance.AsyncInvoke(delegate {
+				UserList.UserLeft (user);
+			});
+			AddNotification (new NotificationMessage (
+				DateTimeOffset.Now,
+				string.Format ("{0} left {1}", user.Name, RoomName)
+			));
 		}
 
-		public void AddMessageContent (MessageContent content)
-		{
-			SendCommand("addMessageContent", content);
-		}
-		
-		void SendCommand(string command, object param)
-		{
-			var msgString = JsonConvert.SerializeObject (param);
-			var script = string.Format ("JabbREto.{0}({1})", command, msgString);
-			Application.Instance.Invoke (() => {
-				history.ExecuteScript (script);
-			}
-			);
-		}
-
-		Control MessageEntry ()
-		{
-			text = new TextBox ();
-			text.KeyDown += (sender, e) => {
-				if (e.KeyData == Key.Enter) {
-					ProcessCommand (text.Text);
-					text.Text = string.Empty;
-					e.Handled = true;
-				}
-			};
-			return text;
-		}
-		
-		void ProcessCommand (string command)
+		public override void ProcessCommand (string command)
 		{
 			if (string.IsNullOrWhiteSpace (command))
 				return;
 			
 			if (command.StartsWith ("/")) {
 				OnCommand (new CommandEventArgs (command));
-			} else if (RoomName != null && info != null) {
+			} else if (RoomName != null && Info != null) {
 				var message = new ClientMessage{
 					Id = Guid.NewGuid ().ToString (),
 					Room = RoomName,
 					Content = command
 				};
-				AddMessage(new ChannelMessage(message.Id, DateTimeOffset.Now, info.CurrentUser.Name, command));
-				info.Client.Send (message).ContinueWith(task => {
-					Application.Instance.Invoke(() => {
-						MessageBox.Show (this, string.Format ("Error sending message: {0}", task.Exception));
-					});
+				AddMessage (new ChannelMessage (
+					message.Id,
+					DateTimeOffset.Now,
+					Info.CurrentUser.Name,
+					command
+				));
+				Info.Client.Send (message).ContinueWith (task => {
+					Application.Instance.Invoke (() => {
+						MessageBox.Show (
+							this,
+							string.Format ("Error sending message: {0}", task.Exception)
+						);
+					}
+					);
 				}, TaskContinuationOptions.OnlyOnFaulted);
 			}
-/*#if DEBUG
+#if DEBUG
 			else {
-				BaseMessage message;
-				if (command.StartsWith("notify"))
-					message = new NotificationMessage();
+				if (command.StartsWith("notify "))
+					AddNotification(new NotificationMessage(DateTimeOffset.Now, command.Substring(7)));
 				else
-					message = new ChannelMessage();
-				message.Time = DateTimeOffset.Now.ToString("h:MM:ss tt");
-				message.User = "me";
-				message.Content = command;
-				
-				AddMessage (message);
+					AddMessage(new ChannelMessage(Guid.NewGuid().ToString(), DateTimeOffset.Now, "me", command));
 			}
 #endif
-*/
+		}
+
+		public override void Focus ()
+		{
+			TextEntry.Focus ();
 		}
 	}
 }

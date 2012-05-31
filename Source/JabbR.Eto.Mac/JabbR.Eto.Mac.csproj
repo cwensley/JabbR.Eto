@@ -34,14 +34,14 @@
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <IncludeMonoRuntime>false</IncludeMonoRuntime>
-    <LinkMode>Full</LinkMode>
+    <IncludeMonoRuntime>true</IncludeMonoRuntime>
     <PlatformTarget>x86</PlatformTarget>
     <EnablePackageSigning>false</EnablePackageSigning>
     <ConsolePause>false</ConsolePause>
     <EnableCodeSigning>false</EnableCodeSigning>
     <CreatePackage>false</CreatePackage>
     <CodeSigningKey>Mac Developer</CodeSigningKey>
+    <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
+    <Compile Include="Controls\JabbRApplicationHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -72,10 +73,23 @@
       <Project>{9DD10DFF-5AB3-4E66-B798-CA17911A61E4}</Project>
       <Name>Eto.Platform.Mac</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\JabbR.Client.Mono.csproj">
+      <Project>{A4A1D183-FD80-4DBD-806F-883DDADD4967}</Project>
+      <Name>JabbR.Client.Mono</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Newtonsoft.Json.Mono.csproj">
+      <Project>{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}</Project>
+      <Name>Newtonsoft.Json.Mono</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\SignalR.Client.Mono.csproj">
+      <Project>{EB46B9C6-EE37-48F9-835E-E49580E40E0A}</Project>
+      <Name>SignalR.Client.Mono</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Styles\" />
     <Folder Include="Styles\default\" />
+    <Folder Include="Controls\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Styles\default\styles.css" />

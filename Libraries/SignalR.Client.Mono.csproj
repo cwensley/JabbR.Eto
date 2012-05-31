@@ -18,20 +18,20 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>SignalR\SignalR.Client\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\SignalR.Client.XML</DocumentationFile>
+    <DocumentationFile>SignalR\SignalR.Client\bin\Debug\SignalR.Client.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>SignalR\SignalR.Client\bin\Release\</OutputPath>
     <DefineConstants>TRACE;STABLE_VERSION</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\SignalR.Client.XML</DocumentationFile>
+    <DocumentationFile>SignalR\SignalR.Client\bin\Release\SignalR.Client.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -72,13 +72,13 @@
     <Compile Include="SignalR\SignalR.Client\Transports\ServerSentEventsTransport.cs" />
     <Compile Include="SignalR\SignalR.Client\Properties\VersionInfo.cs" />
     <Compile Include="SignalR\Common\CommonAssemblyInfo.cs">
-      <Link>Properties\CommonAssemblyInfo.cs</Link>
+      <Link>SignalR\SignalR.Client\Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="SignalR\SignalR.Hosting.Common\Infrastructure\UriQueryUtility.cs">
-      <Link>Infrastructure\UriQueryUtility.cs</Link>
+      <Link>SignalR\SignalR.Client\Infrastructure\UriQueryUtility.cs</Link>
     </Compile>
     <Compile Include="SignalR\SignalR\TaskAsyncHelper.cs">
-      <Link>Infrastructure\TaskAsyncHelper.cs</Link>
+      <Link>SignalR\SignalR.Client\Infrastructure\TaskAsyncHelper.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>

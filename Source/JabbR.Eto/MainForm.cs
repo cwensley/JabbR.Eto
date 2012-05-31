@@ -20,6 +20,7 @@ namespace JabbR.Eto
 		public MainForm ()
 		{
 			this.ClientSize = new Size (800, 600);
+			this.MinimumSize = new Size(640, 400);
 			this.Style = "mainForm";
 			top = new TopSection ();
 			login = new LoginSection ();
@@ -50,11 +51,15 @@ namespace JabbR.Eto
 		
 		void UpdateActiveSection ()
 		{
+			/**
+			this.AddDockedControl (top);
+			/**/
 			if (loggedIn)
 				this.AddDockedControl (top);
 			else {
 				this.AddDockedControl (login);
 			}
+			/**/
 		}
 		
 		void CreateActions ()

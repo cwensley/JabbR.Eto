@@ -3,6 +3,7 @@ using Eto.Forms;
 using JabbR.Client;
 using JabbR.Client.Models;
 using Eto;
+using JabbR.Eto.Controls;
 
 namespace JabbR.Eto.Sections
 {
@@ -19,14 +20,15 @@ namespace JabbR.Eto.Sections
 			
 			splitter = new Splitter{
 				Panel1 = channels,
-				Panel2 = channels.CreateChannel (),
 				Position = 200
 			};
 			
 			this.AddDockedControl (splitter);
+			
+			SetChannel ();
 		}
 		
-		public void Initialize(ConnectionInfo info)
+		public void Initialize (ConnectionInfo info)
 		{
 			channels.Initialize (info);
 		}
@@ -38,7 +40,15 @@ namespace JabbR.Eto.Sections
 		
 		void HandleChannelChanged (object sender, EventArgs e)
 		{
-			splitter.Panel2 = channels.CreateChannel ();
+			SetChannel ();
+		}
+		
+		void SetChannel ()
+		{
+			var channel = channels.CreateChannel ();
+			splitter.Panel2 = channel;
+			if (channel != null)
+				channel.Focus ();
 		}
 		
 		#region IXmlReadable implementation

@@ -26,6 +26,14 @@ namespace JabbR.Eto.Mac
 			Style.AddHandler<ApplicationHandler> ("application", h => {
 				h.EnableFullScreen ();
 			});
+			
+			Style.AddHandler<TreeViewHandler> ("userList", h => {
+				h.Control.SelectionHighlightStyle = NSTableViewSelectionHighlightStyle.SourceList;
+				h.Scroll.BorderType = NSBorderType.NoBorder;
+			});
+			
+			Generator.Detect.AddAssembly(typeof(MainClass).Assembly);
+			
 			var app = new JabbRApplication ();
 			app.Initialized += delegate {
 				NSUserDefaults.StandardUserDefaults.SetBool (true, "WebKitDeveloperExtras");
