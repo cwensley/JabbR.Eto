@@ -53,4 +53,30 @@
       <Name>Eto</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Styles\" />
+    <Folder Include="Styles\default\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\JabbR.Eto.Mac\Styles\default\channel.html">
+      <Link>Styles\default\channel.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\JabbR.Eto.Mac\Styles\default\channel.js">
+      <Link>Styles\default\channel.js</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\JabbR.Eto.Mac\Styles\default\jquery.min.js">
+      <Link>Styles\default\jquery.min.js</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\JabbR.Eto.Mac\Styles\default\jsrender.js">
+      <Link>Styles\default\jsrender.js</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\JabbR.Eto.Mac\Styles\default\styles.css">
+      <Link>Styles\default\styles.css</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

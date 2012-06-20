@@ -9,21 +9,38 @@ body {
 	font-size: 13px;
 }
 
+li.clearfix {
+	display: list-item;
+}
+
+.hidden {
+	display: none !important;
+}
+
+.clearfix::after {
+	clear: both;
+	display: block;
+	content: " ";
+	height: 0;
+	visibility: hidden;
+}
+
 .messages {
 	margin: 0;
 	padding: 0;
 	background-color: white;
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	right: 0;
 	width: 100%;
 	overflow: hidden;
 	overflow-y: visible;
 	max-height: 100%;
 	min-width: 300px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	position: absolute;
 }
 
+/* all types */
 .messages li {
 	list-style-type: none;
 	position: relative;
@@ -32,6 +49,15 @@ body {
 	border-bottom: 1px solid #EEE;
 }
 
+.messages > li > .content {
+	display: block;
+	margin-right: 95px;
+	padding: 5px;
+	word-wrap: break-word;
+}
+
+
+/* regular message */
 .message {
 	border-left: 155px solid #F1F1F1;
 }
@@ -55,27 +81,34 @@ body {
 	width: 85px;
 }
 
-.message > .content, .notification > .content {
-	display: block;
-	margin-right: 95px;
-	padding: 5px;
-	word-wrap: break-word;
-}
 
-
+/* notification */
 .notification {
 	color: #BBB;
 }
 
-
-li.clearfix {
-	display: list-item;
+/* paste */
+pre.multiline {
+	white-space: pre-wrap;
+	white-space: -moz-pre-wrap!important;
+	white-space: -pre-wrap;
+	white-space: -o-pre-wrap;
+	word-wrap: break-word;
+	width: 99%;
 }
 
-.clearfix::after {
-	clear: both;
-	display: block;
-	content: " ";
-	height: 0;
-	visibility: hidden;
+/* collapsible items */
+.collapsible_box {
+	border: 1px solid #DDD;
+	padding: 5px;
+}
+
+h3.collapsible_title {
+	color: #1C94C4;
+	font-size: smaller;
+	padding: 5px;
+	margin-bottom: 0;
+	border: 1px solid #CCC;
+	background-color: #EEE;
+	cursor: pointer;
 }

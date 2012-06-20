@@ -1,10 +1,10 @@
 using System;
 using Eto.Forms;
 using System.Collections.Generic;
-using JabbR.Client.Models;
 using System.Linq;
+using JabbR.Eto.Model;
 
-namespace JabbR.Eto.Controls
+namespace JabbR.Eto.Interface
 {
 	public class UserList : Panel
 	{
@@ -13,16 +13,13 @@ namespace JabbR.Eto.Controls
 		TreeItem online;
 		TreeItem away;
 		TreeItemCollection items;
-		HashSet<string> ownerLookup;
+		HashSet<string> ownerLookup = new HashSet<string>();
 		
-		public ConnectionInfo Info { get; private set; }
-		
-		public string RoomName { get; private set; }
+		public Channel Channel { get; private set; }
 				
-		public UserList (ConnectionInfo info, string roomName)
+		public UserList (Channel channel)
 		{
-			this.Info = info;
-			this.RoomName = roomName;
+			this.Channel = channel;
 			tree = new TreeView ();
 			tree.Style = "userList";
 			

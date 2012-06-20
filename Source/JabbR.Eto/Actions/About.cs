@@ -1,6 +1,6 @@
 using System;
 using Eto.Forms;
-
+using JabbR.Eto.Interface.Dialogs;
 
 namespace JabbR.Eto.Actions
 {
@@ -17,7 +17,9 @@ namespace JabbR.Eto.Actions
 		protected override void OnActivated (EventArgs e)
 		{
 			base.OnActivated (e);
-			// todo: implement about dialog
+			
+			var dlg = new AboutDialog ();
+			dlg.ShowDialog (Application.Instance.MainForm);
 		}
 	}
 }

@@ -2,6 +2,9 @@ using System;
 using Eto.Forms;
 using Eto;
 using System.IO;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using JabbR.Eto.Model;
 
 namespace JabbR.Eto
 {
@@ -10,9 +13,13 @@ namespace JabbR.Eto
 		string BadgeLabel { get; set; }
 	}
 	
-	public class JabbRApplication : Application
+	
+	public class JabbRApplication : Application, IXmlReadable
 	{
 		IJabbRApplication handler;
+
+		public Configuration Configuration { get; private set; }
+
 		public static new JabbRApplication Instance
 		{
 			get { return Application.Instance as JabbRApplication; }
@@ -23,6 +30,7 @@ namespace JabbR.Eto
 		{
 			this.Style = "application";
 			this.Name = "JabbR.Eto";
+			this.Configuration = new JabbR.Eto.Model.Configuration();
 			HandleEvent (TerminatingEvent);
 			handler = (IJabbRApplication)Handler;
 		}
@@ -32,33 +40,55 @@ namespace JabbR.Eto
 			get { 
 				var path = EtoEnvironment.GetFolderPath (EtoSpecialFolder.ApplicationSettings);
 				return Path.Combine (path, "settings.xml");
+				//return Path.Combine (path, "JabbR.Eto.settings");
 			}
 		}
 		
 		public override void OnInitialized (EventArgs e)
 		{
 			base.OnInitialized (e);
-			var form = new MainForm();
-			if (File.Exists (SettingsFileName)) {
-				form.LoadXml (SettingsFileName);
-			}
-			this.BadgeLabel = null;
+			var form = new MainForm(Configuration);
 			this.MainForm = form;
+			
+			if (File.Exists (SettingsFileName)) {
+				//JsonConvert.PopulateObject (File.ReadAllText(SettingsFileName), form);
+				this.LoadXml (SettingsFileName);
+			}
+			form.Initialize();
+			this.BadgeLabel = null;
 			this.MainForm.Show ();
+			
+			foreach (var server in Configuration.Servers) {
+				if (server.ConnectOnStartup)
+					server.Connect ();
+			}
 		}
 		
 		public override void OnTerminating (System.ComponentModel.CancelEventArgs e)
 		{
 			base.OnTerminating (e);
-			var form = this.MainForm as IXmlReadable;
-			if (form != null)
-				form.SaveXml (SettingsFileName, "jabbreto");
+			Configuration.DisconnectAll ();
+			this.SaveXml (SettingsFileName, "jabbreto");
 		}
 		
 		public string BadgeLabel {
 			get { return handler.BadgeLabel; }
 			set { handler.BadgeLabel = value; }
 		}
+
+		#region IXmlReadable implementation
+		public void ReadXml (System.Xml.XmlElement element)
+		{
+			element.ReadChildXml("interface", this.MainForm as IXmlReadable);
+			element.ReadChildXml ("config", Configuration);
+		}
+
+		public void WriteXml (System.Xml.XmlElement element)
+		{
+			element.WriteChildXml("interface", this.MainForm as IXmlReadable);
+			element.WriteChildXml ("config", Configuration);
+		}
+		#endregion
 	}
 }
 

@@ -1,6 +1,6 @@
 using System;
 
-namespace JabbR.Eto.Messages
+namespace JabbR.Eto.Model
 {
 
 	public class NotificationMessage
@@ -14,7 +14,7 @@ namespace JabbR.Eto.Messages
 		public NotificationMessage(DateTimeOffset when, string content)
 		{
 			this.When = when.ToLocalTime ();
-			this.Time = this.When.ToString ("h:MM:ss tt");
+			this.Time = this.When.ToString ("h:mm:ss tt");
 			this.Content = content;
 		}
 	}

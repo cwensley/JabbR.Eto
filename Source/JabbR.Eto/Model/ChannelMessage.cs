@@ -1,6 +1,6 @@
 using System;
 
-namespace JabbR.Eto.Messages
+namespace JabbR.Eto.Model
 {
 	
 	public class ChannelMessage
@@ -9,17 +9,23 @@ namespace JabbR.Eto.Messages
 		
 		public DateTimeOffset When { get; set; }
 		
-		public string Time { get; set; }
+		public string Time {
+			get { return When.ToString ("h:mm:ss tt"); }
+		}
 
 		public string User { get; set; }
 
 		public string Content { get; set; }
+		
+		public ChannelMessage ()
+		{
+			Id = Guid.NewGuid ().ToString ();
+		}
 
 		public ChannelMessage(string id, DateTimeOffset when, string userName, string content)
 		{
 			this.Id = id;
 			this.When = when.ToLocalTime ();
-			this.Time = this.When.ToString ("h:MM:ss tt");
 			this.User = userName;
 			this.Content = content;
 		}

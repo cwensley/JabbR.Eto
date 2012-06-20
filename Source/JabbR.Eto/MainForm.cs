@@ -1,65 +1,35 @@
 using System;
 using Eto.Forms;
 using Eto.Drawing;
-using JabbR.Eto.Dialogs;
-using JabbR.Eto.Sections;
+using JabbR.Eto.Interface.Dialogs;
 using JabbR.Client;
 using Eto;
 using System.Xml;
 using System.IO;
+using System.Collections.Generic;
+using JabbR.Eto.Model;
+using Newtonsoft.Json;
+using JabbR.Eto.Interface;
+using System.Collections.ObjectModel;
 
 namespace JabbR.Eto
 {
 	public class MainForm : Form, IXmlReadable
 	{
 		TopSection top;
-		LoginSection login;
-		bool loggedIn;
+		Configuration config;
 		
-		
-		public MainForm ()
+		public MainForm (Configuration config)
 		{
+			this.config = config;
+			this.Title = "JabbR.Eto";
 			this.ClientSize = new Size (800, 600);
-			this.MinimumSize = new Size(640, 400);
+			this.MinimumSize = new Size (640, 400);
 			this.Style = "mainForm";
-			top = new TopSection ();
-			login = new LoginSection ();
-			login.LoggedIn += HandleLoggedIn;
-			login.Initialized += HandleInitialized;
+			top = new TopSection (config);
 			CreateActions ();
-			UpdateActiveSection ();
-			HandleEvent (ShownEvent);
-		}
-		
-		public override void OnShown (EventArgs e)
-		{
-			base.OnShown (e);
-			login.UpdateDisplay ();
-		}
-		
-		void HandleInitialized (object sender, EventArgs e)
-		{
-			top.Initialize(login.Info);
-		}
-
-		void HandleLoggedIn (object sender, EventArgs e)
-		{
-			loggedIn = true;
-			top.Connected();
-			UpdateActiveSection ();
-		}
-		
-		void UpdateActiveSection ()
-		{
-			/**
 			this.AddDockedControl (top);
-			/**/
-			if (loggedIn)
-				this.AddDockedControl (top);
-			else {
-				this.AddDockedControl (login);
-			}
-			/**/
+			HandleEvent (ShownEvent);
 		}
 		
 		void CreateActions ()
@@ -68,46 +38,59 @@ namespace JabbR.Eto
 			
 			Application.Instance.GetSystemActions (args, true);
 			
+			//top.GetActions(args);
 			
+			args.Actions.Add (new Actions.AddServer ());
+			args.Actions.Add (new Actions.EditServer (top.Channels, config));
+			args.Actions.Add (new Actions.RemoveServer (top.Channels, config));
+			args.Actions.Add (new Actions.ServerConnect (top.Channels, config));
+			args.Actions.Add (new Actions.ServerDisconnect (top.Channels, config));
 			args.Actions.Add (new Actions.Quit ());
 			args.Actions.Add (new Actions.About ());
+			
+			var file = args.Menu.FindAddSubMenu ("&File", 100);
+			var help = args.Menu.FindAddSubMenu ("&Help", 900);
+			var server = args.Menu.FindAddSubMenu ("&Server", 500);
+			
+
+			server.Actions.Add (Actions.ServerConnect.ActionID);
+			server.Actions.Add (Actions.ServerDisconnect.ActionID);
+			server.Actions.AddSeparator ();
+			server.Actions.Add (Actions.AddServer.ActionID);
+			server.Actions.Add (Actions.EditServer.ActionID);
+			server.Actions.Add (Actions.RemoveServer.ActionID);
 			
 			if (Generator.ID == "mac") {
 				var application = args.Menu.FindAddSubMenu (Application.Instance.Name, 100);
 				application.Actions.Add (Actions.About.ActionID, 100);
 				application.Actions.Add (Actions.Quit.ActionID, 900);
-			}
-			else {
-				var file = args.Menu.FindAddSubMenu ("&File", 100);
+			} else {
 				file.Actions.Add (Actions.Quit.ActionID, 900);
 				
-				var help = args.Menu.FindAddSubMenu ("&Help", 900);
 				help.Actions.Add (Actions.About.ActionID, 100);
 			}
 			
 			this.Menu = args.Menu.GenerateMenuBar ();
 		}
-
-		public void Disconnect ()
+		
+		public void Initialize ()
 		{
-			if (login.Info != null)
-				login.Info.Client.Disconnect ();
+			top.Initialize();
 		}
 
 		#region IXmlReadable implementation
 		
 		public void ReadXml (XmlElement element)
 		{
-			this.ClientSize = element.ReadChildSizeXml("clientSize") ?? new Size(800, 600);
+			this.ClientSize = element.ReadChildSizeXml ("clientSize") ?? new Size (800, 600);
 			element.ReadChildXml ("top", top);
-			element.ReadChildXml ("login", login);
 		}
 
 		public void WriteXml (XmlElement element)
 		{
 			element.WriteChildXml ("clientSize", this.ClientSize);
 			element.WriteChildXml ("top", top);
-			element.WriteChildXml ("login", login);
+			
 		}
 		
 		#endregion

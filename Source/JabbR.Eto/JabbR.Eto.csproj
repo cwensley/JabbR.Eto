@@ -32,6 +32,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Security" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -39,18 +40,38 @@
     <Compile Include="MainForm.cs" />
     <Compile Include="Actions\Quit.cs" />
     <Compile Include="Actions\About.cs" />
-    <Compile Include="Sections\ChannelSection.cs" />
-    <Compile Include="Sections\LoginSection.cs" />
-    <Compile Include="Sections\TopSection.cs" />
-    <Compile Include="ConnectionInfo.cs" />
-    <Compile Include="Sections\CommandEventArgs.cs" />
-    <Compile Include="Messages\ChannelMessage.cs" />
-    <Compile Include="Messages\NotificationMessage.cs" />
-    <Compile Include="Messages\MessageContent.cs" />
-    <Compile Include="Controls\Channels.cs" />
-    <Compile Include="Dialogs\AboutDialog.cs" />
-    <Compile Include="Controls\UserList.cs" />
-    <Compile Include="Sections\MessageSection.cs" />
+    <Compile Include="Model\ChannelMessage.cs" />
+    <Compile Include="Model\NotificationMessage.cs" />
+    <Compile Include="Model\MessageContent.cs" />
+    <Compile Include="Model\MeMessage.cs" />
+    <Compile Include="Model\Server.cs" />
+    <Compile Include="Model\User.cs" />
+    <Compile Include="Actions\AddServer.cs" />
+    <Compile Include="Model\Channel.cs" />
+    <Compile Include="Model\JabbR\JabbRChannel.cs" />
+    <Compile Include="Model\JabbR\JabbRServer.cs" />
+    <Compile Include="Interface\Channels.cs" />
+    <Compile Include="Interface\UserList.cs" />
+    <Compile Include="Interface\JabbR\JabbRServerEdit.cs" />
+    <Compile Include="Model\JabbR\JabbRUser.cs" />
+    <Compile Include="Interface\ChannelSection.cs" />
+    <Compile Include="Interface\ISectionGenerator.cs" />
+    <Compile Include="Interface\MessageSection.cs" />
+    <Compile Include="Interface\TopSection.cs" />
+    <Compile Include="Model\ChannelEventArgs.cs" />
+    <Compile Include="Model\UserChannelEventArgs.cs" />
+    <Compile Include="Model\UserEventArgs.cs" />
+    <Compile Include="Model\Configuration.cs" />
+    <Compile Include="Model\ServerEventArgs.cs" />
+    <Compile Include="Interface\ServerSection.cs" />
+    <Compile Include="Model\MessageEventArgs.cs" />
+    <Compile Include="Model\NotificationEventArgs.cs" />
+    <Compile Include="Actions\RemoveServer.cs" />
+    <Compile Include="Actions\EditServer.cs" />
+    <Compile Include="Actions\ServerConnect.cs" />
+    <Compile Include="Actions\ServerDisconnect.cs" />
+    <Compile Include="Interface\Dialogs\AboutDialog.cs" />
+    <Compile Include="Interface\Dialogs\ServerDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -73,9 +94,14 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Actions\" />
-    <Folder Include="Sections\" />
-    <Folder Include="Controls\" />
-    <Folder Include="Messages\" />
-    <Folder Include="Dialogs\" />
+    <Folder Include="Model\" />
+    <Folder Include="Model\JabbR\" />
+    <Folder Include="Interface\" />
+    <Folder Include="Interface\JabbR\" />
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\server.png" />
+    <EmbeddedResource Include="Resources\JabbREto.ico" />
   </ItemGroup>
 </Project>

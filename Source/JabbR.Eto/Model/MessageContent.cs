@@ -1,5 +1,6 @@
 using System;
-namespace JabbR.Eto.Messages
+
+namespace JabbR.Eto.Model
 {
 	public class MessageContent
 	{
@@ -7,7 +8,7 @@ namespace JabbR.Eto.Messages
 		
 		public string Content { get; set; }
 		
-		public MessageContent(string id, string content)
+		public MessageContent (string id, string content)
 		{
 			this.Id = id;
 			this.Content = content;

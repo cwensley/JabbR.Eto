@@ -3,23 +3,26 @@ using Eto.Forms;
 using JabbR.Client;
 using JabbR.Client.Models;
 using Eto;
-using JabbR.Eto.Controls;
+using JabbR.Eto.Model;
 
-namespace JabbR.Eto.Sections
+namespace JabbR.Eto.Interface
 {
 	public class TopSection : Panel, IXmlReadable
 	{
 		Splitter splitter;
-		Channels channels;
-		//ChannelSection channel;
 		
-		public TopSection ()
+		public Channels Channels { get; private set; }
+		
+		public Configuration Config { get; private set; }
+		
+		public TopSection (Configuration config)
 		{
-			channels = new Channels ();
-			channels.ChannelChanged += HandleChannelChanged;
+			this.Config = config;
+			Channels = new Channels (config);
+			Channels .ChannelChanged += HandleChannelChanged;
 			
 			splitter = new Splitter{
-				Panel1 = channels,
+				Panel1 = Channels ,
 				Position = 200
 			};
 			
@@ -27,25 +30,20 @@ namespace JabbR.Eto.Sections
 			
 			SetChannel ();
 		}
-		
-		public void Initialize (ConnectionInfo info)
+
+		public void Initialize ()
 		{
-			channels.Initialize (info);
-		}
-		
-		public void Connected ()
-		{
-			channels.Connected ();
-		}
-		
+			Channels.Initialize ();
+			SetChannel ();
+		}		
 		void HandleChannelChanged (object sender, EventArgs e)
 		{
 			SetChannel ();
 		}
-		
+
 		void SetChannel ()
 		{
-			var channel = channels.CreateChannel ();
+			var channel = Channels.CreateChannel ();
 			splitter.Panel2 = channel;
 			if (channel != null)
 				channel.Focus ();

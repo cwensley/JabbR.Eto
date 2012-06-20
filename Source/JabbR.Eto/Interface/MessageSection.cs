@@ -9,22 +9,29 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using JabbR.Eto.Messages;
+using JabbR.Eto.Model;
 
-namespace JabbR.Eto.Sections
+namespace JabbR.Eto.Interface
 {
 	public abstract class MessageSection : Panel
 	{
 		protected string LastHistoryMessageId { get; private set; }
 		
-		public ConnectionInfo Info { get; private set; }
 		protected WebView History { get; private set; }
 		protected TextBox TextEntry { get; private set; }
 		
-		public MessageSection (ConnectionInfo info)
+		struct DelayedCommand
 		{
-			this.Info = info;
-			
+			public string Command { get; set; }
+			public object Parameter { get; set; }
+		}
+		
+		List<DelayedCommand> delayedCommands;
+		bool loaded;
+		object sync = new object();
+		
+		public MessageSection ()
+		{
 			History = new WebView ();
 			History.DocumentLoaded += HandleDocumentLoaded;
 			TextEntry = MessageEntry ();
@@ -46,6 +53,7 @@ namespace JabbR.Eto.Sections
 		void HandleDocumentLoading (object sender, WebViewLoadingEventArgs e)
 		{
 			e.Cancel = true;
+			Console.WriteLine ("Opening {0}", e.Uri.AbsoluteUri);
 			Application.Instance.Open (e.Uri.AbsoluteUri);
 		}
 		
@@ -62,7 +70,16 @@ namespace JabbR.Eto.Sections
 
 		protected virtual void HandleDocumentLoaded (object sender, WebViewLoadedEventArgs e)
 		{
-			History.DocumentLoading += HandleDocumentLoading;
+			lock (sync) {
+				loaded = true;
+				if (delayedCommands != null) {
+					foreach (var command in delayedCommands) {
+						SendCommandInternal (command.Command, command.Parameter);
+					}
+					delayedCommands = null;
+				}
+				History.DocumentLoading += HandleDocumentLoading;
+			}
 		}
 		
 		public void AddMessage (ChannelMessage message)
@@ -89,10 +106,22 @@ namespace JabbR.Eto.Sections
 			SendCommand("addMessageContent", content);
 		}
 		
-		void SendCommand(string command, object param)
+		protected void SendCommand(string command, object param)
+		{
+			lock (sync) { 
+				if (!loaded) {
+					if (delayedCommands == null) delayedCommands = new List<DelayedCommand>();
+					delayedCommands.Add (new DelayedCommand { Command = command, Parameter = param });
+					return;
+				}
+			}
+			SendCommandInternal(command, param);
+		}
+		
+		void SendCommandInternal (string command, object param)
 		{
 			var msgString = JsonConvert.SerializeObject (param);
-			var script = string.Format ("JabbREto.{0}({1})", command, msgString);
+			var script = string.Format ("JabbREto.{0}({1});", command, msgString);
 			Application.Instance.Invoke (() => {
 				History.ExecuteScript (script);
 			});
@@ -114,6 +143,11 @@ namespace JabbR.Eto.Sections
 		}
 		
 		public abstract void ProcessCommand (string command);
+		
+		public override void Focus ()
+		{
+			TextEntry.Focus ();
+		}
 	}
 }
 

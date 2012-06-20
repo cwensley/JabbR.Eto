@@ -6,6 +6,7 @@ using MonoMac.ObjCRuntime;
 using Eto;
 using Eto.Platform.Mac.Forms.Controls;
 using Eto.Platform.Mac.Forms;
+using System.Diagnostics;
 
 namespace JabbR.Eto.Mac
 {
@@ -14,7 +15,11 @@ namespace JabbR.Eto.Mac
 		
 		static void Main (string[] args)
 		{
-			Style.AddHandler<ListBoxHandler>("mainList", h => {
+#if DEBUG
+			Debug.Listeners.Add (new ConsoleTraceListener());
+#endif
+			
+			Style.AddHandler<TreeViewHandler>("mainList", h => {
 				h.Control.SelectionHighlightStyle = NSTableViewSelectionHighlightStyle.SourceList;
 				h.Scroll.BorderType = NSBorderType.NoBorder;
 			});

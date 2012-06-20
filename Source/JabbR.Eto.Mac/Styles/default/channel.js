@@ -3,6 +3,14 @@ var JabbREto = (function(){
 
 var pub = {
 	messages: [],
+	initialize: function() {
+		var m = $('#messages');
+		
+		m.on('click', '.collapsible_title', function() {
+			var box = $(this).next('.collapsible_box');
+			box.toggleClass('hidden');
+		});
+	},
 	addHistory: function(messages) {
 		var msgContent = this.translateContent($( "#template-message").render(messages));
 
@@ -43,7 +51,17 @@ var pub = {
 		m.append(msgContent);
 		this.scrollToBottom();
 	},
+
+	addMeMessage: function(msg) {
+		var msgContent = this.translateContent($( "#template-memessage").render(msg));
+
+		var m = $('#messages');
+		this.messages.splice(this.messages.length, msg);
+		m.append(msgContent);
+		this.scrollToBottom();
+	},
 	
+
 	addMessageContent: function(msg) {
 		
 		var existingMsg = $('#m-' + msg.Id);
@@ -67,3 +85,7 @@ var pub = {
 return pub;
 
 }());
+
+$(function() {
+	JabbREto.initialize();
+})
