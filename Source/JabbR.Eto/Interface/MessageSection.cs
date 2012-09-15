@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using JabbR.Eto.Model;
+using System.Diagnostics;
 
 namespace JabbR.Eto.Interface
 {
@@ -139,10 +140,17 @@ namespace JabbR.Eto.Interface
 					e.Handled = true;
 				}
 			};
+			control.TextChanged += (sender, e) => {
+				UserTyping ();
+			};
 			return control;
 		}
 		
 		public abstract void ProcessCommand (string command);
+		
+		public virtual void UserTyping()
+		{
+		}
 		
 		public override void Focus ()
 		{

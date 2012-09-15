@@ -9,7 +9,7 @@
 		<string>JabbREto.icns</string>
 	</array>
 	<key>CFBundleIdentifier</key>
-	<string>com.picoe.JabbR.Eto.Mac</string>
+	<string>ca.picoe.JabbR.Eto.Mac</string>
 	<key>CFBundleName</key>
 	<string>JabbR.Eto.Mac</string>
 	<key>CFBundleShortVersionString</key>

@@ -10,6 +10,9 @@ using System.Security;
 using SignalR.Client.Transports;
 using System.Security.Cryptography;
 using System.Text;
+using System.Net;
+using System.IO;
+using Newtonsoft.Json.Linq;
 
 namespace JabbR.Eto.Model.JabbR
 {
@@ -35,18 +38,35 @@ namespace JabbR.Eto.Model.JabbR
 		// TODO: store in keychain
 		public string Password { get; set; }
 		
+		public string UserId { get; set; }
+
+		public bool UseSocialLogin { get; set; }
+		
 		public JabbRServer ()
 		{
+			this.UseSocialLogin = true;
 		}
 		
 		public override void Connect ()
 		{
-			if (string.IsNullOrEmpty (Address) || string.IsNullOrEmpty (UserName) || string.IsNullOrEmpty (Password))
+			if (string.IsNullOrEmpty (Address))
 				return;
+			if (UseSocialLogin) {
+				if (string.IsNullOrEmpty (UserId))
+					return;
+			} else if (string.IsNullOrEmpty (UserName) || string.IsNullOrEmpty (Password))
+				return;
+			
 			OnGlobalMessageReceived (new NotificationEventArgs (new NotificationMessage (DateTimeOffset.Now, "Connecting...")));
-			Client = new jab.JabbRClient (Address, new LongPollingTransport ());
+			Client = new jab.JabbRClient (Address);//, new ServerSentEventsTransport());//new LongPollingTransport ());
 			HookupEvents ();
-			var connect = Client.Connect (UserName, Password);
+			Task<jab.Models.LogOnInfo> connect;
+			
+			if (UseSocialLogin) {
+				connect = Client.Connect (UserId);
+			} else {
+				connect = Client.Connect (UserName, Password);
+			}
 			
 			connect.ContinueWith (task => {
 				if (!task.IsCompleted || task.Exception != null) {
@@ -58,31 +78,23 @@ namespace JabbR.Eto.Model.JabbR
 					return;
 				}
 				var logOnInfo = task.Result;
-				
-				Console.WriteLine ("Logged on successfully");
 
 				Client.GetUserInfo ().ContinueWith (task2 => {
 					if (task2.Exception != null) {
 						Console.WriteLine ("Failed to login {0}", task2.Exception);
 						Application.Instance.Invoke (delegate {
 							// failed!
-						}
-						);
+						});
 					}
 					this.CurrentUser = new JabbRUser (task2.Result);
 					
-					Channels.Clear ();
-					foreach (var room in logOnInfo.Rooms) {
-						Channels.Add (new JabbRChannel (this, room));
-					}
+					InitializeChannels(logOnInfo.Rooms.Select (r => new JabbRChannel (this, r)));
+					
 					Application.Instance.Invoke (delegate {
-						
 						OnConnected (EventArgs.Empty);
 					});
-				}
-				);
-			}
-			);
+				});
+			});
 		}
 		
 		public override void Disconnect ()
@@ -101,8 +113,10 @@ namespace JabbR.Eto.Model.JabbR
 			Client.MessageReceived += (message, room) => {
 				Console.WriteLine ("MessageReceived, Room: {3}, When: {0}, User: {1}, Content: {2}", message.When, message.User.Name, message.Content, room);
 				var channel = GetChannel (room);
-				if (channel != null)
+				if (channel != null) {
 					channel.TriggerMessage (message);
+					OnChannelInfoChanged (new ChannelEventArgs (channel));
+				}
 			};
 			Client.Disconnected += () => {
 				Console.WriteLine ("Disconnected");
@@ -133,23 +147,13 @@ namespace JabbR.Eto.Model.JabbR
 				Console.WriteLine ("OwnerAdded, User: {0}, Room: {1}", user.Name, room);
 				var channel = GetChannel (room);
 				if (channel != null) 
-					channel.TriggerOwnerAdded(user);
-				/*if (channelCache.TryGetValue (room, out channel)) {
-					Application.Instance.Invoke(delegate {
-						channel.UserList.OwnerAdded (user);
-					});
-				}*/
+					channel.TriggerOwnerAdded (user);
 			};
 			Client.OwnerRemoved += (user, room) => {
 				Console.WriteLine ("OwnerRemoved, User: {0}, Room: {1}", user.Name, room);
 				var channel = GetChannel (room);
 				if (channel != null) 
-					channel.TriggerOwnerRemoved(user);
-				/*if (channelCache.TryGetValue (room, out channel)) {
-					Application.Instance.Invoke(delegate {
-						channel.UserList.OwnerRemoved (user);
-					});
-				}*/
+					channel.TriggerOwnerRemoved (user);
 			};
 			Client.PrivateMessage += (from, to, message) => {
 				Console.WriteLine ("PrivateMessage, From: {0}, To: {1}, Message: {2} ", from, to, message);
@@ -162,22 +166,21 @@ namespace JabbR.Eto.Model.JabbR
 			};
 			Client.UserActivityChanged += (user) => {
 				Console.WriteLine ("UserActivityChanged, User: {0}, Activity: {1}", user.Name, user.Active);
-				/*foreach (var ch in channelCache.Values) {
-					Application.Instance.Invoke(delegate {
-						ch.UserList.UserActivityChanged(user);
-					});
-				}*/
+				foreach (var channel in this.Channels.OfType<JabbRChannel>()) {
+					channel.TriggerActivityChanged (new jab.Models.User[] { user });
+				}
 			};
 			Client.JoinedRoom += (room) => {
 				Console.WriteLine ("JoinedRoom, Room: {0}", room.Name);
-				/*Application.Instance.Invoke (delegate {
-					OpenChannel (room);
-				});*/
+				var channel = new JabbRChannel (this, room);
+				OnOpenChannel (new ChannelEventArgs (channel));
 			};
-			Client.UserJoined += (user, room) => {
+			Client.UserJoined += (user, room, isOwner) => {
 				Console.WriteLine ("UserJoined, User: {0}, Room: {1}", user.Name, room);
 				var channel = GetChannel (room);
 				if (channel != null) {
+					if (isOwner)
+						channel.TriggerOwnerAdded (user);
 					channel.TriggerUserJoined (new UserEventArgs (new JabbRUser (user), DateTimeOffset.Now));
 				}
 			};
@@ -186,8 +189,8 @@ namespace JabbR.Eto.Model.JabbR
 				var channel = GetChannel (room);
 				if (channel != null) {
 					if (user.Name == CurrentJabbRUser.Name) {
-						OnCloseChannel (new ChannelEventArgs (channel));
 						channel.TriggerClosed (EventArgs.Empty);
+						OnCloseChannel (new ChannelEventArgs (channel));
 					} else {
 						channel.TriggerUserLeft (new UserEventArgs (new JabbRUser (user), DateTimeOffset.Now));
 					}
@@ -198,20 +201,18 @@ namespace JabbR.Eto.Model.JabbR
 			};
 			Client.UsersInactive += (users) => {
 				Console.WriteLine ("UsersInactive, Users: {0}", string.Join (", ", users.Select (r => r.Name)));
-				/*foreach (var ch in channelCache.Values) {
-					Application.Instance.Invoke(delegate {
-						ch.UserList.MakeUsersInactive(users);
-					});
-				}*/
+				foreach (var channel in this.Channels.OfType<JabbRChannel>()) {
+					channel.TriggerActivityChanged (users);
+				}
 			};
 			Client.UserTyping += (user, room) => {
 				Console.WriteLine ("UserTyping, User: {0}, Room: {1}", user.Name, room);	
 			};
 			Client.AddMessageContent += (messageId, content, room) => {
 				Console.WriteLine ("AddMessageContent, Id: {0}, Room: {1}, Content: {2}", messageId, room, content);
-				/*if (channelCache.TryGetValue (room, out channel)) {
-					channel.AddMessageContent(new MessageContent (messageId, content));
-				}*/
+				var channel = GetChannel (room);
+				if (channel != null)
+					channel.TriggerMessageContent (messageId, content);
 			};
 			/*
 			Client.StateChanged += (status) => {
@@ -233,8 +234,7 @@ namespace JabbR.Eto.Model.JabbR
 			Client.Send (message).ContinueWith (task => {
 				Application.Instance.Invoke (() => {
 					MessageBox.Show (Application.Instance.MainForm, string.Format ("Error sending message: {0}", task.Exception));
-				}
-				);
+				});
 			}, TaskContinuationOptions.OnlyOnFaulted);
 		}
 		
@@ -255,27 +255,42 @@ namespace JabbR.Eto.Model.JabbR
 		public override void ReadXml (System.Xml.XmlElement element)
 		{
 			base.ReadXml (element);
+			this.UseSocialLogin = element.GetBoolAttribute ("useSocialLogin") ?? false;
 			this.Address = element.GetStringAttribute ("address");
-			try {
-				var userName = element.GetStringAttribute ("userName");
-				if (!string.IsNullOrEmpty (userName))
-					this.UserName = Encoding.UTF8.GetString (ProtectedData.Unprotect (Convert.FromBase64String (userName), saltBytes, DataProtectionScope.CurrentUser));
-			} catch {
-			}
-			try {
-				var password = element.GetStringAttribute ("password");
-				if (!string.IsNullOrEmpty (password))
-					this.Password = Encoding.UTF8.GetString (ProtectedData.Unprotect (Convert.FromBase64String (password), saltBytes, DataProtectionScope.CurrentUser));
-			} catch {
+			if (this.UseSocialLogin) {
+				try {
+					var token = element.GetStringAttribute ("userId");
+					if (!string.IsNullOrEmpty (token))
+						this.UserId = Encoding.UTF8.GetString (ProtectedData.Unprotect (Convert.FromBase64String (token), saltBytes, DataProtectionScope.CurrentUser));
+				} catch {
+				}
+			} else {
+				try {
+					var userName = element.GetStringAttribute ("userName");
+					if (!string.IsNullOrEmpty (userName))
+						this.UserName = Encoding.UTF8.GetString (ProtectedData.Unprotect (Convert.FromBase64String (userName), saltBytes, DataProtectionScope.CurrentUser));
+				} catch {
+				}
+				try {
+					var password = element.GetStringAttribute ("password");
+					if (!string.IsNullOrEmpty (password))
+						this.Password = Encoding.UTF8.GetString (ProtectedData.Unprotect (Convert.FromBase64String (password), saltBytes, DataProtectionScope.CurrentUser));
+				} catch {
+				}
 			}
 		}
 		
 		public override void WriteXml (System.Xml.XmlElement element)
 		{
 			base.WriteXml (element);
+			element.SetAttribute ("useSocialLogin", this.UseSocialLogin);
 			element.SetAttribute ("address", this.Address);
-			element.SetAttribute ("userName", Convert.ToBase64String (ProtectedData.Protect (Encoding.UTF8.GetBytes (this.UserName), saltBytes, DataProtectionScope.CurrentUser)));
-			element.SetAttribute ("password", Convert.ToBase64String (ProtectedData.Protect (Encoding.UTF8.GetBytes (this.Password), saltBytes, DataProtectionScope.CurrentUser)));
+			if (this.UseSocialLogin)
+				element.SetAttribute ("userId", Convert.ToBase64String (ProtectedData.Protect (Encoding.UTF8.GetBytes (this.UserId ?? string.Empty), saltBytes, DataProtectionScope.CurrentUser)));
+			else {
+				element.SetAttribute ("userName", Convert.ToBase64String (ProtectedData.Protect (Encoding.UTF8.GetBytes (this.UserName ?? string.Empty), saltBytes, DataProtectionScope.CurrentUser)));
+				element.SetAttribute ("password", Convert.ToBase64String (ProtectedData.Protect (Encoding.UTF8.GetBytes (this.Password ?? string.Empty), saltBytes, DataProtectionScope.CurrentUser)));
+			}
 		}
 	}
 }

@@ -70,6 +70,8 @@ namespace JabbR.Eto
 				help.Actions.Add (Actions.About.ActionID, 100);
 			}
 			
+			top.CreateActions(args);
+			
 			this.Menu = args.Menu.GenerateMenuBar ();
 		}
 		

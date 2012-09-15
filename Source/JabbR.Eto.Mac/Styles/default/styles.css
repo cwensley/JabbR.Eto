@@ -64,10 +64,13 @@ li.clearfix {
 
 .message > .user {
 	display: block;
+	font-weight: bold;
 	float: left;
-	width: 150px;
+	width: 145px;
 	padding: 5px;
 	margin-left: -155px;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .message > .time, .notification > .time {
@@ -111,4 +114,11 @@ h3.collapsible_title {
 	border: 1px solid #CCC;
 	background-color: #EEE;
 	cursor: pointer;
+}
+
+.collapse-info {
+	margin-left: 10px;
+	font-style: italic;
+	text-decoration: none;
+	color: #BBB;
 }

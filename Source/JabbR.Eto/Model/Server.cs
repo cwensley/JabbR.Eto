@@ -7,10 +7,12 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using JabbR.Eto.Model.JabbR;
 using JabbR.Eto.Interface;
+using Eto.Drawing;
+using System.Linq;
 
 namespace JabbR.Eto.Model
 {
-	public abstract class Server : IXmlReadable, ISectionGenerator
+	public abstract class Server : IXmlReadable, ISectionGenerator, ITreeItem
 	{
 		public static Server CreateFromXml (XmlElement element)
 		{
@@ -37,7 +39,7 @@ namespace JabbR.Eto.Model
 
 		public User CurrentUser { get; protected set; }
 		
-		public List<Channel> Channels {
+		public IEnumerable<Channel> Channels {
 			get { return channels; }
 		}
 
@@ -46,7 +48,7 @@ namespace JabbR.Eto.Model
 		protected virtual void OnDisconnected (EventArgs e)
 		{
 			this.IsConnected = false;
-			OnGlobalMessageReceived(new NotificationEventArgs(new NotificationMessage(DateTimeOffset.Now, "Disconnected")));
+			OnGlobalMessageReceived (new NotificationEventArgs (new NotificationMessage (DateTimeOffset.Now, "Disconnected")));
 			if (Disconnected != null)
 				Disconnected (this, e);
 		}
@@ -56,7 +58,7 @@ namespace JabbR.Eto.Model
 		protected virtual void OnConnected (EventArgs e)
 		{
 			this.IsConnected = true;
-			OnGlobalMessageReceived(new NotificationEventArgs(new NotificationMessage(DateTimeOffset.Now, "Connected")));
+			OnGlobalMessageReceived (new NotificationEventArgs (new NotificationMessage (DateTimeOffset.Now, "Connected")));
 			if (Connected != null)
 				Connected (this, e);
 		}
@@ -81,6 +83,7 @@ namespace JabbR.Eto.Model
 
 		protected virtual void OnCloseChannel (ChannelEventArgs e)
 		{
+			this.channels.Remove (e.Channel);
 			if (CloseChannel != null)
 				CloseChannel (this, e);
 		}
@@ -92,10 +95,36 @@ namespace JabbR.Eto.Model
 			if (GlobalMessageReceived != null)
 				GlobalMessageReceived (this, e);
 		}
+
+		public event EventHandler<ChannelEventArgs> OpenChannel;
+		
+		protected virtual void OnOpenChannel (ChannelEventArgs e)
+		{
+			channels.Add (e.Channel);
+			channels.Sort ((x,y) => x.Name.CompareTo (y.Name));
+			
+			if (OpenChannel != null)
+				OpenChannel (this, e);
+		}
+		
+		public event EventHandler<ChannelEventArgs> ChannelInfoChanged;
+		
+		public virtual void OnChannelInfoChanged (ChannelEventArgs e)
+		{
+			if (ChannelInfoChanged != null)
+				ChannelInfoChanged (this, e);
+		}
+		
+		protected void InitializeChannels (IEnumerable<Channel> channels)
+		{
+			this.channels.Clear();
+			this.channels.AddRange (channels.OrderBy (r => r.Name));
+		}
 		
 		public Server ()
 		{
 			this.Id = Guid.NewGuid ().ToString ();
+			((ITreeItem)this).Expanded = true;
 		}
 		
 		public virtual void ReadXml (XmlElement element)
@@ -127,6 +156,21 @@ namespace JabbR.Eto.Model
 			return null;
 		}
 
+		string IListItem.Text { get { return this.Name; } }
+		
+		string IListItem.Key { get { return this.Id; } }
+		
+		Image IImageListItem.Image { get { return null; } }
+		
+		bool ITreeItem<ITreeItem>.Expanded { get; set; }
+		
+		bool ITreeItem<ITreeItem>.Expandable { get { return true; } }
+		
+		int IDataStore<ITreeItem>.Count { get { return channels.Count; } }
+		
+		ITreeItem IDataStore<ITreeItem>.this[int index] { get { return channels[index]; } }
+		
+		ITreeItem ITreeItem<ITreeItem>.Parent { get; set; }
 	}
 }
 

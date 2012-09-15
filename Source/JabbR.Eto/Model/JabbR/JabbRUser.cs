@@ -17,6 +17,7 @@ namespace JabbR.Eto.Model.JabbR
 			this.Id = user.Name;
 			this.Name = user.Name;
 			this.IsAfk = user.IsAfk;
+			this.Active = user.Active;
 		}
 	}
 }

@@ -11,22 +11,22 @@
     <AssemblyName>JabbR.Eto</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>False</Optimize>
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <ConsolePause>False</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>True</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <ConsolePause>False</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -72,6 +72,14 @@
     <Compile Include="Actions\ServerDisconnect.cs" />
     <Compile Include="Interface\Dialogs\AboutDialog.cs" />
     <Compile Include="Interface\Dialogs\ServerDialog.cs" />
+    <Compile Include="Model\UsersEventArgs.cs" />
+    <Compile Include="Interface\JabbR\JabbRAuthDialog.cs" />
+    <Compile Include="Interface\JabbR\HttpServer.cs" />
+    <Compile Include="Model\MessageContentEventArgs.cs" />
+    <Compile Include="Actions\NextUnreadChannel.cs" />
+    <Compile Include="Actions\PrevUnreadChannel.cs" />
+    <Compile Include="Actions\NextChannel.cs" />
+    <Compile Include="Actions\PrevChannel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -103,5 +111,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\server.png" />
     <EmbeddedResource Include="Resources\JabbREto.ico" />
+    <EmbeddedResource Include="Interface\JabbR\AuthHtml.html" />
+    <EmbeddedResource Include="Interface\JabbR\GetUserID.html" />
   </ItemGroup>
 </Project>

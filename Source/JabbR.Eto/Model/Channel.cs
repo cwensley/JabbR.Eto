@@ -1,19 +1,22 @@
 using System;
-using Eto.Forms;
 using JabbR.Eto.Interface;
 using Eto;
 using System.Xml;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Eto.Forms;
+using Eto.Drawing;
 
 
 namespace JabbR.Eto.Model
 {
-	public abstract class Channel : ISectionGenerator, IXmlReadable
+	public abstract class Channel : ISectionGenerator, IXmlReadable, ITreeItem
 	{
 		public string Id { get; set; }
 		
 		public string Name { get; set; }
+		
+		public int UnreadCount { get; protected set; }
 		
 		public Server Server { get; private set; }
 		
@@ -80,6 +83,30 @@ namespace JabbR.Eto.Model
 				OwnerRemoved (this, e);
 		}
 		
+		public event EventHandler<UsersEventArgs> UsersInactive;
+
+		protected virtual void OnUsersInactive (UsersEventArgs e)
+		{
+			if (UsersInactive != null)
+				UsersInactive (this, e);
+		}
+		
+		public event EventHandler<UsersEventArgs> UsersActivityChanged;
+		
+		protected virtual void OnUsersActivityChanged (UsersEventArgs e)
+		{
+			if (UsersActivityChanged != null)
+				UsersActivityChanged (this, e);
+		}
+		
+		public event EventHandler<MessageContentEventArgs> MessageContent;
+		
+		protected virtual void OnMessageContent (MessageContentEventArgs e)
+		{
+			if (MessageContent != null)
+				MessageContent (this, e);
+		}
+		
 		
 		public Channel (Server server)
 		{
@@ -95,6 +122,13 @@ namespace JabbR.Eto.Model
 		}
 		
 		public abstract Task<Channel> GetChannelInfo();
+		
+		public abstract void UserTyping();
+		
+		public virtual void ResetUnreadCount ()
+		{
+			UnreadCount = 0;
+		}
 
 		#region IXmlReadable implementation
 		
@@ -111,6 +145,32 @@ namespace JabbR.Eto.Model
 		}
 		
 		#endregion
+		
+		string IListItem.Text {
+			get {
+				if (UnreadCount > 0)
+					return string.Format ("{0} ({1})", this.Name, UnreadCount);
+				else
+					return this.Name;
+			}
+		}
+		
+		string IListItem.Key { get { return this.Id; } }
+		
+		Image IImageListItem.Image { get { return null; } }
+		
+		bool ITreeItem<ITreeItem>.Expanded { get; set; }
+
+		bool ITreeItem<ITreeItem>.Expandable { get { return false; } }
+		
+		int IDataStore<ITreeItem>.Count { get { return 0; } }
+		
+		ITreeItem IDataStore<ITreeItem>.this[int index] { get { return null; } }
+		
+		ITreeItem ITreeItem<ITreeItem>.Parent {
+			get { return Server; }
+			set { }
+		}
 	}
 }
 

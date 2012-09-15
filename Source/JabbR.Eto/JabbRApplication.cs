@@ -5,6 +5,7 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using JabbR.Eto.Model;
+using System.Net;
 
 namespace JabbR.Eto
 {
@@ -28,6 +29,8 @@ namespace JabbR.Eto
 		public JabbRApplication ()
 			: base(Generator.Detect, typeof(IJabbRApplication))
 		{
+			ServicePointManager.DefaultConnectionLimit = 100;
+			
 			this.Style = "application";
 			this.Name = "JabbR.Eto";
 			this.Configuration = new JabbR.Eto.Model.Configuration();
@@ -52,7 +55,13 @@ namespace JabbR.Eto
 			
 			if (File.Exists (SettingsFileName)) {
 				//JsonConvert.PopulateObject (File.ReadAllText(SettingsFileName), form);
-				this.LoadXml (SettingsFileName);
+				try {
+					this.LoadXml (SettingsFileName);
+				}
+				catch (Exception ex) {
+					// don't worry about not loading
+					Console.WriteLine ("Error loading settings: {0}", ex);
+				}
 			}
 			form.Initialize();
 			this.BadgeLabel = null;

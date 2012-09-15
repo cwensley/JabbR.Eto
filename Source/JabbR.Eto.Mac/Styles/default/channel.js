@@ -1,14 +1,57 @@
 
 var JabbREto = (function(){
 
+	function collapseNotifications($notification) {
+		var $notifications = $notification.prevUntil(':not(.notification)');
+		if ($notifications.length > 3) {
+			
+			$notifications.hide().find('.collapse-info').remove();
+			
+			$notification.find('.collapse-info')
+				.text('(plus ' + $notifications.length + ' hidden... click to expand)')
+				.removeClass('notification-collapse')
+				.addClass('notification-expand');
+		}
+	}
+	
+	function expandNotifications($notification) {
+		var $notifications = $notification.prevUntil(':not(.notification)');
+		//var topBefore = $notification.position().top;
+		
+		$notification.find('.collapse-info')
+			.text('(click to collapse)')
+			.removeClass('notification-expand')
+			.addClass('notification-collapse');
+		
+		$notifications.show();
+		/*var room = getCurrentRoomElements(),
+			topAfter = $notification.position().top,
+			scrollTop = room.messages.scrollTop();
+		
+		// make sure last notification is visible
+		room.messages.scrollTop(scrollTop + topAfter - topBefore + $notification.height());
+		*/
+	}
+
 var pub = {
 	messages: [],
 	initialize: function() {
 		var m = $('#messages');
-		
+
 		m.on('click', '.collapsible_title', function() {
 			var box = $(this).next('.collapsible_box');
 			box.toggleClass('hidden');
+		});
+		
+		m.on('click', '.notification-expand', function(event) {
+			event.preventDefault();
+			var notification = $(this).closest('.notification');
+			expandNotifications(notification);
+		});
+		m.on('click', '.notification-collapse', function(event) {
+			event.preventDefault();
+			var notification = $(this).closest('.notification');
+			collapseNotifications(notification);
 		});
 	},
 	addHistory: function(messages) {
@@ -44,11 +87,12 @@ var pub = {
 	},
 	
 	addNotification: function(msg) {
-		var msgContent = this.translateContent($( "#template-notification").render(msg));
+		var msgContent = $(this.translateContent($( "#template-notification").render(msg)));
 
 		var m = $('#messages');
 		this.messages.splice(this.messages.length, msg);
 		m.append(msgContent);
+		collapseNotifications(msgContent);
 		this.scrollToBottom();
 	},
 

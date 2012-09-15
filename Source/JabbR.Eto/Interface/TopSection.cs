@@ -48,6 +48,11 @@ namespace JabbR.Eto.Interface
 			if (channel != null)
 				channel.Focus ();
 		}
+
+		public void CreateActions (GenerateActionArgs args)
+		{
+			Channels.CreateActions (args);
+		}
 		
 		#region IXmlReadable implementation
 		

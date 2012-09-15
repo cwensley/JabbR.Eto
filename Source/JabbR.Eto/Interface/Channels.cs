@@ -14,18 +14,26 @@ namespace JabbR.Eto.Interface
 	public class Channels : Panel
 	{
 		TreeView channelList;
-		TreeItemCollection items = new TreeItemCollection();
+		TreeItemCollection servers = new TreeItemCollection();
 		ConcurrentDictionary<string, Control> sectionCache = new ConcurrentDictionary<string, Control> ();
 		
 		public Configuration Config { get; private set; }
 
 		public event EventHandler<EventArgs> ChannelChanged;
 		
+		public Channel SelectedChannel
+		{
+			get {
+				return channelList.SelectedItem as Channel;
+			}
+		}
+		
 		public Server SelectedServer { 
 			get {
-				var item = channelList.SelectedItem as TreeItem;
-				if (item != null) return item.Tag as Server;
-				else return null;
+				if (SelectedChannel != null)
+					return SelectedChannel.Server;
+				else
+					return channelList.SelectedItem as Server;
 			}
 		}
 
@@ -33,12 +41,16 @@ namespace JabbR.Eto.Interface
 		{
 			if (ChannelChanged != null)
 				ChannelChanged (this, e);
+			var selected = SelectedChannel;
+			if (selected != null)
+				selected.ResetUnreadCount ();
 		}
 		
 		public Channels (Configuration config)
 		{
 			this.Config = config;
-			channelList = new TreeView { Style = "mainList" };
+			channelList = new TreeView { Style = "channelList" };
+			channelList.DataStore = servers;
 			channelList.SelectionChanged += (sender, e) => {
 				Application.Instance.Invoke (delegate {
 					OnChannelChanged (e);
@@ -56,84 +68,84 @@ namespace JabbR.Eto.Interface
 		{
 			var server = this.SelectedServer;
 			if (server != null) {
-				var action = new Actions.EditServer(this, Config);
+				var action = new Actions.EditServer (this, Config);
 				action.Activate ();
 			}
 		}
 
 		public void Initialize ()
 		{
-			PopulateServers();
-			foreach (var server in Config.Servers)
-			{
+			servers.Clear ();
+			servers.AddRange (Config.Servers);
+			foreach (var server in Config.Servers) {
 				server.Connected += HandleConnected;
+				server.OpenChannel += HandleOpenChannel;
+				server.CloseChannel += HandleCloseChannel;
+				server.ChannelInfoChanged += HandleChannelInfoChanged;
 			}
+			Update (true);
+			channelList.SelectedItem = servers.FirstOrDefault ();
+		}
+
+		void UnRegister (Server server)
+		{
+			server.Connected -= HandleConnected;
+			server.OpenChannel -= HandleOpenChannel;
+			server.CloseChannel -= HandleCloseChannel;
+			server.ChannelInfoChanged -= HandleChannelInfoChanged;
+		}
+
+		void HandleCloseChannel (object sender, ChannelEventArgs e)
+		{
+			Application.Instance.AsyncInvoke (delegate {
+				var isSelected = channelList.SelectedItem == e.Channel;
+				
+				Update ();
+				if (isSelected)
+					channelList.SelectedItem = e.Channel.Server;
+			});
+		}
+
+		void HandleOpenChannel (object sender, ChannelEventArgs e)
+		{
+			Application.Instance.AsyncInvoke (delegate {
+				
+				Update ();
+				
+				channelList.SelectedItem = e.Channel;
+			});
+		}
+		
+		void HandleChannelInfoChanged (object sender, ChannelEventArgs e)
+		{
+			Update ();
 		}
 		
 		void HandleConnected (object sender, EventArgs e)
 		{
-			var server = sender as Server;
-			var item = items.FirstOrDefault (r => r.Key == server.Id) as TreeItem;
-			if (item != null) {
-				item.Children.Clear ();
-				PopulateChannels(item, server);
-				channelList.DataStore = items;
-			}
+			Update ();
 		}
 		
 		void HandleServerRemoved (object sender, ServerEventArgs e)
 		{
-			var section = items.FirstOrDefault(r => r.Key == e.Server.Id);
-			if (section != null) {
-				items.Remove (section);
-				channelList.DataStore = items;
-			}
+			UnRegister (e.Server);
+			servers.Remove (e.Server);
+			Update (true);
 		}
 		
-		ITreeItem CreateItem (Channel channel)
-		{
-			return new TreeItem { Key = channel.Id, Text = channel.Name, Tag = channel };
-		}
-		
-		void PopulateChannels (TreeItem item, Server server)
-		{
-			foreach (var channel in server.Channels.OrderBy (r => r.Name)) {
-				item.Children.Add (CreateItem (channel));
-			}
-		}
-
-		ITreeItem CreateItem (Server server)
-		{
-			var item = new TreeItem { Key = server.Id, Text = server.Name, Tag = server, Expanded = true, Image = Bitmap.FromResource ("JabbR.Eto.Resources.server.png") };
-			PopulateChannels (item, server);
-			return item;
-		}
 		void HandleServerAdded (object sender, ServerEventArgs e)
 		{
-			items.Add (CreateItem(e.Server));
-			channelList.DataStore = items;
+			servers.Add (e.Server);
+			Update (true);
 		}
 		
-		void PopulateServers()
-		{
-			foreach (var server in Config.Servers)
-			{
-				items.Add (CreateItem (server));
-			}
-			channelList.DataStore = items;
-			if (channelList.SelectedItem == null && items.Count > 0) {
-				channelList.SelectedItem = items[0];
-			}
-		}
-
 		public Control CreateChannel ()
 		{
 			if (channelList.SelectedItem == null)
 				return null;
 			
-			ISectionGenerator generator = null;
-			var item = channelList.SelectedItem as TreeItem;
-			generator = item.Tag as ISectionGenerator;
+			var item = channelList.SelectedItem;
+			var generator = item as ISectionGenerator;
 
 			Control section = null;
 			if (generator != null && !sectionCache.TryGetValue (item.Key, out section)) {
@@ -144,6 +156,63 @@ namespace JabbR.Eto.Interface
 			}
 
 			return section;
+		}
+		
+		IEnumerable<Channel> EnumerateChannels ()
+		{
+			foreach (var item in Config.Servers) {
+				foreach (var channel in item.Channels) {
+					yield return channel;
+				}
+			}
+		}
+		
+		void NavigateChannel (bool unreadOnly, bool reverse)
+		{
+			var channels = EnumerateChannels ();
+			var listOfItems = channels;
+			var channel = channelList.SelectedItem as Channel;
+			if (channel != null)
+				listOfItems = channels.SkipWhile (r => r != channel).Skip (1).Union (channels.TakeWhile (r => r != channel));
+			
+			if (reverse)
+				listOfItems = listOfItems.Reverse ();
+			
+			var next = listOfItems.FirstOrDefault (r => !unreadOnly || r.UnreadCount > 0);
+			if (next != null)
+				channelList.SelectedItem = next;
+		}
+		
+		public void GoToNextChannel (bool unreadOnly)
+		{
+			NavigateChannel (unreadOnly, false);
+		}
+		
+		public void GoToPreviousChannel (bool unreadOnly)
+		{
+			NavigateChannel (unreadOnly, true);
+		}
+		
+		void Update (bool sort = false)
+		{
+			if (sort)
+				servers.Sort ((x,y) => x.Text.CompareTo(y.Text));
+			channelList.Invalidate ();
+		}
+		
+		public void CreateActions (GenerateActionArgs args)
+		{
+			args.Actions.Add (new Actions.NextChannel (this));
+			args.Actions.Add (new Actions.NextUnreadChannel (this));
+			args.Actions.Add (new Actions.PrevChannel (this));
+			args.Actions.Add (new Actions.PrevUnreadChannel (this));
+			
+			var channel = args.Menu.FindAddSubMenu ("&Channel", 800);
+			
+			channel.Actions.Add (Actions.NextChannel.ActionID);
+			channel.Actions.Add (Actions.NextUnreadChannel.ActionID);
+			channel.Actions.Add (Actions.PrevChannel.ActionID);
+			channel.Actions.Add (Actions.PrevUnreadChannel.ActionID);
 		}
 	}
 

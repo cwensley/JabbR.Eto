@@ -24,6 +24,22 @@ namespace JabbR.Eto.Interface
 			this.Channel.UserLeft += HandleUserLeft;
 			this.Channel.OwnerAdded += HandleOwnerAdded;
 			this.Channel.OwnerRemoved += HandleOwnerRemoved;
+			this.Channel.UsersActivityChanged += HandleUsersActivityChanged;
+			this.Channel.MessageContent += HandleMessageContent;
+		}
+
+		void HandleMessageContent (object sender, MessageContentEventArgs e)
+		{
+			Application.Instance.AsyncInvoke(delegate {
+				AddMessageContent (e.Content);
+			});
+		}
+
+		void HandleUsersActivityChanged (object sender, UsersEventArgs e)
+		{
+			Application.Instance.AsyncInvoke(delegate {
+				UserList.UsersActivityChanged (e.Users);
+			});
 		}
 
 		void HandleOwnerRemoved (object sender, UserEventArgs e)
@@ -98,7 +114,7 @@ namespace JabbR.Eto.Interface
 				this.Channel.GetChannelInfo ().ContinueWith(task => {
 					var channel = task.Result;
 					Application.Instance.AsyncInvoke (delegate {
-						UserList.SetUsers (channel.Users, channel.Owners);
+						UserList.SetUsers (channel.Users);
 					});
 					AddHistory (channel.GetHistory (string.Empty));
 				});
@@ -122,6 +138,11 @@ namespace JabbR.Eto.Interface
 				user,
 				content
 			));
+		}
+		
+		public override void UserTyping ()
+		{
+			Channel.UserTyping ();
 		}
 		
 		public override void ProcessCommand (string command)

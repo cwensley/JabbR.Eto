@@ -3,6 +3,7 @@ using Eto.Forms;
 using System.Collections.Generic;
 using System.Linq;
 using JabbR.Eto.Model;
+using Eto;
 
 namespace JabbR.Eto.Interface
 {
@@ -13,7 +14,6 @@ namespace JabbR.Eto.Interface
 		TreeItem online;
 		TreeItem away;
 		TreeItemCollection items;
-		HashSet<string> ownerLookup = new HashSet<string>();
 		
 		public Channel Channel { get; private set; }
 				
@@ -27,6 +27,11 @@ namespace JabbR.Eto.Interface
 			items.Add (owners = new TreeItem { Text = "Room Owners", Expanded = true });
 			items.Add (online = new TreeItem { Text = "Online", Expanded = true });
 			items.Add (away = new TreeItem { Text = "Away", Expanded = true });
+			if (Generator.ID == Generators.Mac) {
+				foreach (var item in items.OfType<TreeItem>()) {
+					item.Text = item.Text.ToUpperInvariant();
+				}
+			}
 			tree.DataStore = items;
 			
 			this.AddDockedControl (tree);
@@ -39,20 +44,18 @@ namespace JabbR.Eto.Interface
 
 		public void OwnerAdded (User user)
 		{
-			if (!ownerLookup.Contains (user.Name))
-				ownerLookup.Add (user.Name);
-			RemoveUser (user);
-			AddUser (user);
-			Update ();
+			if (RemoveUser (user)) {
+				AddUser (user);
+				Update ();
+			}
 		}
 		
 		public void OwnerRemoved (User user)
 		{
-			if (ownerLookup.Contains (user.Name))
-				ownerLookup.Remove (user.Name);
-			RemoveUser (user);
-			AddUser (user);
-			Update ();
+			if (RemoveUser (user)) {
+				AddUser (user);
+				Update ();
+			}
 		}
 
 		public void UserJoined (User user)
@@ -64,41 +67,37 @@ namespace JabbR.Eto.Interface
 		
 		void AddUser (User user)
 		{
-			var isOwner = ownerLookup.Contains (user.Name);
-			TreeItem item = isOwner ? owners : user.IsAfk ? away : online;
+			var isOwner = Channel.Owners.Contains (user.Name);
+			TreeItem item = isOwner ? owners : user.Active ? online : away;
 			item.Children.Add (CreateItem (user));
 		}
 		
-		void RemoveUser (User user)
+		bool RemoveUser (User user)
 		{
-			RemoveItem (items, user.Name);
+			return RemoveItem (items, user.Name);
 		}
 
-		public void UserActivityChanged (User user)
+		public void UsersActivityChanged (IEnumerable<User> users)
 		{
-			if (user.Active) {
-				var item = away.Children.FirstOrDefault(r => r.Key == user.Name);
-				if (item != null) {
-					away.Children.Remove (item);
-					online.Children.Add (item);
-				}
-			}
-			Update ();
-		}
-		
-		public void MakeUsersInactive (IEnumerable<User> users)
-		{
-			var lookup = online.Children.ToDictionary(r => r.Key);
+			var onlineLookup = online.Children.ToDictionary (r => r.Key);
+			var awayLookup = away.Children.ToDictionary (r => r.Key);
 			foreach (var user in users) {
 				ITreeItem item;
-				if (lookup.TryGetValue (user.Name, out item)) {
-					online.Children.Remove (item);
-					away.Children.Add (item);
+				if (user.Active) {
+					if (awayLookup.TryGetValue (user.Id, out item)) {
+						away.Children.Remove (item);
+						online.Children.Add (item);
+					}
+				} else {
+					if (onlineLookup.TryGetValue (user.Id, out item)) {
+						online.Children.Remove (item);
+						away.Children.Add (item);
+					}
 				}
 			}
 			Update ();
 		}
-		
+			
 		bool RemoveItem (TreeItemCollection items, string key)
 		{
 			foreach (var item in items.OfType<TreeItem>()) {
@@ -123,13 +122,11 @@ namespace JabbR.Eto.Interface
 			owners.Children.Sort ((x, y) => x.Text.CompareTo (y.Text));
 			online.Children.Sort ((x, y) => x.Text.CompareTo (y.Text));
 			away.Children.Sort ((x, y) => x.Text.CompareTo (y.Text));
-			tree.DataStore = items;
+			tree.Invalidate ();
 		}
 	
-		public void SetUsers (IEnumerable<User> users, IEnumerable<string> owners)
+		public void SetUsers (IEnumerable<User> users)
 		{
-			ownerLookup = new HashSet<string>(owners);
-			
 			foreach (var user in users)
 				AddUser (user);
 			Update ();

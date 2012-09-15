@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using jab = JabbR.Client;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace JabbR.Eto.Model.JabbR
 {
@@ -90,21 +91,46 @@ namespace JabbR.Eto.Model.JabbR
 					this.recentMessages = (from m in task.Result.RecentMessages select new ChannelMessage (m.Id, m.When, m.User.Name, m.Content)).ToArray ();
 					tcs.SetResult (this);
 				}
-			}
-			);
+			});
 			
 			return tcs.Task;
 		}
 
+		internal void TriggerActivityChanged (IEnumerable<jab.Models.User> users)
+		{
+			var theusers = from r in users select new JabbRUser (r);
+			OnUsersActivityChanged (new UsersEventArgs (theusers, DateTimeOffset.Now));
+		}
+		
 		internal void TriggerOwnerAdded (jab.Models.User user)
 		{
-			OnOwnerAdded(new UserEventArgs(new JabbRUser(user), DateTimeOffset.Now));
+			if (!this.owners.Contains (user.Name)) {
+				bool added = false;
+				lock (owners) {
+					if (!this.owners.Contains (user.Name)) {
+						owners.Add (user.Name);
+						added = true;
+					};
+				}
+				if (added)
+					OnOwnerAdded (new UserEventArgs (new JabbRUser (user), DateTimeOffset.Now));
+			}
 		}
 
 		internal void TriggerOwnerRemoved (jab.Models.User user)
 		{
-			OnOwnerRemoved(new UserEventArgs(new JabbRUser(user), DateTimeOffset.Now));
-		}		
+			if (this.owners.Contains (user.Name)) {
+				bool removed = false;
+				lock (owners) {
+					if (this.owners.Contains (user.Name)) {
+						owners.Remove (user.Name);
+						removed = true;
+					}
+				}
+				if (removed)
+					OnOwnerRemoved (new UserEventArgs (new JabbRUser (user), DateTimeOffset.Now));
+			}
+		}
 		
 		internal void TriggerMeMessage (string user, string content)
 		{
@@ -113,9 +139,30 @@ namespace JabbR.Eto.Model.JabbR
 		
 		internal void TriggerMessage (jab.Models.Message message)
 		{
+			UnreadCount ++;
 			OnMessageReceived (new MessageEventArgs (new ChannelMessage (message.Id, message.When, message.User.Name, message.Content)));
 		}
-
+		
+		internal void TriggerMessageContent (string messageId, string content)
+		{
+			OnMessageContent (new MessageContentEventArgs (new MessageContent (messageId, content)));
+		}
+		
+		static object typinglock = new object ();
+		static string lastTypingRoom;
+		static DateTime? lastTypingTime;
+		
+		public override void UserTyping ()
+		{
+			lock (typinglock) {
+				if (lastTypingRoom != this.Name || (lastTypingTime != null && lastTypingTime.Value < DateTime.Now)) {
+					lastTypingTime = DateTime.Now.AddSeconds (5);
+					lastTypingRoom = this.Name;
+					Debug.WriteLine (string.Format ("UserTyping, Room:{0}", this.Name));
+					Server.Client.SetTyping (this.Name);
+				}
+			}
+		}
 	}
 }
 
