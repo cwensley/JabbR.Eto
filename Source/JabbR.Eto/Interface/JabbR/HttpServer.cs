@@ -72,6 +72,9 @@ namespace JabbR.Eto.Interface.JabbR
 
 		void ListenerCallback (IAsyncResult ar)
 		{
+            if (!listener.IsListening)
+                return;
+
 			listener.BeginGetContext (ListenerCallback, null);
 
 			var context = listener.EndGetContext (ar);
@@ -203,6 +206,7 @@ namespace JabbR.Eto.Interface.JabbR
 		public void Dispose ()
 		{
 			if (listener != null) {
+                listener.Stop();
 				listener.Close ();
 			}
 		}
