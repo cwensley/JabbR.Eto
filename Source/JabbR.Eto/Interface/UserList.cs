@@ -122,7 +122,7 @@ namespace JabbR.Eto.Interface
 			owners.Children.Sort ((x, y) => x.Text.CompareTo (y.Text));
 			online.Children.Sort ((x, y) => x.Text.CompareTo (y.Text));
 			away.Children.Sort ((x, y) => x.Text.CompareTo (y.Text));
-			tree.Invalidate ();
+			tree.RefreshData ();
 		}
 	
 		public void SetUsers (IEnumerable<User> users)

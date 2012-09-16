@@ -197,7 +197,7 @@ namespace JabbR.Eto.Interface
 		{
 			if (sort)
 				servers.Sort ((x,y) => x.Text.CompareTo(y.Text));
-			channelList.Invalidate ();
+			channelList.RefreshData ();
 		}
 		
 		public void CreateActions (GenerateActionArgs args)
