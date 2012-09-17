@@ -13,6 +13,15 @@ This makes liberal use of the following libraries:
 * [SignalR](https://github.com/SignalR/SignalR) - Async library for .NET to help build real-time, multi-user interactive web applications
 * [Json.NET](http://json.codeplex.com/) - Json.NET is a popular high-performance JSON framework for .NET
 
+Screenshots
+-----------
+
+OS X Screenshot
+![OS X](http://cwensley.github.com/JabbR.Eto/images/screenshots/Main-OSX.png)
+
+WPF Screenshot
+![WPF](http://cwensley.github.com/JabbR.Eto/images/screenshots/Main-WPF.png)
+
 How To Build
 ------------
 
