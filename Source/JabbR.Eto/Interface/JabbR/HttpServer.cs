@@ -22,13 +22,12 @@ namespace JabbR.Eto.Interface.JabbR
 	
 	public class HttpServer : IDisposable
 	{
-		string html = String.Empty;
-		string baseDirectory = String.Empty;
-
-		public void SetHtml (string html, string baseDirectory)
+		string baseDirectory;
+		Dictionary<string, string> staticContent = new Dictionary<string, string>();
+		
+		public Dictionary<string, string> StaticContent
 		{
-			this.html = html;
-			this.baseDirectory = baseDirectory;
+			get { return staticContent; }
 		}
 
 		public Uri Url { get { return new Uri ("http://" + "localhost" + ":" + port + "/"); } }
@@ -44,8 +43,9 @@ namespace JabbR.Eto.Interface.JabbR
 				ReceivedRequest (this, e);
 		}
 
-		public HttpServer ()
+		public HttpServer (string baseDirectory)
 		{
+			this.baseDirectory = baseDirectory;
 			var rnd = new Random ();
 
 			for (int i = 0; i < 100; i++) {
@@ -92,7 +92,8 @@ namespace JabbR.Eto.Interface.JabbR
 			response.AddHeader ("Cache-Control", "no-cache");
 
 			try {
-				if (request.Url.AbsolutePath == "/") {
+				string html;
+				if (staticContent.TryGetValue(request.Url.AbsolutePath, out html)) {
 					response.ContentType = MediaTypeNames.Text.Html;
 					response.ContentEncoding = Encoding.UTF8;
 

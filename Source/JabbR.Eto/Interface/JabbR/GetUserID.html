@@ -1,13 +1,32 @@
 <html>
 <head>
 	<title>Authenticating</title>
-	<style> html {{ margin: 0; padding: 0; }} </style>
+	<script type='text/javascript' src='jquery.min.js'></script>
+	<script type='text/javascript' src='jquery.blockUI.js'></script>
+	<style>
+		html { margin: 0; padding: 0; font-family: sans-serif; }
+		body { margin: 0; padding: 5px; }
+		h1 { font-size: 14px; padding: 10px; margin: 0; }
+	</style>
+	<script type='text/javascript'>
+			
+	$(document).ready(function() {
+		$.blockUI({ css: { 
+					border: 'none', 
+					padding: '5px', 
+					backgroundColor: '#000', 
+					'-webkit-border-radius': '10px', 
+					'-moz-border-radius': '10px', 
+					opacity: .5, 
+					color: '#fff' 
+			},
+			message: '<h1>Authenticating...<h1>'
+		});	
+	});
+	</script>
 </head>
 <body scroll='no'>
 	<div>
-		<p>
-			Getting User ID..
-		</p>
 	</div>
 </body>
 </html>

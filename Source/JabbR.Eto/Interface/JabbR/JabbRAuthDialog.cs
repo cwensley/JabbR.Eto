@@ -37,46 +37,45 @@ namespace JabbR.Eto.Interface.JabbR
 			this.Resizable = true;
 			this.Title = "JabbR Login";
 			
-			webserver = new HttpServer ();
+			var baseDir = Path.Combine (EtoEnvironment.GetFolderPath(EtoSpecialFolder.ApplicationResources), "Styles", "default");
+			webserver = new HttpServer (baseDir);
 			LocalhostTokenUrl = new Uri (webserver.Url, "Authorize");
+			webserver.StaticContent.Add ("/", AuthHtml(true));
+			webserver.StaticContent.Add ("/Authorize", GetUserIDHtml());
+			webserver.ReceivedRequest += HandleReceivedRequest;
 			
-			webserver.ReceivedRequest += (sender, e) => {
-				var isLocal = e.Request.Url.Host == "localhost";
-				
-				if (e.Request.Url == LocalhostTokenUrl) {
-					e.Cancel = true;
-					var reader = new StreamReader (e.Request.InputStream);
-					var tokenString = reader.ReadToEnd ();
-					var tokens = tokenString.Split ('=');
-					if (tokens.Length == 2 && tokens [0] == "token") {
-						Application.Instance.AsyncInvoke (delegate {
-							var getUserTask = this.GetUserId (tokens [1]);
-							getUserTask.ContinueWith (task => {
-								Application.Instance.AsyncInvoke (delegate {
-									this.UserID = task.Result;
-									this.DialogResult = DialogResult.Ok;
-									this.Close ();
-								});
-							}, TaskContinuationOptions.OnlyOnRanToCompletion);
-							
-							getUserTask.ContinueWith (task => {
-								MessageBox.Show (this, "Cannot get User ID from token", MessageBoxButtons.OK, MessageBoxType.Error);
-							}, TaskContinuationOptions.OnlyOnFaulted);
-							
-							web.LoadHtml (Assembly.GetExecutingAssembly ().GetManifestResourceStream ("JabbR.Eto.Interface.JabbR.GetUserID.html"), null);
-						});
-					}
-				}
-			};
 			
 			web = new WebView ();
 			web.DocumentLoaded += HandleDocumentLoaded;
 			this.AddDockedControl (web);
-			var baseDir = Path.Combine (EtoEnvironment.GetFolderPath(EtoSpecialFolder.ApplicationResources), "Styles", "default");
-			webserver.SetHtml (AuthHtml (true), baseDir);
 			web.Url = webserver.Url;
 			
 			HandleEvent (ClosedEvent);
+		}
+
+		void HandleReceivedRequest (object sender, HttpServerRequestEventArgs e)
+		{
+			if (e.Request.Url == LocalhostTokenUrl) {
+				var reader = new StreamReader (e.Request.InputStream);
+				var tokenString = reader.ReadToEnd ();
+				var tokens = tokenString.Split ('=');
+				if (tokens.Length == 2 && tokens [0] == "token") {
+					Application.Instance.AsyncInvoke (delegate {
+						var getUserTask = this.GetUserId (tokens [1]);
+						getUserTask.ContinueWith (task => {
+							Application.Instance.AsyncInvoke (delegate {
+								this.UserID = task.Result;
+								this.DialogResult = DialogResult.Ok;
+								this.Close ();
+							});
+						}, TaskContinuationOptions.OnlyOnRanToCompletion);
+						
+						getUserTask.ContinueWith (task => {
+							MessageBox.Show (this, "Cannot get User ID from token", MessageBoxButtons.OK, MessageBoxType.Error);
+						}, TaskContinuationOptions.OnlyOnFaulted);
+					});
+				}
+			}
 		}
 
 		void HandleDocumentLoaded (object sender, WebViewLoadedEventArgs e)
@@ -103,12 +102,18 @@ namespace JabbR.Eto.Interface.JabbR
 		
 		string AuthHtml (bool forceReauth)
 		{
-			var htmlStream = Assembly.GetExecutingAssembly ().GetManifestResourceStream ("JabbR.Eto.Interface.JabbR.AuthHtml.html");
-			var html = new StreamReader (htmlStream).ReadToEnd ();
+			var stream = Assembly.GetExecutingAssembly ().GetManifestResourceStream ("JabbR.Eto.Interface.JabbR.AuthHtml.html");
+			var html = new StreamReader (stream).ReadToEnd ();
 			html = html.Replace ("$TOKEN_URL$", LocalhostTokenUrl.ToString ());
 			html = html.Replace ("$APP_NAME$", AppName);
 			html = html.Replace ("$FORCE_REAUTH$", forceReauth.ToString (CultureInfo.InvariantCulture).ToLower ());
 			return html;
+		}
+		
+		string GetUserIDHtml ()
+		{
+			var stream = Assembly.GetExecutingAssembly ().GetManifestResourceStream ("JabbR.Eto.Interface.JabbR.GetUserID.html");
+			return new StreamReader (stream).ReadToEnd ();
 		}
 		
 		Task<string> GetUserId (string token)
