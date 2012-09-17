@@ -19,8 +19,11 @@ Screenshots
 OS X Screenshot
 ![OS X](http://cwensley.github.com/JabbR.Eto/images/screenshots/Main-OSX.png)
 
-WPF Screenshot
+Windows Screenshot
 ![WPF](http://cwensley.github.com/JabbR.Eto/images/screenshots/Main-WPF.png)
+
+Ubuntu Screenshot
+![WPF](http://cwensley.github.com/JabbR.Eto/images/screenshots/Main-Ubuntu.png)
 
 How To Build
 ------------
