@@ -12,9 +12,15 @@ namespace JabbR.Eto.Interface
 {
 	public class ChannelSection : MessageSection
 	{
+		string autocompleteText;
+		
 		public UserList UserList { get; private set; }
 		
 		public Channel Channel { get; private set; }
+		
+		public override bool SupportsAutoComplete {
+			get { return true; }
+		}
 		
 		public ChannelSection (Channel channel)
 		{
@@ -142,6 +148,7 @@ namespace JabbR.Eto.Interface
 		
 		public override void UserTyping ()
 		{
+			autocompleteText = null;
 			Channel.UserTyping ();
 		}
 		
@@ -151,6 +158,12 @@ namespace JabbR.Eto.Interface
 				return;
 			
 			Channel.SendMessage(command);
+		}
+		protected override IEnumerable<string> GetAutoCompleteNames (string prefix)
+		{
+			prefix = prefix.TrimStart ('@');
+			var users = Channel.Users.Where (r => r.Name.StartsWith(prefix, StringComparison.CurrentCultureIgnoreCase)).Select (r => '@' + r.Name);
+			return users;
 		}
 	}
 }
