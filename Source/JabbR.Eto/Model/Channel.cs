@@ -16,6 +16,8 @@ namespace JabbR.Eto.Model
 		
 		public string Name { get; set; }
 		
+		public string Topic { get; set; }
+		
 		public int UnreadCount { get; protected set; }
 		
 		public Server Server { get; private set; }

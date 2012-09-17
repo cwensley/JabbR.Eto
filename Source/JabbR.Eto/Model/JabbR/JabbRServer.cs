@@ -13,6 +13,7 @@ using System.Text;
 using System.Net;
 using System.IO;
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 
 namespace JabbR.Eto.Model.JabbR
 {
@@ -67,7 +68,7 @@ namespace JabbR.Eto.Model.JabbR
 			} else {
 				connect = Client.Connect (UserName, Password);
 			}
-			
+				
 			connect.ContinueWith (task => {
 				if (!task.IsCompleted || task.Exception != null) {
 					Console.WriteLine ("Error: {0}", task.Exception);
@@ -95,6 +96,30 @@ namespace JabbR.Eto.Model.JabbR
 					});
 				});
 			});
+		}
+		
+		public override Task<IEnumerable<ChannelInfo>> GetChannelList ()
+		{
+			var resultTask = new TaskCompletionSource<IEnumerable<ChannelInfo>>();
+			
+			var getRooms = Client.GetRooms();
+			getRooms.ContinueWith (task => {
+				var channels =task.Result.Select (r => {
+					return new ChannelInfo (this) {
+						Name = r.Name,
+						Topic = r.Topic,
+						Private = r.Private,
+						UserCount = r.Count
+					};
+				});
+				resultTask.TrySetResult(channels);
+			}, TaskContinuationOptions.OnlyOnRanToCompletion);
+			
+			getRooms.ContinueWith (task => {
+				resultTask.TrySetException(task.Exception);
+			}, TaskContinuationOptions.OnlyOnFaulted);
+			
+			return resultTask.Task;
 		}
 		
 		public override void Disconnect ()
@@ -236,6 +261,11 @@ namespace JabbR.Eto.Model.JabbR
 					MessageBox.Show (Application.Instance.MainForm, string.Format ("Error sending message: {0}", task.Exception));
 				});
 			}, TaskContinuationOptions.OnlyOnFaulted);
+		}
+		
+		public override void JoinChannel (string name)
+		{
+			Client.JoinRoom(name);
 		}
 		
 		public override void GenerateEditControls (DynamicLayout layout)

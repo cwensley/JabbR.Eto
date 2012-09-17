@@ -80,6 +80,9 @@
     <Compile Include="Actions\PrevUnreadChannel.cs" />
     <Compile Include="Actions\NextChannel.cs" />
     <Compile Include="Actions\PrevChannel.cs" />
+    <Compile Include="Model\ChannelInfo.cs" />
+    <Compile Include="Interface\Dialogs\SelectChannel.cs" />
+    <Compile Include="Actions\ChannelList.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

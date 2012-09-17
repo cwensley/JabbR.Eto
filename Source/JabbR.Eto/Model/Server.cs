@@ -9,6 +9,7 @@ using JabbR.Eto.Model.JabbR;
 using JabbR.Eto.Interface;
 using Eto.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace JabbR.Eto.Model
 {
@@ -146,6 +147,8 @@ namespace JabbR.Eto.Model
 		public abstract void Disconnect ();
 
 		public abstract void SendMessage (string command);
+
+		public abstract void JoinChannel (string name);
 		
 		public virtual void GenerateEditControls (DynamicLayout layout)
 		{
@@ -155,6 +158,8 @@ namespace JabbR.Eto.Model
 		{
 			return null;
 		}
+		
+		public abstract Task<IEnumerable<ChannelInfo>> GetChannelList ();
 
 		string IListItem.Text { get { return this.Name; } }
 		

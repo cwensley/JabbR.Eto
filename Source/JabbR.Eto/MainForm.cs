@@ -45,6 +45,7 @@ namespace JabbR.Eto
 			args.Actions.Add (new Actions.RemoveServer (top.Channels, config));
 			args.Actions.Add (new Actions.ServerConnect (top.Channels, config));
 			args.Actions.Add (new Actions.ServerDisconnect (top.Channels, config));
+			args.Actions.Add (new Actions.ChannelList (top.Channels));
 			args.Actions.Add (new Actions.Quit ());
 			args.Actions.Add (new Actions.About ());
 			
@@ -59,6 +60,8 @@ namespace JabbR.Eto
 			server.Actions.Add (Actions.AddServer.ActionID);
 			server.Actions.Add (Actions.EditServer.ActionID);
 			server.Actions.Add (Actions.RemoveServer.ActionID);
+			server.Actions.AddSeparator ();
+			server.Actions.Add (Actions.ChannelList.ActionID);
 			
 			if (Generator.ID == "mac") {
 				var application = args.Menu.FindAddSubMenu (Application.Instance.Name, 100);

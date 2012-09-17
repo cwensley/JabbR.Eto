@@ -169,6 +169,16 @@ namespace JabbR.Eto.Interface
 				}
 			}
 		}
+
+		public void JoinChannel (Server server, string name)
+		{
+			var channel = server.Channels.FirstOrDefault(r => r.Name == name);
+			if (channel != null)
+				channelList.SelectedItem = channel;
+			else {
+				server.JoinChannel (name);
+			}
+		}
 		
 		void NavigateChannel (bool unreadOnly, bool reverse)
 		{
