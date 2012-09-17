@@ -118,6 +118,9 @@ namespace JabbR.Eto.Interface
 		
 		void HandleChannelInfoChanged (object sender, ChannelEventArgs e)
 		{
+			if (SelectedChannel == e.Channel) {
+				e.Channel.ResetUnreadCount();
+			}
 			Update ();
 		}
 		
