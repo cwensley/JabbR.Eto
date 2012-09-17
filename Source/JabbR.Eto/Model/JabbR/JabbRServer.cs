@@ -113,6 +113,7 @@ namespace JabbR.Eto.Model.JabbR
 					};
 				});
 				resultTask.TrySetResult(channels);
+				channelListTask = resultTask.Task;
 			}, TaskContinuationOptions.OnlyOnRanToCompletion);
 			
 			getRooms.ContinueWith (task => {
@@ -121,6 +122,13 @@ namespace JabbR.Eto.Model.JabbR
 			
 			return resultTask.Task;
 		}
+		
+		Task<IEnumerable<ChannelInfo>> channelListTask;
+		public override Task<IEnumerable<ChannelInfo>> GetCachedChannels ()
+		{
+			return channelListTask ?? GetChannelList ();
+		}
+		
 		
 		public override void Disconnect ()
 		{

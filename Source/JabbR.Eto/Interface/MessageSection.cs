@@ -18,6 +18,8 @@ namespace JabbR.Eto.Interface
 	{
 		string existingPrefix;
 		string lastAutoComplete;
+		int? autoCompleteIndex;
+		bool autoCompleting;
 
 		protected string LastHistoryMessageId { get; private set; }
 		
@@ -154,8 +156,7 @@ namespace JabbR.Eto.Interface
 			};
 			control.TextChanged += (sender, e) => {
 				UserTyping ();
-				existingPrefix = null;
-				lastAutoComplete = null;
+				ResetAutoComplete ();
 			};
 			return control;
 		}
@@ -171,41 +172,76 @@ namespace JabbR.Eto.Interface
 			TextEntry.Focus ();
 		}
 		
-		protected virtual IEnumerable<string> GetAutoCompleteNames(string prefix)
+		protected virtual Task<IEnumerable<string>> GetAutoCompleteNames(string search)
 		{
-			yield break;
+			return null;
+		}
+		
+		protected virtual void ResetAutoComplete ()
+		{
+			existingPrefix = null;
+			lastAutoComplete = null;
+			autoCompleteIndex = null;
+			autoCompleting = false;
 		}
 		
 		public virtual bool ProcessAutoComplete (string text)
 		{
-			var index = text.LastIndexOf (' ');
+			if (autoCompleting)
+				return true;
+			autoCompleting = true;
+			var index = autoCompleteIndex ?? text.LastIndexOf (' ');
+			if (index > text.Length) {
+				ResetAutoComplete ();
+				return false;
+			}
 			var prefix = (index >= 0 ? text.Substring (index + 1) : text);
 			if (prefix.Length > 0) {
 				var existingText = index >= 0 ? text.Substring (0, index + 1) : string.Empty;
 				
 				var searchPrefix = existingPrefix ?? prefix;
-				var allMatches = GetAutoCompleteNames (searchPrefix).OrderBy (r => r);
+				var task = GetAutoCompleteNames (searchPrefix);
+				task.ContinueWith (t => {
+					if (!autoCompleting)
+						return;
+						
+					var allMatches = t.Result.OrderBy (r => r);
+						
+					var matches = allMatches as IEnumerable<string>;
+					if (!string.IsNullOrEmpty (lastAutoComplete)) {
+						matches = matches.Where (r => {
+							return r.CompareTo (lastAutoComplete) > 0;
+						});
+					}
+					
+					var user = matches.FirstOrDefault ();
+					if (user == null)
+						user = allMatches.FirstOrDefault ();
+					if (user != null) {
+						Application.Instance.AsyncInvoke (delegate {
+							TextEntry.Text = existingText + TranslateAutoCompleteText (user, searchPrefix);
+						});
+						lastAutoComplete = user;
+						if (existingPrefix == null) {
+							existingPrefix = prefix;
+							autoCompleteIndex = index;
+						}
+					}
+					autoCompleting = false;
+					
+				}, TaskContinuationOptions.OnlyOnRanToCompletion);
 				
-				var matches = allMatches as IEnumerable<string>;
-				if (!string.IsNullOrEmpty (lastAutoComplete)) {
-					matches = matches.Where (r => {
-						return r.CompareTo (lastAutoComplete) > 0;
-					});
-				}
-				
-				var user = matches.FirstOrDefault ();
-				if (user == null)
-					user = allMatches.FirstOrDefault ();
-				if (user != null) {
-					var newText = existingText + user;
-					TextEntry.Text = newText;
-					lastAutoComplete = user;
-					if (existingPrefix == null)
-						existingPrefix = prefix;
-				}
+				task.ContinueWith (t => {
+					ResetAutoComplete ();
+				}, TaskContinuationOptions.OnlyOnFaulted);
 				return true;
 			}
 			return false;
+		}
+		
+		public virtual string TranslateAutoCompleteText (string selection, string search)
+		{
+			return selection;
 		}
 	}
 }

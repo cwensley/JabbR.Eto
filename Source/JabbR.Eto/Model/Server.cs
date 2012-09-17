@@ -160,7 +160,9 @@ namespace JabbR.Eto.Model
 		}
 		
 		public abstract Task<IEnumerable<ChannelInfo>> GetChannelList ();
-
+		
+		public abstract Task<IEnumerable<ChannelInfo>> GetCachedChannels ();
+		
 		string IListItem.Text { get { return this.Name; } }
 		
 		string IListItem.Key { get { return this.Id; } }

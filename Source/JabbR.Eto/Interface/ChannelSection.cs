@@ -159,11 +159,30 @@ namespace JabbR.Eto.Interface
 			
 			Channel.SendMessage(command);
 		}
-		protected override IEnumerable<string> GetAutoCompleteNames (string prefix)
+		protected override Task<IEnumerable<string>> GetAutoCompleteNames (string search)
 		{
-			prefix = prefix.TrimStart ('@');
-			var users = Channel.Users.Where (r => r.Name.StartsWith(prefix, StringComparison.CurrentCultureIgnoreCase)).Select (r => '@' + r.Name);
-			return users;
+			var task = new TaskCompletionSource<IEnumerable<string>>();
+			if (search.StartsWith ("#")) {
+				search = search.TrimStart ('#');
+				var getChannels = Channel.Server.GetCachedChannels ();
+				getChannels.ContinueWith(t => {
+					task.TrySetResult (t.Result.Where (r => r.Name.StartsWith (search, StringComparison.CurrentCultureIgnoreCase)).Select (r => r.Name));
+				}, TaskContinuationOptions.OnlyOnRanToCompletion);
+				getChannels.ContinueWith(t => {
+					task.TrySetException (t.Exception);
+				}, TaskContinuationOptions.OnlyOnFaulted);
+			} else {
+				search = search.TrimStart ('@');
+				task.TrySetResult (Channel.Users.Where (r => r.Name.StartsWith (search, StringComparison.CurrentCultureIgnoreCase)).Select (r => r.Name));
+			}
+			return task.Task;
+		}
+		
+		public override string TranslateAutoCompleteText (string selection, string search)
+		{
+			var prefix = search.StartsWith("#") ? '#' : '@';
+				
+			return prefix + base.TranslateAutoCompleteText (selection, search) + ' ';
 		}
 	}
 }
