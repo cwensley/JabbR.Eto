@@ -100,5 +100,6 @@
     <Content Include="Styles\default\channel.html" />
     <Content Include="Styles\default\channel.js" />
     <Content Include="JabbREto.icns" />
+    <Content Include="Styles\default\jquery.blockUI.js" />
   </ItemGroup>
 </Project>

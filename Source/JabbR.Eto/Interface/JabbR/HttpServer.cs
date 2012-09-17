@@ -19,7 +19,6 @@ namespace JabbR.Eto.Interface.JabbR
 			this.Request = request;
 		}
 	}
-		
 	
 	public class HttpServer : IDisposable
 	{
@@ -39,10 +38,10 @@ namespace JabbR.Eto.Interface.JabbR
 	
 		public event EventHandler<HttpServerRequestEventArgs> ReceivedRequest;
 		
-		protected virtual void OnReceivedRequest(HttpServerRequestEventArgs e)
+		protected virtual void OnReceivedRequest (HttpServerRequestEventArgs e)
 		{
 			if (ReceivedRequest != null)
-				ReceivedRequest(this, e);
+				ReceivedRequest (this, e);
 		}
 
 		public HttpServer ()
@@ -60,8 +59,7 @@ namespace JabbR.Eto.Interface.JabbR
 					this.port = port;
 					listener.BeginGetContext (ListenerCallback, null);
 					return;
-				}
-				catch (Exception x) {
+				} catch (Exception x) {
 					listener.Close ();
 					Debug.WriteLine ("HttpListener.Start:\n" + x);
 				}
@@ -72,8 +70,8 @@ namespace JabbR.Eto.Interface.JabbR
 
 		void ListenerCallback (IAsyncResult ar)
 		{
-            if (!listener.IsListening)
-                return;
+			if (!listener.IsListening)
+				return;
 
 			listener.BeginGetContext (ListenerCallback, null);
 
@@ -131,8 +129,7 @@ namespace JabbR.Eto.Interface.JabbR
 				byte[] entity = null;
 				try {
 					entity = File.ReadAllBytes (filePath);
-				}
-				catch (Exception x) {
+				} catch (Exception x) {
 					Debug.WriteLine ("Exception reading file: " + filePath + "\n" + x);
 
 					response.StatusCode = (int)HttpStatusCode.InternalServerError; // 500
@@ -195,8 +192,7 @@ namespace JabbR.Eto.Interface.JabbR
 
 				response.OutputStream.Write (entity, 0, entity.Length);
 				response.Close ();
-			}
-			catch (Exception x) {
+			} catch (Exception x) {
 				Debug.WriteLine ("Unexpected exception. Aborting...\n" + x);
 
 				response.Abort ();
@@ -206,7 +202,7 @@ namespace JabbR.Eto.Interface.JabbR
 		public void Dispose ()
 		{
 			if (listener != null) {
-                listener.Stop();
+				listener.Stop ();
 				listener.Close ();
 			}
 		}
