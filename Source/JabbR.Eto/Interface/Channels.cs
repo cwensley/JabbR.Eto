@@ -219,6 +219,7 @@ namespace JabbR.Eto.Interface
 			args.Actions.Add (new Actions.NextUnreadChannel (this));
 			args.Actions.Add (new Actions.PrevChannel (this));
 			args.Actions.Add (new Actions.PrevUnreadChannel (this));
+			args.Actions.Add (new Actions.LeaveChannel (this));
 			
 			var channel = args.Menu.FindAddSubMenu ("&Channel", 800);
 			
@@ -226,6 +227,9 @@ namespace JabbR.Eto.Interface
 			channel.Actions.Add (Actions.NextUnreadChannel.ActionID);
 			channel.Actions.Add (Actions.PrevChannel.ActionID);
 			channel.Actions.Add (Actions.PrevUnreadChannel.ActionID);
+			channel.Actions.AddSeparator ();
+			
+			channel.Actions.Add (Actions.LeaveChannel.ActionID);
 		}
 	}
 

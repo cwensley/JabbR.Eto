@@ -149,6 +149,8 @@ namespace JabbR.Eto.Model
 		public abstract void SendMessage (string command);
 
 		public abstract void JoinChannel (string name);
+
+		public abstract void LeaveChannel (string name);
 		
 		public virtual void GenerateEditControls (DynamicLayout layout)
 		{

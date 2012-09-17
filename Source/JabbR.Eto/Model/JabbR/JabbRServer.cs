@@ -89,7 +89,7 @@ namespace JabbR.Eto.Model.JabbR
 					}
 					this.CurrentUser = new JabbRUser (task2.Result);
 					
-					InitializeChannels(logOnInfo.Rooms.Select (r => new JabbRChannel (this, r)));
+					InitializeChannels (logOnInfo.Rooms.Select (r => new JabbRChannel (this, r)));
 					
 					Application.Instance.Invoke (delegate {
 						OnConnected (EventArgs.Empty);
@@ -100,11 +100,11 @@ namespace JabbR.Eto.Model.JabbR
 		
 		public override Task<IEnumerable<ChannelInfo>> GetChannelList ()
 		{
-			var resultTask = new TaskCompletionSource<IEnumerable<ChannelInfo>>();
+			var resultTask = new TaskCompletionSource<IEnumerable<ChannelInfo>> ();
 			
-			var getRooms = Client.GetRooms();
+			var getRooms = Client.GetRooms ();
 			getRooms.ContinueWith (task => {
-				var channels =task.Result.Select (r => {
+				var channels = task.Result.Select (r => {
 					return new ChannelInfo (this) {
 						Name = r.Name,
 						Topic = r.Topic,
@@ -112,23 +112,23 @@ namespace JabbR.Eto.Model.JabbR
 						UserCount = r.Count
 					};
 				});
-				resultTask.TrySetResult(channels);
+				resultTask.TrySetResult (channels);
 				channelListTask = resultTask.Task;
 			}, TaskContinuationOptions.OnlyOnRanToCompletion);
 			
 			getRooms.ContinueWith (task => {
-				resultTask.TrySetException(task.Exception);
+				resultTask.TrySetException (task.Exception);
 			}, TaskContinuationOptions.OnlyOnFaulted);
 			
 			return resultTask.Task;
 		}
 		
 		Task<IEnumerable<ChannelInfo>> channelListTask;
+
 		public override Task<IEnumerable<ChannelInfo>> GetCachedChannels ()
 		{
 			return channelListTask ?? GetChannelList ();
 		}
-		
 		
 		public override void Disconnect ()
 		{
@@ -273,7 +273,12 @@ namespace JabbR.Eto.Model.JabbR
 		
 		public override void JoinChannel (string name)
 		{
-			Client.JoinRoom(name);
+			Client.JoinRoom (name);
+		}
+		
+		public override void LeaveChannel (string name)
+		{
+			Client.LeaveRoom (name);
 		}
 		
 		public override void GenerateEditControls (DynamicLayout layout)

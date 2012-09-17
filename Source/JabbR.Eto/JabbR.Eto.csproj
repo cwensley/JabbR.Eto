@@ -83,6 +83,7 @@
     <Compile Include="Model\ChannelInfo.cs" />
     <Compile Include="Interface\Dialogs\SelectChannel.cs" />
     <Compile Include="Actions\ChannelList.cs" />
+    <Compile Include="Actions\LeaveChannel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
