@@ -106,6 +106,10 @@ pre.multiline {
 	padding: 5px;
 }
 
+.collapsible_box img {
+	max-width: 100%;
+}
+
 h3.collapsible_title {
 	color: #1C94C4;
 	font-size: smaller;
