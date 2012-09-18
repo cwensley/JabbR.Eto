@@ -106,6 +106,11 @@ namespace JabbR.Eto.Interface
 			else
 				LastHistoryMessageId = null;
 		}
+
+		public void SetTopic (string topic)
+		{
+			SendCommand("setTopic", topic);
+		}
 		
 		public void AddNotification (NotificationMessage notification)
 		{

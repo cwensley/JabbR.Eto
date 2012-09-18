@@ -11,6 +11,12 @@ namespace JabbR.Eto.Model
 
 		public string Content { get; set; }
 
+		public NotificationMessage(DateTimeOffset when, string content, params object[] values)
+			: this (when, string.Format (content, values))
+		{
+			
+		}
+			
 		public NotificationMessage(DateTimeOffset when, string content)
 		{
 			this.When = when.ToLocalTime ();

@@ -25,23 +25,43 @@ li.clearfix {
 	visibility: hidden;
 }
 
-.messages {
+html, body, #container {
+	height: 100%;
+}
+
+#topic {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 100;
+	/*
+	background-color: #DFE3E9;
+	background-color: rgba(223, 227, 233, 0.95);
+	*/
+	background-color: #EDEDED;
+	background-color: rgba(237, 237, 237, 0.95);
+	border-bottom: 1px solid #BBB;
+	padding: 10px;
+	display: none;
+}
+
+#container {
+	width: 100%;
+	overflow: auto;
+	overflow-y: scroll;
+}
+
+#messages {
 	margin: 0;
 	padding: 0;
 	background-color: white;
 	width: 100%;
-	overflow: hidden;
-	overflow-y: visible;
-	max-height: 100%;
-	min-width: 300px;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	position: absolute;
+	min-width: 600px;
 }
 
 /* all types */
-.messages li {
+#messages li {
 	list-style-type: none;
 	position: relative;
 	padding: 0;
@@ -49,7 +69,7 @@ li.clearfix {
 	border-bottom: 1px solid #EEE;
 }
 
-.messages > li > .content {
+#messages > li > .content {
 	display: block;
 	margin-right: 95px;
 	padding: 5px;

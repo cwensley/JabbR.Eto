@@ -32,6 +32,13 @@ namespace JabbR.Eto.Interface
 			this.Channel.OwnerRemoved += HandleOwnerRemoved;
 			this.Channel.UsersActivityChanged += HandleUsersActivityChanged;
 			this.Channel.MessageContent += HandleMessageContent;
+			this.Channel.TopicChanged += HandleTopicChanged;
+		}
+
+		void HandleTopicChanged (object sender, EventArgs e)
+		{
+			AddNotification (new NotificationMessage(DateTimeOffset.Now, "Topic was changed to \"{0}\".", Channel.Topic));
+			SetTopic (Channel.Topic);
 		}
 
 		void HandleMessageContent (object sender, MessageContentEventArgs e)
@@ -119,21 +126,12 @@ namespace JabbR.Eto.Interface
 			if (this.Channel != null) {
 				this.Channel.GetChannelInfo ().ContinueWith(task => {
 					var channel = task.Result;
+					SetTopic (this.Channel.Topic);
 					Application.Instance.AsyncInvoke (delegate {
 						UserList.SetUsers (channel.Users);
 					});
 					AddHistory (channel.GetHistory (string.Empty));
 				});
-				// load up initial room history
-				/*Info.Client.GetRoomInfo (this.RoomName).ContinueWith (task => {
-					var room = task.Result;
-					Application.Instance.AsyncInvoke (delegate {
-						UserList.SetUsers (room.Users.Select (r => ), room.Owners);
-					}
-					);
-					
-				}, TaskContinuationOptions.OnlyOnRanToCompletion);*/
-				
 			}
 		}
 
@@ -166,17 +164,17 @@ namespace JabbR.Eto.Interface
 				if (task == null) {
 					var taskSource = new TaskCompletionSource<IEnumerable<string>> ();
 					task = taskSource.Task;
-				if (search.StartsWith ("#")) {
-					search = search.TrimStart ('#');
-					var getChannels = Channel.Server.GetCachedChannels ();
-					getChannels.ContinueWith (t => {
+					if (search.StartsWith ("#")) {
+						search = search.TrimStart ('#');
+						var getChannels = Channel.Server.GetCachedChannels ();
+						getChannels.ContinueWith (t => {
 							taskSource.TrySetResult (t.Result.Where (r => r.Name.StartsWith (search, StringComparison.CurrentCultureIgnoreCase)).Select (r => r.Name));
-					}, TaskContinuationOptions.OnlyOnRanToCompletion);
-					getChannels.ContinueWith (t => {
+						}, TaskContinuationOptions.OnlyOnRanToCompletion);
+						getChannels.ContinueWith (t => {
 							taskSource.TrySetException (t.Exception);
-					}, TaskContinuationOptions.OnlyOnFaulted);
-				} else {
-					search = search.TrimStart ('@');
+						}, TaskContinuationOptions.OnlyOnFaulted);
+					} else {
+						search = search.TrimStart ('@');
 						taskSource.TrySetResult (Channel.Users.Where (r => r.Name.StartsWith (search, StringComparison.CurrentCultureIgnoreCase)).Select (r => r.Name));
 					}
 				}

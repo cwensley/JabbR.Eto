@@ -26,9 +26,16 @@ namespace JabbR.Eto.Model.JabbR
 			: base(server)
 		{
 			if (room != null) {
-				this.Name = room.Name;
-				this.Id = room.Name;
+				Set (room);
 			}
+		}
+
+		void Set (jab.Models.Room room)
+		{
+			this.Name = room.Name;
+			this.Id = room.Name;
+			this.Topic = room.Topic;
+			this.Private = room.Private;
 		}
 		
 		public override IEnumerable<ChannelMessage> GetHistory (string fromId)
@@ -84,6 +91,7 @@ namespace JabbR.Eto.Model.JabbR
 				if (task.Exception != null)
 					tcs.SetException (task.Exception);
 				else {
+					Set (task.Result);
 					this.users.Clear ();
 					this.users.AddRange (from r in task.Result.Users select new JabbRUser (r));
 					this.owners.Clear ();
@@ -162,6 +170,12 @@ namespace JabbR.Eto.Model.JabbR
 					Server.Client.SetTyping (this.Name);
 				}
 			}
+		}
+
+		public void SetNewTopic (string topic)
+		{
+			this.Topic = topic;
+			OnTopicChanged (EventArgs.Empty);
 		}
 	}
 }

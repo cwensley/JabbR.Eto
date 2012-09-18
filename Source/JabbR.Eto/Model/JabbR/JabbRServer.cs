@@ -196,6 +196,10 @@ namespace JabbR.Eto.Model.JabbR
 			};
 			Client.TopicChanged += (room) => {
 				Console.WriteLine ("TopicChanged, Room: {0}, Topic: {1}", room.Name, room.Topic);
+				var channel = GetChannel (room.Name);
+				if (channel != null) {
+					channel.SetNewTopic (room.Topic);
+				}
 			};
 			Client.UserActivityChanged += (user) => {
 				Console.WriteLine ("UserActivityChanged, User: {0}, Activity: {1}", user.Name, user.Active);

@@ -1,22 +1,44 @@
 
 var JabbREto = (function(){
 
+	var v = { }
+
+	function saveScroll(element) {
+		var pos = (element) ? $(element).position().top + $(element).height() : v.scrollContainer.scrollTop ();
+		return {
+			pos: pos,
+			element: $(element)
+		};
+	}
+	
+	function restoreScroll(scroll)
+	{
+		var pos = scroll.pos;
+		if (scroll.element) {
+			pos = v.scrollContainer.scrollTop() + scroll.element.position().top - scroll.pos + scroll.element.height();
+		}
+		v.scrollContainer.scrollTop(pos);
+	}
+
+
 	function collapseNotifications($notification) {
 		var $notifications = $notification.prevUntil(':not(.notification)');
 		if ($notifications.length > 3) {
 			
+			var scroll = saveScroll ($notification);
 			$notifications.hide().find('.collapse-info').remove();
 			
 			$notification.find('.collapse-info')
 				.text('(plus ' + $notifications.length + ' hidden... click to expand)')
 				.removeClass('notification-collapse')
 				.addClass('notification-expand');
+			restoreScroll (scroll);
 		}
 	}
 	
 	function expandNotifications($notification) {
 		var $notifications = $notification.prevUntil(':not(.notification)');
-		//var topBefore = $notification.position().top;
+		var scroll = saveScroll ($notification);
 		
 		$notification.find('.collapse-info')
 			.text('(click to collapse)')
@@ -24,42 +46,45 @@ var JabbREto = (function(){
 			.addClass('notification-collapse');
 		
 		$notifications.show();
-		/*var room = getCurrentRoomElements(),
-			topAfter = $notification.position().top,
-			scrollTop = room.messages.scrollTop();
 		
-		// make sure last notification is visible
-		room.messages.scrollTop(scrollTop + topAfter - topBefore + $notification.height());
-		*/
+		restoreScroll (scroll);
 	}
 
 var pub = {
-	messages: [],
 	initialize: function() {
-		var m = $('#messages');
+		v.messages = $('#messages');
+		/**/
+		v.scrollContainer = $('#container');
+		v.scrollContent = v.messages;
+		/**
+		v.scrollContainer = $(window);
+		v.scrollContent = $(document);
+		/**/
 
-		m.on('click', '.collapsible_title', function() {
+		v.messages.on('click', '.collapsible_title', function(event) {
 			var box = $(this).next('.collapsible_box');
 			box.toggleClass('hidden');
 		});
 		
-		m.on('click', '.notification-expand', function(event) {
+		v.messages.on('click', '.notification-expand', function(event) {
 			event.preventDefault();
 			var notification = $(this).closest('.notification');
 			expandNotifications(notification);
 		});
-		m.on('click', '.notification-collapse', function(event) {
+		v.messages.on('click', '.notification-collapse', function(event) {
 			event.preventDefault();
 			var notification = $(this).closest('.notification');
 			collapseNotifications(notification);
+		});
+		
+		v.messages.on('load', 'img', function(event) {
+			this.scrollToBottom();
 		});
 	},
 	addHistory: function(messages) {
 		var msgContent = this.translateContent($( "#template-message").render(messages));
 
-		var m = $('#messages');
-		this.messages.splice(0, messages);
-		m.prepend(msgContent);
+		v.messages.prepend(msgContent);
 		this.scrollToBottom();
 	},
 	addMessage: function(msg) {
@@ -70,10 +95,10 @@ var pub = {
 			existingMsg.replaceWith(msgContent);
 			return;
 		}
-		
-		var m = $('#messages');
-		this.messages.splice(this.messages.length, msg);
-		m.append(msgContent);
+		$(msgContent).find('img').one('load', function () {
+			pub.scrollToBottom ();
+		});
+		v.messages.append(msgContent);
 		this.scrollToBottom();
 	},
 	
@@ -89,9 +114,7 @@ var pub = {
 	addNotification: function(msg) {
 		var msgContent = $(this.translateContent($( "#template-notification").render(msg)));
 
-		var m = $('#messages');
-		this.messages.splice(this.messages.length, msg);
-		m.append(msgContent);
+		v.messages.append(msgContent);
 		collapseNotifications(msgContent);
 		this.scrollToBottom();
 	},
@@ -99,9 +122,7 @@ var pub = {
 	addMeMessage: function(msg) {
 		var msgContent = this.translateContent($( "#template-memessage").render(msg));
 
-		var m = $('#messages');
-		this.messages.splice(this.messages.length, msg);
-		m.append(msgContent);
+		v.messages.append(msgContent);
 		this.scrollToBottom();
 	},
 	
@@ -110,19 +131,34 @@ var pub = {
 		
 		var existingMsg = $('#m-' + msg.Id);
 		if (existingMsg.length > 0) {
-			var msgContent = this.translateContent(msg.Content);
-			existingMsg.append(msgContent);
-			
-			var m = $('#messages');
-			var scrollHeight = m.prop('scrollHeight');
+			var scrollHeight = v.scrollContent.prop('scrollHeight');
 			var pos = existingMsg.position();
-			if (pos.top + existingMsg.outerHeight() < scrollHeight + m.outerHeight())
+			var shouldScroll = (pos.top + existingMsg.outerHeight() < scrollHeight + v.scrollContainer.outerHeight());
+			
+			var msgContent = this.translateContent(msg.Content);
+			if (shouldScroll) {
+				$(msgContent).find('img').one('load', function () {
+					pub.scrollToBottom ();
+				});
+			}
+			existingMsg.append(msgContent);
+
+			if (shouldScroll)
 				this.scrollToBottom();
 		}
 	},
 	scrollToBottom: function() {
-		var m = $('#messages');
-		m.prop({ scrollTop: m.prop('scrollHeight') });
+		v.scrollContainer.scrollTop (v.scrollContent.height());
+	},
+	setTopic: function(topic) {
+		var $topic = $('#topic');
+		var height = 0;
+		if (topic && topic.length) {
+			$topic.html(topic).show();
+			height = $topic.outerHeight();
+		}
+		else $topic.hide();
+		v.messages.css('padding-top', height + 'px');
 	}
 };
 

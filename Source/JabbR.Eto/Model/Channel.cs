@@ -18,6 +18,8 @@ namespace JabbR.Eto.Model
 		
 		public string Topic { get; set; }
 		
+		public bool Private { get; set; }
+		
 		public int UnreadCount { get; protected set; }
 		
 		public Server Server { get; private set; }
@@ -107,6 +109,14 @@ namespace JabbR.Eto.Model
 		{
 			if (MessageContent != null)
 				MessageContent (this, e);
+		}
+		
+		public event EventHandler<EventArgs> TopicChanged;
+		
+		protected virtual void OnTopicChanged (EventArgs e)
+		{
+			if (TopicChanged != null)
+				TopicChanged (this, e);
 		}
 		
 		
