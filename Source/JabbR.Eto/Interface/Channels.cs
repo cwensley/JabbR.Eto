@@ -73,7 +73,7 @@ namespace JabbR.Eto.Interface
 			}
 		}
 
-		public void Initialize ()
+		public new void Initialize ()
 		{
 			servers.Clear ();
 			servers.AddRange (Config.Servers);

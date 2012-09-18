@@ -12,8 +12,6 @@ namespace JabbR.Eto.Interface
 {
 	public class ChannelSection : MessageSection
 	{
-		string autocompleteText;
-		
 		public UserList UserList { get; private set; }
 		
 		public Channel Channel { get; private set; }
@@ -152,7 +150,6 @@ namespace JabbR.Eto.Interface
 		
 		public override void UserTyping ()
 		{
-			autocompleteText = null;
 			Channel.UserTyping ();
 		}
 		

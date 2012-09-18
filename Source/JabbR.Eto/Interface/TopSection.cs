@@ -31,11 +31,12 @@ namespace JabbR.Eto.Interface
 			SetChannel ();
 		}
 
-		public void Initialize ()
+		public new void Initialize ()
 		{
 			Channels.Initialize ();
 			SetChannel ();
-		}		
+		}
+
 		void HandleChannelChanged (object sender, EventArgs e)
 		{
 			SetChannel ();

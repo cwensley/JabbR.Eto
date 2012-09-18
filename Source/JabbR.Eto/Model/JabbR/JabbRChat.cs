@@ -34,7 +34,8 @@ namespace JabbR.Eto.Model.JabbR
 			this.user = user;
 			this.Name = user.Name;
 			this.Id = "chat_" + user.Id;
-			UnreadCount = 1;
+			if (!string.IsNullOrEmpty (initialMessage))
+				UnreadCount = 1;
 		}
 
 		public override IEnumerable<ChannelMessage> GetHistory (string fromId)
@@ -62,34 +63,10 @@ namespace JabbR.Eto.Model.JabbR
 			}, TaskContinuationOptions.OnlyOnFaulted);
 		}
 		
-		internal void TriggerActivityChanged (IEnumerable<jab.Models.User> users)
-		{
-			var theusers = from r in users select new JabbRUser (r);
-			OnUsersActivityChanged (new UsersEventArgs (theusers, DateTimeOffset.Now));
-		}
-				
-		internal void TriggerMessage (jab.Models.Message message)
-		{
-			UnreadCount ++;
-			OnMessageReceived (new MessageEventArgs (new ChannelMessage (message.Id, message.When, message.User.Name, message.Content)));
-		}
-		
-		internal void TriggerMessageContent (string messageId, string content)
-		{
-			OnMessageContent (new MessageContentEventArgs (new MessageContent (messageId, content)));
-		}
-		
-		
 		public override void UserTyping ()
 		{
 		}
 
-		public void SetNewTopic (string topic)
-		{
-			this.Topic = topic;
-			OnTopicChanged (EventArgs.Empty);
-		}
-	
 		public override int CompareTo (object obj)
 		{
 			if (obj is JabbRRoom) return 1;

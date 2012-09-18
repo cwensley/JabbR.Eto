@@ -78,7 +78,7 @@ namespace JabbR.Eto
 			this.Menu = args.Menu.GenerateMenuBar ();
 		}
 		
-		public void Initialize ()
+		public new void Initialize ()
 		{
 			top.Initialize();
 		}

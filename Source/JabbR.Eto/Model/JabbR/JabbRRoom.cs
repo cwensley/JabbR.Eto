@@ -76,11 +76,6 @@ namespace JabbR.Eto.Model.JabbR
 			OnMeMessageReceived (new MeMessageEventArgs (new MeMessage (DateTimeOffset.Now, user, content)));
 		}		
 		
-		internal void TriggerClosed (EventArgs e)
-		{
-			OnClosed (e);
-		}
-		
 		internal void TriggerUserLeft (UserEventArgs e)
 		{
 			OnUserLeft (e);
