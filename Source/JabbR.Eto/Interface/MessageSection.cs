@@ -201,6 +201,11 @@ namespace JabbR.Eto.Interface
 				
 				var searchPrefix = existingPrefix ?? prefix;
 				var task = GetAutoCompleteNames (searchPrefix);
+				if (task == null) {
+					ResetAutoComplete ();
+					return false;
+				}
+				
 				task.ContinueWith (t => {
 					if (!autoCompleting)
 						return;

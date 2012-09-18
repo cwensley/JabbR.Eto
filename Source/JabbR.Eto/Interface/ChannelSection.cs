@@ -161,23 +161,28 @@ namespace JabbR.Eto.Interface
 		}
 		protected override Task<IEnumerable<string>> GetAutoCompleteNames (string search)
 		{
-			var task = new TaskCompletionSource<IEnumerable<string>> ();
 			if (Channel.Server.IsConnected) {
+				var task = base.GetAutoCompleteNames (search);
+				if (task == null) {
+					var taskSource = new TaskCompletionSource<IEnumerable<string>> ();
+					task = taskSource.Task;
 				if (search.StartsWith ("#")) {
 					search = search.TrimStart ('#');
 					var getChannels = Channel.Server.GetCachedChannels ();
 					getChannels.ContinueWith (t => {
-						task.TrySetResult (t.Result.Where (r => r.Name.StartsWith (search, StringComparison.CurrentCultureIgnoreCase)).Select (r => r.Name));
+							taskSource.TrySetResult (t.Result.Where (r => r.Name.StartsWith (search, StringComparison.CurrentCultureIgnoreCase)).Select (r => r.Name));
 					}, TaskContinuationOptions.OnlyOnRanToCompletion);
 					getChannels.ContinueWith (t => {
-						task.TrySetException (t.Exception);
+							taskSource.TrySetException (t.Exception);
 					}, TaskContinuationOptions.OnlyOnFaulted);
 				} else {
 					search = search.TrimStart ('@');
-					task.TrySetResult (Channel.Users.Where (r => r.Name.StartsWith (search, StringComparison.CurrentCultureIgnoreCase)).Select (r => r.Name));
+						taskSource.TrySetResult (Channel.Users.Where (r => r.Name.StartsWith (search, StringComparison.CurrentCultureIgnoreCase)).Select (r => r.Name));
+					}
 				}
+				return task;
 			}
-			return task.Task;
+			return null;
 		}
 		
 		public override string TranslateAutoCompleteText (string selection, string search)
