@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -43,7 +43,6 @@
     <Compile Include="Model\ChannelMessage.cs" />
     <Compile Include="Model\NotificationMessage.cs" />
     <Compile Include="Model\MessageContent.cs" />
-    <Compile Include="Model\MeMessage.cs" />
     <Compile Include="Model\Server.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Actions\AddServer.cs" />
@@ -84,6 +83,10 @@
     <Compile Include="Interface\Dialogs\SelectChannel.cs" />
     <Compile Include="Actions\ChannelList.cs" />
     <Compile Include="Actions\LeaveChannel.cs" />
+    <Compile Include="Model\JabbR\JabbRChat.cs" />
+    <Compile Include="Model\JabbR\JabbRRoom.cs" />
+    <Compile Include="Model\MeMessage.cs" />
+    <Compile Include="Model\MeMessageEventArgs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -104,18 +107,15 @@
       <Name>SignalR.Client.Mono</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Actions\" />
-    <Folder Include="Model\" />
-    <Folder Include="Model\JabbR\" />
-    <Folder Include="Interface\" />
-    <Folder Include="Interface\JabbR\" />
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Resources\server.png" />
     <EmbeddedResource Include="Resources\JabbREto.ico" />
-    <EmbeddedResource Include="Interface\JabbR\AuthHtml.html" />
+    <EmbeddedResource Include="Interface\JabbR\AuthHtml.html">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interface\JabbR\GetUserID.html" />
+    <EmbeddedResource Include="Resources\room.png" />
+    <EmbeddedResource Include="Resources\chat.png" />
   </ItemGroup>
 </Project>

@@ -20,26 +20,28 @@ namespace JabbR.Eto.Interface
 		string lastAutoComplete;
 		int? autoCompleteIndex;
 		bool autoCompleting;
+		bool initialized;
 
 		protected string LastHistoryMessageId { get; private set; }
 		
 		protected WebView History { get; private set; }
+
 		protected TextBox TextEntry { get; private set; }
 		
-		public virtual bool SupportsAutoComplete
-		{
+		public virtual bool SupportsAutoComplete {
 			get { return false; }
 		}
 		
 		struct DelayedCommand
 		{
 			public string Command { get; set; }
+
 			public object Parameter { get; set; }
 		}
 		
 		List<DelayedCommand> delayedCommands;
 		bool loaded;
-		object sync = new object();
+		object sync = new object ();
 		
 		public MessageSection ()
 		{
@@ -51,10 +53,17 @@ namespace JabbR.Eto.Interface
 		public override void OnPreLoad (EventArgs e)
 		{
 			base.OnPreLoad (e);
-			CreateLayout(this);
 		}
 		
-		protected virtual void CreateLayout(Container container)
+		public new void Initialize ()
+		{
+			if (initialized)
+				return;
+			initialized = true;
+			CreateLayout (this);
+		}
+		
+		protected virtual void CreateLayout (Container container)
 		{
 			var layout = new DynamicLayout (container, Padding.Empty, Size.Empty);
 			layout.Add (History, yscale: true);
@@ -64,7 +73,7 @@ namespace JabbR.Eto.Interface
 		void HandleDocumentLoading (object sender, WebViewLoadingEventArgs e)
 		{
 			e.Cancel = true;
-			Console.WriteLine ("Opening {0}", e.Uri.AbsoluteUri);
+			Debug.WriteLine ("Opening {0}", e.Uri.AbsoluteUri);
 			Application.Instance.Open (e.Uri.AbsoluteUri);
 		}
 		
@@ -81,27 +90,38 @@ namespace JabbR.Eto.Interface
 
 		protected virtual void HandleDocumentLoaded (object sender, WebViewLoadedEventArgs e)
 		{
-			lock (sync) {
-				loaded = true;
-				if (delayedCommands != null) {
-					foreach (var command in delayedCommands) {
-						SendCommandInternal (command.Command, command.Parameter);
+			ReplayDelayedCommands ();
+		}
+		
+		protected void ReplayDelayedCommands ()
+		{
+			if (!loaded)
+				lock (sync) {
+					if (!loaded) {
+						loaded = true;
+						if (delayedCommands != null) {
+							foreach (var command in delayedCommands) {
+								Console.WriteLine ("Replayed delayed command {0}, {1}", command.Command, command.Parameter);
+								SendCommandInternal (command.Command, command.Parameter);
+							}
+							delayedCommands = null;
+						}
+						
+					
+						History.DocumentLoading += HandleDocumentLoading;
 					}
-					delayedCommands = null;
 				}
-				History.DocumentLoading += HandleDocumentLoading;
-			}
 		}
 		
 		public void AddMessage (ChannelMessage message)
 		{
-			SendCommand("addMessage", message);
+			SendCommand ("addMessage", message);
 		}
 		
 		public void AddHistory (IEnumerable<ChannelMessage> messages)
 		{
-			SendCommand("addHistory", messages);
-			if (messages.Count() > 0)
+			SendCommand ("addHistory", messages);
+			if (messages.Count () > 0)
 				LastHistoryMessageId = messages.First ().Id;
 			else
 				LastHistoryMessageId = null;
@@ -109,29 +129,31 @@ namespace JabbR.Eto.Interface
 
 		public void SetTopic (string topic)
 		{
-			SendCommand("setTopic", topic);
+			SendCommand ("setTopic", topic);
 		}
 		
 		public void AddNotification (NotificationMessage notification)
 		{
-			SendCommand("addNotification", notification);
+			SendCommand ("addNotification", notification);
 		}
 
 		public void AddMessageContent (MessageContent content)
 		{
-			SendCommand("addMessageContent", content);
+			SendCommand ("addMessageContent", content);
 		}
 		
-		protected void SendCommand(string command, object param)
+		protected void SendCommand (string command, object param)
 		{
 			lock (sync) { 
 				if (!loaded) {
-					if (delayedCommands == null) delayedCommands = new List<DelayedCommand>();
+					if (delayedCommands == null)
+						delayedCommands = new List<DelayedCommand> ();
 					delayedCommands.Add (new DelayedCommand { Command = command, Parameter = param });
+					Console.WriteLine ("Added delayed command {0}, {1}", command, param);
 					return;
 				}
 			}
-			SendCommandInternal(command, param);
+			SendCommandInternal (command, param);
 		}
 		
 		void SendCommandInternal (string command, object param)
@@ -177,7 +199,7 @@ namespace JabbR.Eto.Interface
 			TextEntry.Focus ();
 		}
 		
-		protected virtual Task<IEnumerable<string>> GetAutoCompleteNames(string search)
+		protected virtual Task<IEnumerable<string>> GetAutoCompleteNames (string search)
 		{
 			return null;
 		}

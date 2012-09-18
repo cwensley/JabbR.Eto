@@ -97,12 +97,12 @@ namespace JabbR.Eto.Model
 				GlobalMessageReceived (this, e);
 		}
 
-		public event EventHandler<ChannelEventArgs> OpenChannel;
+		public event EventHandler<OpenChannelEventArgs> OpenChannel;
 		
-		protected virtual void OnOpenChannel (ChannelEventArgs e)
+		protected virtual void OnOpenChannel (OpenChannelEventArgs e)
 		{
 			channels.Add (e.Channel);
-			channels.Sort ((x,y) => x.Name.CompareTo (y.Name));
+			channels.Sort ((x,y) => x.CompareTo (y));
 			
 			if (OpenChannel != null)
 				OpenChannel (this, e);
@@ -150,7 +150,7 @@ namespace JabbR.Eto.Model
 
 		public abstract void JoinChannel (string name);
 
-		public abstract void LeaveChannel (string name);
+		public abstract void LeaveChannel (Channel channel);
 		
 		public virtual void GenerateEditControls (DynamicLayout layout)
 		{

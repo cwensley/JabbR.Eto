@@ -19,7 +19,7 @@ namespace JabbR.Eto.Mac
 			
 			public override bool IsGroupItem (NSOutlineView outlineView, NSObject item)
 			{
-				return outlineView.LevelForItem(item) == 0;
+				return item != null && outlineView.LevelForItem(item) == 0;
 			}
 			
 			public override void WillDisplayCell (NSOutlineView outlineView, NSObject cell, NSTableColumn tableColumn, NSObject item)
@@ -45,7 +45,7 @@ namespace JabbR.Eto.Mac
 		static void Main (string[] args)
 		{
 #if DEBUG
-			//Debug.Listeners.Add (new ConsoleTraceListener());
+			Debug.Listeners.Add (new ConsoleTraceListener());
 #endif
 			Generator.Detect.AddAssembly(typeof(MainClass).Assembly);
 

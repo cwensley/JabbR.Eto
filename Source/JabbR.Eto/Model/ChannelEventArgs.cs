@@ -20,5 +20,16 @@ namespace JabbR.Eto.Model
 		}
 	}
 
+	public class OpenChannelEventArgs : ChannelEventArgs
+	{
+		public bool ShouldFocus { get; private set; }
+		
+		public OpenChannelEventArgs(Channel channel, bool shouldFocus)
+			: base (channel)
+		{
+			this.ShouldFocus = shouldFocus;
+		}
+	}
+	
 }
 

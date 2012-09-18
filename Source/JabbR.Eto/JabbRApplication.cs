@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using JabbR.Eto.Model;
 using System.Net;
+using System.Diagnostics;
 
 namespace JabbR.Eto
 {
@@ -60,7 +61,7 @@ namespace JabbR.Eto
 				}
 				catch (Exception ex) {
 					// don't worry about not loading
-					Console.WriteLine ("Error loading settings: {0}", ex);
+					Debug.WriteLine ("Error loading settings: {0}", ex);
 				}
 			}
 			form.Initialize();

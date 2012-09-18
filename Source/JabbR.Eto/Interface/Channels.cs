@@ -79,9 +79,11 @@ namespace JabbR.Eto.Interface
 			servers.AddRange (Config.Servers);
 			foreach (var server in Config.Servers) {
 				server.Connected += HandleConnected;
+				server.Disconnected += HandleDisconnected;
 				server.OpenChannel += HandleOpenChannel;
 				server.CloseChannel += HandleCloseChannel;
 				server.ChannelInfoChanged += HandleChannelInfoChanged;
+				CreateSection (server);
 			}
 			Update (true);
 			channelList.SelectedItem = servers.FirstOrDefault ();
@@ -89,16 +91,24 @@ namespace JabbR.Eto.Interface
 
 		void UnRegister (Server server)
 		{
+			server.Disconnected -= HandleDisconnected;
 			server.Connected -= HandleConnected;
 			server.OpenChannel -= HandleOpenChannel;
 			server.CloseChannel -= HandleCloseChannel;
 			server.ChannelInfoChanged -= HandleChannelInfoChanged;
 		}
 
+		void HandleDisconnected (object sender, EventArgs e)
+		{
+			Update (false);
+		}
+		
 		void HandleCloseChannel (object sender, ChannelEventArgs e)
 		{
 			Application.Instance.AsyncInvoke (delegate {
 				var isSelected = channelList.SelectedItem == e.Channel;
+				Control control;
+				sectionCache.TryRemove(e.Channel.Id, out control);
 				
 				Update ();
 				if (isSelected)
@@ -106,13 +116,14 @@ namespace JabbR.Eto.Interface
 			});
 		}
 
-		void HandleOpenChannel (object sender, ChannelEventArgs e)
+		void HandleOpenChannel (object sender, OpenChannelEventArgs e)
 		{
 			Application.Instance.AsyncInvoke (delegate {
-				
+				CreateSection (e.Channel);
 				Update ();
-				
-				channelList.SelectedItem = e.Channel;
+		
+				if (e.ShouldFocus)
+					channelList.SelectedItem = e.Channel;
 			});
 		}
 		
@@ -126,6 +137,10 @@ namespace JabbR.Eto.Interface
 		
 		void HandleConnected (object sender, EventArgs e)
 		{
+			var server = sender as Server;
+			foreach (var channel in server.Channels) {
+				CreateSection (channel);
+			}
 			Update ();
 		}
 		
@@ -142,22 +157,26 @@ namespace JabbR.Eto.Interface
 			Update (true);
 		}
 		
-		public Control CreateChannel ()
+		public Control CreateSection ()
 		{
 			if (channelList.SelectedItem == null)
 				return null;
+			return CreateSection(channelList.SelectedItem);
+		}
+		
+		Control CreateSection(ITreeItem channel)
+		{
+			var generator = channel as ISectionGenerator;
 			
-			var item = channelList.SelectedItem;
-			var generator = item as ISectionGenerator;
-
 			Control section = null;
-			if (generator != null && !sectionCache.TryGetValue (item.Key, out section)) {
+			if (generator != null && !sectionCache.TryGetValue (channel.Key, out section)) {
 				section = generator.GenerateSection ();
-				while (!sectionCache.TryAdd (item.Key, section)) {
+				
+				while (!sectionCache.TryAdd (channel.Key, section)) {
 					Thread.Sleep (0);
 				}
 			}
-
+			
 			return section;
 		}
 		

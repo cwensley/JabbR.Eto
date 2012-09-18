@@ -3,6 +3,7 @@ using Eto.Forms;
 using JabbR.Eto.Interface.Dialogs;
 using JabbR.Eto.Interface;
 using JabbR.Eto.Model;
+using System.Diagnostics;
 
 namespace JabbR.Eto.Actions
 {
@@ -37,7 +38,7 @@ namespace JabbR.Eto.Actions
 				using (var dialog = new ServerDialog(server)) {
 					var ret = dialog.ShowDialog (Application.Instance.MainForm);
 					if (ret == DialogResult.Ok) {
-						Console.WriteLine ("Edited Server, Name: {0}", server.Name);
+						Debug.WriteLine ("Edited Server, Name: {0}", server.Name);
 					}
 				}
 			}

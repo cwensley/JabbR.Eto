@@ -33,6 +33,12 @@ namespace JabbR.Eto.Interface
 			this.Channel.UsersActivityChanged += HandleUsersActivityChanged;
 			this.Channel.MessageContent += HandleMessageContent;
 			this.Channel.TopicChanged += HandleTopicChanged;
+			this.Channel.MeMessageReceived += HandleMeMessageReceived;
+		}
+
+		void HandleMeMessageReceived (object sender, MeMessageEventArgs e)
+		{
+			MeMessage (e.Message);
 		}
 
 		void HandleTopicChanged (object sender, EventArgs e)
@@ -101,6 +107,7 @@ namespace JabbR.Eto.Interface
 
 		void HandleMessageReceived (object sender, MessageEventArgs e)
 		{
+			Console.WriteLine ("Adding message {0}", e.Message.Content);
 			AddMessage (e.Message);
 		}
 
@@ -122,26 +129,25 @@ namespace JabbR.Eto.Interface
 
 		protected override void HandleDocumentLoaded (object sender, WebViewLoadedEventArgs e)
 		{
-			base.HandleDocumentLoaded (sender, e);
 			if (this.Channel != null) {
-				this.Channel.GetChannelInfo ().ContinueWith(task => {
-					var channel = task.Result;
-					SetTopic (this.Channel.Topic);
-					Application.Instance.AsyncInvoke (delegate {
-						UserList.SetUsers (channel.Users);
+				var getChannelInfo = this.Channel.GetChannelInfo ();
+				if (getChannelInfo != null) {
+					getChannelInfo.ContinueWith(task => {
+						var channel = task.Result;
+						SetTopic (this.Channel.Topic);
+						Application.Instance.AsyncInvoke (delegate {
+							UserList.SetUsers (channel.Users);
+						});
+						AddHistory (channel.GetHistory (string.Empty));
+						ReplayDelayedCommands ();
 					});
-					AddHistory (channel.GetHistory (string.Empty));
-				});
+				}
 			}
 		}
 
-		public void MeMessage (string user, string content)
+		public void MeMessage (MeMessage message)
 		{
-			SendCommand("addMeMessage", new MeMessage (
-				DateTimeOffset.Now, 
-				user,
-				content
-			));
+			SendCommand("addMeMessage", message);
 		}
 		
 		public override void UserTyping ()

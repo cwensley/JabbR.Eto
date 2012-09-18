@@ -32,7 +32,7 @@ namespace JabbR.Eto.Actions
 		{
 			var channel = channels.SelectedChannel;
 			if (channel != null) {
-				channel.Server.LeaveChannel (channel.Name);
+				channel.Server.LeaveChannel (channel);
 			}
 		}
 	}

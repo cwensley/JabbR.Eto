@@ -10,7 +10,7 @@ using Eto.Drawing;
 
 namespace JabbR.Eto.Model
 {
-	public abstract class Channel : ISectionGenerator, IXmlReadable, ITreeItem
+	public abstract class Channel : ISectionGenerator, IXmlReadable, ITreeItem, IComparable
 	{
 		public string Id { get; set; }
 		
@@ -38,9 +38,9 @@ namespace JabbR.Eto.Model
 				MessageReceived (this, e);
 		}
 		
-		public event EventHandler<MessageEventArgs> MeMessageReceived;
+		public event EventHandler<MeMessageEventArgs> MeMessageReceived;
 
-		protected virtual void OnMeMessageReceived (MessageEventArgs e)
+		protected virtual void OnMeMessageReceived (MeMessageEventArgs e)
 		{
 			if (MeMessageReceived != null)
 				MeMessageReceived (this, e);
@@ -130,7 +130,9 @@ namespace JabbR.Eto.Model
 
 		public virtual Control GenerateSection ()
 		{
-			return new ChannelSection(this);
+			var section = new ChannelSection(this);
+			section.Initialize ();
+			return section;
 		}
 		
 		public abstract Task<Channel> GetChannelInfo();
@@ -167,9 +169,16 @@ namespace JabbR.Eto.Model
 			}
 		}
 		
-		string IListItem.Key { get { return this.Id; } }
+		public virtual int CompareTo (object obj)
+		{
+			var alt = obj as Channel;
+			if (alt == null) return -1;
+			else return this.Name.CompareTo (alt.Name);
+		}
+
+		public virtual Image Image { get { return null; } }
 		
-		Image IImageListItem.Image { get { return null; } }
+		string IListItem.Key { get { return this.Id; } }
 		
 		bool ITreeItem<ITreeItem>.Expanded { get; set; }
 

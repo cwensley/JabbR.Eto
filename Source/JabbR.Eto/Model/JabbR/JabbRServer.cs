@@ -14,6 +14,7 @@ using System.Net;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace JabbR.Eto.Model.JabbR
 {
@@ -71,7 +72,7 @@ namespace JabbR.Eto.Model.JabbR
 				
 			connect.ContinueWith (task => {
 				if (!task.IsCompleted || task.Exception != null) {
-					Console.WriteLine ("Error: {0}", task.Exception);
+					Debug.WriteLine ("Error: {0}", task.Exception);
 					Application.Instance.Invoke (delegate {
 						var ex = task.Exception; //.GetBaseException();
 						MessageBox.Show (Application.Instance.MainForm, string.Format ("Unable to log in. Reason: {0}", ex.Message));
@@ -82,14 +83,14 @@ namespace JabbR.Eto.Model.JabbR
 
 				Client.GetUserInfo ().ContinueWith (task2 => {
 					if (task2.Exception != null) {
-						Console.WriteLine ("Failed to login {0}", task2.Exception);
+						Debug.WriteLine ("Failed to login {0}", task2.Exception);
 						Application.Instance.Invoke (delegate {
 							// failed!
 						});
 					}
 					this.CurrentUser = new JabbRUser (task2.Result);
 					
-					InitializeChannels (logOnInfo.Rooms.Select (r => new JabbRChannel (this, r)));
+					InitializeChannels (logOnInfo.Rooms.Select (r => new JabbRRoom (this, r)));
 					
 					Application.Instance.Invoke (delegate {
 						OnConnected (EventArgs.Empty);
@@ -136,85 +137,103 @@ namespace JabbR.Eto.Model.JabbR
 				Client.Disconnect ();
 		}
 		
-		public JabbRChannel GetChannel (string roomName)
+		public JabbRRoom GetRoom (string roomName)
 		{
-			return Channels.OfType<JabbRChannel> ().FirstOrDefault (r => r.Name == roomName);
+			return Channels.OfType<JabbRRoom> ().FirstOrDefault (r => r.Name == roomName);
 		}
 
+		public JabbRChat GetChat (string userName)
+		{
+			var id = "chat_" + userName;
+			return Channels.OfType<JabbRChat> ().FirstOrDefault (r => r.Id == id);
+		}
+		
 		void HookupEvents ()
 		{
 			Client.MessageReceived += (message, room) => {
-				Console.WriteLine ("MessageReceived, Room: {3}, When: {0}, User: {1}, Content: {2}", message.When, message.User.Name, message.Content, room);
-				var channel = GetChannel (room);
+				Debug.WriteLine ("MessageReceived, Room: {3}, When: {0}, User: {1}, Content: {2}", message.When, message.User.Name, message.Content, room);
+				var channel = GetRoom (room);
 				if (channel != null) {
-					channel.TriggerMessage (message);
+					channel.TriggerMessage (new ChannelMessage (message.Id, message.When, message.User.Name, message.Content));
 					OnChannelInfoChanged (new ChannelEventArgs (channel));
 				}
 			};
 			Client.Disconnected += () => {
-				Console.WriteLine ("Disconnected");
+				Debug.WriteLine ("Disconnected");
 				OnDisconnected (EventArgs.Empty);
 			};
 			Client.FlagChanged += (user, flag) => {
-				Console.WriteLine ("FlagChanged, User: {0}, Flag: {1}", user.Name, flag);
+				Debug.WriteLine ("FlagChanged, User: {0}, Flag: {1}", user.Name, flag);
 			};
 			Client.GravatarChanged += (user, gravatar) => {
-				Console.WriteLine ("GravatarChanged, User: {0}, Gravatar: {1}", user.Name, gravatar);
+				Debug.WriteLine ("GravatarChanged, User: {0}, Gravatar: {1}", user.Name, gravatar);
 			};
 			Client.Kicked += (user) => {
-				Console.WriteLine ("Kicked: {0}", user);
+				Debug.WriteLine ("Kicked: {0}", user);
 			};
 			Client.LoggedOut += (rooms) => {
-				Console.WriteLine ("LoggedOut, Rooms: {0}", string.Join (", ", rooms));
+				Debug.WriteLine ("LoggedOut, Rooms: {0}", string.Join (", ", rooms));
 			};
 			Client.MeMessageReceived += (user, content, room) => {
-				Console.WriteLine ("MeMessageReceived, User: {0}, Content: {1}, Room: {2}", user, content, room);
-				var channel = GetChannel (room);
+				Debug.WriteLine ("MeMessageReceived, User: {0}, Content: {1}, Room: {2}", user, content, room);
+				var channel = GetRoom (room);
 				if (channel != null) 
 					channel.TriggerMeMessage (user, content);
 			};
 			Client.NoteChanged += (user, room) => {
-				Console.WriteLine ("NoteChanged, User: {0}, Room: {1}", user.Name, room);
+				Debug.WriteLine ("NoteChanged, User: {0}, Room: {1}", user.Name, room);
 			};
 			Client.OwnerAdded += (user, room) => {
-				Console.WriteLine ("OwnerAdded, User: {0}, Room: {1}", user.Name, room);
-				var channel = GetChannel (room);
+				Debug.WriteLine ("OwnerAdded, User: {0}, Room: {1}", user.Name, room);
+				var channel = GetRoom (room);
 				if (channel != null) 
 					channel.TriggerOwnerAdded (user);
 			};
 			Client.OwnerRemoved += (user, room) => {
-				Console.WriteLine ("OwnerRemoved, User: {0}, Room: {1}", user.Name, room);
-				var channel = GetChannel (room);
+				Debug.WriteLine ("OwnerRemoved, User: {0}, Room: {1}", user.Name, room);
+				var channel = GetRoom (room);
 				if (channel != null) 
 					channel.TriggerOwnerRemoved (user);
 			};
 			Client.PrivateMessage += (from, to, message) => {
-				Console.WriteLine ("PrivateMessage, From: {0}, To: {1}, Message: {2} ", from, to, message);
+				Debug.WriteLine ("PrivateMessage, From: {0}, To: {1}, Message: {2} ", from, to, message);
+				
+				var user = from == this.CurrentUser.Name ? to : from;
+				var chat = GetChat (user);
+				if (chat == null) {
+					Console.WriteLine ("Blah!!");
+					chat = new JabbRChat(this, new JabbRUser(user) { Active = true }, message);
+					OnOpenChannel (new OpenChannelEventArgs (chat, false));
+				}
+				else {
+					chat.TriggerMessage (new ChannelMessage(Guid.NewGuid ().ToString (), DateTimeOffset.Now, from, message));
+					OnChannelInfoChanged (new ChannelEventArgs (chat));
+				}
 			};
 			Client.RoomCountChanged += (room, count) => {
-				Console.WriteLine ("RoomCountChanged, Room: {0}, Count: {1}", room.Name, count);
+				Debug.WriteLine ("RoomCountChanged, Room: {0}, Count: {1}", room.Name, count);
 			};
 			Client.TopicChanged += (room) => {
-				Console.WriteLine ("TopicChanged, Room: {0}, Topic: {1}", room.Name, room.Topic);
-				var channel = GetChannel (room.Name);
+				Debug.WriteLine ("TopicChanged, Room: {0}, Topic: {1}", room.Name, room.Topic);
+				var channel = GetRoom (room.Name);
 				if (channel != null) {
 					channel.SetNewTopic (room.Topic);
 				}
 			};
 			Client.UserActivityChanged += (user) => {
-				Console.WriteLine ("UserActivityChanged, User: {0}, Activity: {1}", user.Name, user.Active);
+				Debug.WriteLine ("UserActivityChanged, User: {0}, Activity: {1}", user.Name, user.Active);
 				foreach (var channel in this.Channels.OfType<JabbRChannel>()) {
 					channel.TriggerActivityChanged (new jab.Models.User[] { user });
 				}
 			};
 			Client.JoinedRoom += (room) => {
-				Console.WriteLine ("JoinedRoom, Room: {0}", room.Name);
-				var channel = new JabbRChannel (this, room);
-				OnOpenChannel (new ChannelEventArgs (channel));
+				Debug.WriteLine ("JoinedRoom, Room: {0}", room.Name);
+				var channel = new JabbRRoom (this, room);
+				OnOpenChannel (new OpenChannelEventArgs (channel, true));
 			};
 			Client.UserJoined += (user, room, isOwner) => {
-				Console.WriteLine ("UserJoined, User: {0}, Room: {1}", user.Name, room);
-				var channel = GetChannel (room);
+				Debug.WriteLine ("UserJoined, User: {0}, Room: {1}", user.Name, room);
+				var channel = GetRoom (room);
 				if (channel != null) {
 					if (isOwner)
 						channel.TriggerOwnerAdded (user);
@@ -222,8 +241,8 @@ namespace JabbR.Eto.Model.JabbR
 				}
 			};
 			Client.UserLeft += (user, room) => {
-				Console.WriteLine ("UserLeft, User: {0}, Room: {1}", user.Name, room);
-				var channel = GetChannel (room);
+				Debug.WriteLine ("UserLeft, User: {0}, Room: {1}", user.Name, room);
+				var channel = GetRoom (room);
 				if (channel != null) {
 					if (user.Name == CurrentJabbRUser.Name) {
 						channel.TriggerClosed (EventArgs.Empty);
@@ -234,26 +253,26 @@ namespace JabbR.Eto.Model.JabbR
 				}
 			};
 			Client.UsernameChanged += (oldUserName, user, room) => {
-				Console.WriteLine ("UsernameChanged, OldUserName: {0}, NewUserName: {1}, Room: {2}", oldUserName, user.Name, room);
+				Debug.WriteLine ("UsernameChanged, OldUserName: {0}, NewUserName: {1}, Room: {2}", oldUserName, user.Name, room);
 			};
 			Client.UsersInactive += (users) => {
-				Console.WriteLine ("UsersInactive, Users: {0}", string.Join (", ", users.Select (r => r.Name)));
+				Debug.WriteLine ("UsersInactive, Users: {0}", string.Join (", ", users.Select (r => r.Name)));
 				foreach (var channel in this.Channels.OfType<JabbRChannel>()) {
 					channel.TriggerActivityChanged (users);
 				}
 			};
 			Client.UserTyping += (user, room) => {
-				Console.WriteLine ("UserTyping, User: {0}, Room: {1}", user.Name, room);	
+				Debug.WriteLine ("UserTyping, User: {0}, Room: {1}", user.Name, room);	
 			};
 			Client.AddMessageContent += (messageId, content, room) => {
-				Console.WriteLine ("AddMessageContent, Id: {0}, Room: {1}, Content: {2}", messageId, room, content);
-				var channel = GetChannel (room);
+				Debug.WriteLine ("AddMessageContent, Id: {0}, Room: {1}, Content: {2}", messageId, room, content);
+				var channel = GetRoom (room);
 				if (channel != null)
 					channel.TriggerMessageContent (messageId, content);
 			};
 			/*
 			Client.StateChanged += (status) => {
-				Console.WriteLine ("StateChange, Old State: {0}, New State: {1}", status.OldState, status.NewState);
+				Debug.WriteLine ("StateChange, Old State: {0}, New State: {1}", status.OldState, status.NewState);
 			};
 			*/
 		}
@@ -280,9 +299,15 @@ namespace JabbR.Eto.Model.JabbR
 			Client.JoinRoom (name);
 		}
 		
-		public override void LeaveChannel (string name)
+		public override void LeaveChannel (Channel channel)
 		{
-			Client.LeaveRoom (name);
+			var chat = channel as JabbRChat;
+			if (chat != null) {
+				chat.TriggerClosed (EventArgs.Empty);
+				OnCloseChannel (new ChannelEventArgs (chat));
+			}
+			else
+				Client.LeaveRoom (channel.Id);
 		}
 		
 		public override void GenerateEditControls (DynamicLayout layout)
@@ -293,7 +318,9 @@ namespace JabbR.Eto.Model.JabbR
 		
 		public override Control GenerateSection ()
 		{
-			return new Interface.ServerSection (this);
+			var section = new Interface.ServerSection (this);
+			section.Initialize ();
+			return section;
 		}
 		
 		const string Salt = "JabbR.Eto";

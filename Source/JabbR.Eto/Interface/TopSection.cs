@@ -43,7 +43,7 @@ namespace JabbR.Eto.Interface
 
 		void SetChannel ()
 		{
-			var channel = Channels.CreateChannel ();
+			var channel = Channels.CreateSection ();
 			splitter.Panel2 = channel;
 			if (channel != null)
 				channel.Focus ();
