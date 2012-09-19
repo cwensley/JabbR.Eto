@@ -74,6 +74,14 @@
       <Link>Styles\default\jsrender.js</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\JabbR.Eto.Mac\Styles\default\loader%402x.gif">
+      <Link>Styles\default\loader%402x.gif</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\JabbR.Eto.Mac\Styles\default\loader.gif">
+      <Link>Styles\default\loader.gif</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\JabbR.Eto.Mac\Styles\default\styles.css">
       <Link>Styles\default\styles.css</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

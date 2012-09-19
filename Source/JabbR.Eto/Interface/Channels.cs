@@ -52,11 +52,9 @@ namespace JabbR.Eto.Interface
 			channelList = new TreeView { Style = "channelList" };
 			channelList.DataStore = servers;
 			channelList.SelectionChanged += (sender, e) => {
-				Application.Instance.Invoke (delegate {
-					OnChannelChanged (e);
-				});
+				OnChannelChanged (e);
 			};
-			channelList.MouseDoubleClick += HandleMouseDoubleClick;
+			channelList.Activated += HandleActivated;
 			
 			config.ServerAdded += HandleServerAdded;
 			config.ServerRemoved += HandleServerRemoved;
@@ -64,9 +62,9 @@ namespace JabbR.Eto.Interface
 			this.AddDockedControl (channelList);
 		}
 
-		void HandleMouseDoubleClick (object sender, MouseEventArgs e)
+		void HandleActivated (object sender, TreeViewItemEventArgs e)
 		{
-			var server = this.SelectedServer;
+			var server = e.Item as Server;
 			if (server != null) {
 				var action = new Actions.EditServer (this, Config);
 				action.Activate ();
@@ -129,10 +127,13 @@ namespace JabbR.Eto.Interface
 		
 		void HandleChannelInfoChanged (object sender, ChannelEventArgs e)
 		{
-			if (SelectedChannel == e.Channel) {
-				e.Channel.ResetUnreadCount();
-			}
-			Update ();
+			Application.Instance.AsyncInvoke (delegate
+			{
+				if (SelectedChannel == e.Channel) {
+					e.Channel.ResetUnreadCount ();
+				}
+				Update ();
+			});
 		}
 		
 		void HandleConnected (object sender, EventArgs e)

@@ -12,6 +12,10 @@ namespace JabbR.Eto.Interface
 {
 	public class ChannelSection : MessageSection
 	{
+		string historyId;
+		bool noHistory;
+		bool retrievingHistory;
+		
 		public UserList UserList { get; private set; }
 		
 		public Channel Channel { get; private set; }
@@ -105,7 +109,6 @@ namespace JabbR.Eto.Interface
 
 		void HandleMessageReceived (object sender, MessageEventArgs e)
 		{
-			Console.WriteLine ("Adding message {0}", e.Message.Content);
 			AddMessage (e.Message);
 		}
 
@@ -128,6 +131,7 @@ namespace JabbR.Eto.Interface
 		protected override void HandleDocumentLoaded (object sender, WebViewLoadedEventArgs e)
 		{
 			if (this.Channel != null) {
+				BeginLoad ();
 				var getChannelInfo = this.Channel.GetChannelInfo ();
 				if (getChannelInfo != null) {
 					getChannelInfo.ContinueWith(task => {
@@ -136,11 +140,56 @@ namespace JabbR.Eto.Interface
 						Application.Instance.AsyncInvoke (delegate {
 							UserList.SetUsers (channel.Users);
 						});
-						AddHistory (channel.GetHistory (string.Empty));
-						ReplayDelayedCommands ();
-					});
+						var getHistory = channel.GetHistory (LastHistoryMessageId);
+						getHistory.ContinueWith(getHistoryResult => {
+							StartLive ();
+							AddHistory (getHistoryResult.Result, true);
+							ReplayDelayedCommands ();
+							FinishLoad ();
+						}, TaskContinuationOptions.OnlyOnRanToCompletion);
+					}, TaskContinuationOptions.OnlyOnRanToCompletion);
 				}
 			}
+		}
+
+		protected override void HandleAction (WebViewLoadingEventArgs e)
+		{
+			base.HandleAction (e);
+			if (e.Uri.PathAndQuery.EndsWith ("?load_history")) {
+				LoadHistory ();
+			}
+			
+		}
+		
+		protected void LoadHistory ()
+		{
+			if (!noHistory && !retrievingHistory) {
+				retrievingHistory = true;
+				var history = Channel.GetHistory (LastHistoryMessageId);
+				history.ContinueWith (t => {
+					if (t.Result != null) {
+						noHistory = !t.Result.Any ();
+						AddHistory (t.Result);
+					}
+					FinishLoad ();
+					retrievingHistory = false;
+				}, TaskContinuationOptions.OnlyOnRanToCompletion);
+				
+				history.ContinueWith (t => {
+					FinishLoad ();
+					retrievingHistory = false;
+				}, TaskContinuationOptions.OnlyOnFaulted);
+			}
+		}
+		
+		protected void BeginLoad ()
+		{
+			SendCommandDirect ("beginLoad");
+		}
+		
+		protected void FinishLoad ()
+		{
+			SendCommandDirect ("finishLoad", noHistory);
 		}
 
 		public void MeMessage (MeMessage message)

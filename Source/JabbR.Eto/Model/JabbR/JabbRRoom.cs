@@ -43,12 +43,24 @@ namespace JabbR.Eto.Model.JabbR
 			this.Private = room.Private;
 		}
 		
-		public override IEnumerable<ChannelMessage> GetHistory (string fromId)
+		public override Task<IEnumerable<ChannelMessage>> GetHistory (string fromId)
 		{
+			var task = new TaskCompletionSource<IEnumerable<ChannelMessage>>();
 			if (string.IsNullOrEmpty (fromId)) {
-				return recentMessages ?? Enumerable.Empty<ChannelMessage> ();
+				task.SetResult (recentMessages ?? Enumerable.Empty<ChannelMessage> ());
 			}
-			return Enumerable.Empty<ChannelMessage> ();
+			else {
+				var previous = Server.Client.GetPreviousMessages (fromId);
+				previous.ContinueWith (t => {
+					task.TrySetResult (from m in t.Result select CreateMessage(m));
+				}, TaskContinuationOptions.OnlyOnRanToCompletion);
+				
+				previous.ContinueWith (t => {
+					task.TrySetException (t.Exception);
+				}, TaskContinuationOptions.OnlyOnFaulted);
+			}
+			
+			return task.Task;
 		}
 		
 		public override void SendMessage (string command)
@@ -88,6 +100,11 @@ namespace JabbR.Eto.Model.JabbR
 			this.users.Add (e.User);
 		}
 		
+		ChannelMessage CreateMessage(jab.Models.Message m)
+		{
+			return new ChannelMessage (m.Id, m.When, m.User.Name, m.Content);
+		}
+		
 		public override Task<Channel> GetChannelInfo ()
 		{
 			var tcs = new TaskCompletionSource<Channel> ();
@@ -100,7 +117,7 @@ namespace JabbR.Eto.Model.JabbR
 					this.users.AddRange (from r in task.Result.Users select new JabbRUser (r));
 					this.owners.Clear ();
 					this.owners.AddRange (task.Result.Owners);
-					this.recentMessages = (from m in task.Result.RecentMessages select new ChannelMessage (m.Id, m.When, m.User.Name, m.Content)).ToArray ();
+					this.recentMessages = (from m in task.Result.RecentMessages select CreateMessage(m)).ToArray ();
 					tcs.SetResult (this);
 				}
 			});

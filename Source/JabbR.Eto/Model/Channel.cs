@@ -28,7 +28,7 @@ namespace JabbR.Eto.Model
 		
 		public abstract IEnumerable<string> Owners { get; }
 		
-		public abstract IEnumerable<ChannelMessage> GetHistory(string fromId);
+		public abstract Task<IEnumerable<ChannelMessage>> GetHistory(string fromId);
 		
 		public event EventHandler<MessageEventArgs> MessageReceived;
 

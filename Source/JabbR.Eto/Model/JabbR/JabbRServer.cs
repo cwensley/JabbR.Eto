@@ -199,13 +199,8 @@ namespace JabbR.Eto.Model.JabbR
 				Debug.WriteLine ("PrivateMessage, From: {0}, To: {1}, Message: {2} ", from, to, message);
 				
 				var user = from == this.CurrentUser.Name ? to : from;
-				var chat = GetChat (user);
-				if (chat == null) {
-					Console.WriteLine ("Blah!!");
-					chat = new JabbRChat(this, new JabbRUser(user) { Active = true }, message);
-					OnOpenChannel (new OpenChannelEventArgs (chat, false));
-				}
-				else {
+				JabbRChat chat;
+				if (InternalStartChat (new JabbRUser(user) { Active = true }, false, message, out chat)) {
 					chat.TriggerMessage (new ChannelMessage(Guid.NewGuid ().ToString (), DateTimeOffset.Now, from, message));
 					OnChannelInfoChanged (new ChannelEventArgs (chat));
 				}
@@ -308,6 +303,29 @@ namespace JabbR.Eto.Model.JabbR
 			}
 			else
 				Client.LeaveRoom (channel.Id);
+		}
+		
+		public override void StartChat (User user)
+		{
+			JabbRChat chat;
+			InternalStartChat(user, true, null, out chat);
+		}
+		
+		bool InternalStartChat (User user, bool shouldFocus, string initialMessage, out JabbRChat chat)
+		{
+			if (user.Id == this.CurrentUser.Id) {
+				chat = null;
+				return false;
+			}
+			
+			chat = GetChat (user.Name);
+			if (chat == null) {
+				chat = new JabbRChat(this, user, initialMessage);
+				OnOpenChannel (new OpenChannelEventArgs (chat, shouldFocus));
+				return false;
+			}
+			return true;
+			
 		}
 		
 		public override void GenerateEditControls (DynamicLayout layout)

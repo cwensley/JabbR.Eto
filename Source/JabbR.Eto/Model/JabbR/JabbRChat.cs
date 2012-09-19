@@ -38,11 +38,14 @@ namespace JabbR.Eto.Model.JabbR
 				UnreadCount = 1;
 		}
 
-		public override IEnumerable<ChannelMessage> GetHistory (string fromId)
+		public override Task<IEnumerable<ChannelMessage>> GetHistory (string fromId)
 		{
 			if (string.IsNullOrEmpty (fromId) && !string.IsNullOrEmpty (initialMessage)) {
-				yield return new ChannelMessage(Guid.NewGuid ().ToString (), DateTimeOffset.Now, user.Name, initialMessage);
+				var task = new TaskCompletionSource<IEnumerable<ChannelMessage>> ();
+				task.TrySetResult (new ChannelMessage[] { new ChannelMessage(Guid.NewGuid ().ToString (), DateTimeOffset.Now, user.Name, initialMessage) });
+				return task.Task;
 			}
+			return null;
 		}
 		
 		public override void SendMessage (string command)

@@ -36,7 +36,7 @@ namespace JabbR.Eto.Interface
 		{
 			public string Command { get; set; }
 
-			public object Parameter { get; set; }
+			public object[] Parameters { get; set; }
 		}
 		
 		List<DelayedCommand> delayedCommands;
@@ -69,12 +69,20 @@ namespace JabbR.Eto.Interface
 			layout.Add (History, yscale: true);
 			layout.Add (DockLayout.CreatePanel (TextEntry, new Padding (10)));
 		}
+		
+		protected virtual void HandleAction(WebViewLoadingEventArgs e)
+		{
+		}
 
 		void HandleDocumentLoading (object sender, WebViewLoadingEventArgs e)
 		{
 			e.Cancel = true;
-			Debug.WriteLine ("Opening {0}", e.Uri.AbsoluteUri);
-			Application.Instance.Open (e.Uri.AbsoluteUri);
+			if (e.Uri.IsFile || e.Uri.IsLoopback) {
+				HandleAction (e);
+			} else {
+				Debug.WriteLine ("Opening {0}", e.Uri.AbsoluteUri);
+				Application.Instance.Open (e.Uri.AbsoluteUri);
+			}
 		}
 		
 		public override void OnLoadComplete (EventArgs e)
@@ -93,38 +101,42 @@ namespace JabbR.Eto.Interface
 			ReplayDelayedCommands ();
 		}
 		
+		protected void StartLive ()
+		{
+			lock (sync) {
+				loaded = true;
+			}
+		}
+		
 		protected void ReplayDelayedCommands ()
 		{
-			if (!loaded)
-				lock (sync) {
-					if (!loaded) {
-						loaded = true;
-						if (delayedCommands != null) {
-							foreach (var command in delayedCommands) {
-								Console.WriteLine ("Replayed delayed command {0}, {1}", command.Command, command.Parameter);
-								SendCommandInternal (command.Command, command.Parameter);
-							}
-							delayedCommands = null;
-						}
-						
-					
-						History.DocumentLoading += HandleDocumentLoading;
+			lock (sync) {
+				if (delayedCommands != null) {
+					foreach (var command in delayedCommands) {
+						SendCommandDirect (command.Command, command.Parameters);
 					}
+					delayedCommands = null;
 				}
+				loaded = true;
+			}
+			
+		
+			History.DocumentLoading += HandleDocumentLoading;
 		}
 		
 		public void AddMessage (ChannelMessage message)
 		{
+			if (LastHistoryMessageId == null)
+				LastHistoryMessageId = message.Id;
 			SendCommand ("addMessage", message);
 		}
 		
-		public void AddHistory (IEnumerable<ChannelMessage> messages)
+		public void AddHistory (IEnumerable<ChannelMessage> messages, bool shouldScroll = false)
 		{
-			SendCommand ("addHistory", messages);
-			if (messages.Count () > 0)
-				LastHistoryMessageId = messages.First ().Id;
-			else
-				LastHistoryMessageId = null;
+			SendCommand ("addHistory", messages, shouldScroll);
+			var last = messages.FirstOrDefault ();
+			if (last != null)
+				LastHistoryMessageId = last.Id;
 		}
 
 		public void SetTopic (string topic)
@@ -142,24 +154,26 @@ namespace JabbR.Eto.Interface
 			SendCommand ("addMessageContent", content);
 		}
 		
-		protected void SendCommand (string command, object param)
+		protected void SendCommand (string command, params object[] parameters)
 		{
 			lock (sync) { 
 				if (!loaded) {
 					if (delayedCommands == null)
 						delayedCommands = new List<DelayedCommand> ();
-					delayedCommands.Add (new DelayedCommand { Command = command, Parameter = param });
-					Console.WriteLine ("Added delayed command {0}, {1}", command, param);
+					delayedCommands.Add (new DelayedCommand { Command = command, Parameters = parameters });
 					return;
 				}
 			}
-			SendCommandInternal (command, param);
+			SendCommandDirect (command, parameters);
 		}
 		
-		void SendCommandInternal (string command, object param)
+		protected void SendCommandDirect (string command, params object[] parameters)
 		{
-			var msgString = JsonConvert.SerializeObject (param);
-			var script = string.Format ("JabbREto.{0}({1});", command, msgString);
+			string[] vals = new string[parameters.Length];
+			for (int i = 0; i < parameters.Length; i++) {
+				vals[i] = JsonConvert.SerializeObject (parameters[i]);
+			}
+			var script = string.Format ("JabbREto.{0}({1});", command, string.Join (", ", vals));
 			Application.Instance.Invoke (() => {
 				History.ExecuteScript (script);
 			});

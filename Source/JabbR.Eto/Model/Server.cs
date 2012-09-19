@@ -161,6 +161,8 @@ namespace JabbR.Eto.Model
 			return null;
 		}
 		
+		public abstract void StartChat (User user);
+		
 		public abstract Task<IEnumerable<ChannelInfo>> GetChannelList ();
 		
 		public abstract Task<IEnumerable<ChannelInfo>> GetCachedChannels ();

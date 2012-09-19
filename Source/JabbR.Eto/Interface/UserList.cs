@@ -22,6 +22,7 @@ namespace JabbR.Eto.Interface
 			this.Channel = channel;
 			tree = new TreeView ();
 			tree.Style = "userList";
+			tree.Activated += HandleActivated;
 			
 			items = new TreeItemCollection ();
 			items.Add (owners = new TreeItem { Text = "Room Owners", Expanded = true });
@@ -36,10 +37,21 @@ namespace JabbR.Eto.Interface
 			
 			this.AddDockedControl (tree);
 		}
+
+		void HandleActivated (object sender, TreeViewItemEventArgs e)
+		{
+			var item = e.Item as TreeItem;
+			if (item != null) {
+				var user = item.Tag as User;
+				if (user != null) {
+					Channel.Server.StartChat (user);
+				}
+			}
+		}
 		
 		TreeItem CreateItem (User user)
 		{
-			return new TreeItem { Text = user.Name, Key = user.Name };
+			return new TreeItem { Text = user.Name, Key = user.Name, Tag = user };
 		}
 
 		public void OwnerAdded (User user)

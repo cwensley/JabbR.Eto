@@ -30,7 +30,7 @@ html, body, #container {
 }
 
 #topic {
-	position: absolute;
+	position: fixed;
 	top: 0;
 	left: 0;
 	right: 0;
@@ -48,8 +48,10 @@ html, body, #container {
 
 #container {
 	width: 100%;
+	/**
 	overflow: auto;
 	overflow-y: scroll;
+	**/
 }
 
 #messages {
@@ -57,11 +59,11 @@ html, body, #container {
 	padding: 0;
 	background-color: white;
 	width: 100%;
-	min-width: 600px;
+	min-width: 300px;
 }
 
 /* all types */
-#messages li {
+#messages li, #loader {
 	list-style-type: none;
 	position: relative;
 	padding: 0;
@@ -69,7 +71,7 @@ html, body, #container {
 	border-bottom: 1px solid #EEE;
 }
 
-#messages > li > .content {
+#messages > li > .content, #loader .content {
 	display: block;
 	margin-right: 95px;
 	padding: 5px;
@@ -145,4 +147,25 @@ h3.collapsible_title {
 	font-style: italic;
 	text-decoration: none;
 	color: #BBB;
+}
+
+#loader {
+	display: none;
+}
+
+#loader .icon {
+	background-image: url('loader.gif');
+	width: 16px; height: 16px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	padding: 5px;
+	float: left;
+}
+
+@media only screen and (-webkit-device-pixel-ratio: 2){
+	#loader .icon {
+		background-image: url('loader@2x.gif'); 
+		width: 16px; height: 16px;
+		background-size: 16px 16px; 
+	}
 }
