@@ -52,12 +52,20 @@ Windows:
 Status
 ------
 
-JabbR.Eto is in a very early state and is missing many features.
+JabbR.Eto is in a very early state and is missing many features or can be unstable.
 
-Currently you can log in (via username/password), view and /join channels, and chat in
-channels.
+Current features:
+
+* Sign in using social or username/password
+* Multiple servers
+* Channel listing
+* Private chats with other users
+* Shows all media and links
+* Collapsing notifications and media
+* Autocomplete user names and channel rooms
+* More!
 
 Contributing
 ------------
 
-You can help out by submitting missing features into the github, or fork the project and start coding!
+You can help out by submitting missing features, bugs or requests into github issues, or fork the project and start coding!
