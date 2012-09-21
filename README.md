@@ -20,7 +20,7 @@ OS X Screenshot
 ![OS X](http://cwensley.github.com/JabbR.Eto/images/screenshots/Main-OSX.png)
 
 Windows Screenshot
-![WPF](http://cwensley.github.com/JabbR.Eto/images/screenshots/Main-WPF.png)
+![WPF](http://cwensley.github.com/JabbR.Eto/images/screenshots/Main-MetroWPF.png)
 
 Ubuntu Screenshot
 ![WPF](http://cwensley.github.com/JabbR.Eto/images/screenshots/Main-Ubuntu.png)
