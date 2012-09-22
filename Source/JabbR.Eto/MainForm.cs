@@ -11,6 +11,7 @@ using JabbR.Eto.Model;
 using Newtonsoft.Json;
 using JabbR.Eto.Interface;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace JabbR.Eto
 {
@@ -81,6 +82,16 @@ namespace JabbR.Eto
 		public new void Initialize ()
 		{
 			top.Initialize();
+		}
+
+		public override void OnLoadComplete (EventArgs e)
+		{
+			base.OnLoadComplete (e);
+		}
+		
+		public override void OnShown (EventArgs e)
+		{
+			base.OnShown (e);
 		}
 
 		#region IXmlReadable implementation

@@ -10,6 +10,8 @@ namespace JabbR.Eto.Actions
 	{
 		public const string ActionID = "AddServer";
 		
+		public bool AutoConnect { get; set; }
+		
 		public AddServer ()
 		{
 			this.ID = ActionID;
@@ -26,6 +28,12 @@ namespace JabbR.Eto.Actions
 					Debug.WriteLine ("Added Server, Name: {0}", server.Name);
 					var config = JabbRApplication.Instance.Configuration;
 					config.AddServer (server);
+					JabbRApplication.Instance.SaveConfiguration ();
+					if (AutoConnect) {
+						Application.Instance.AsyncInvoke(delegate {
+							server.Connect ();
+						});
+					}
 				}
 			}
 			

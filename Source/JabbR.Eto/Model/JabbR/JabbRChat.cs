@@ -42,7 +42,7 @@ namespace JabbR.Eto.Model.JabbR
 		{
 			if (string.IsNullOrEmpty (fromId) && !string.IsNullOrEmpty (initialMessage)) {
 				var task = new TaskCompletionSource<IEnumerable<ChannelMessage>> ();
-				task.TrySetResult (new ChannelMessage[] { new ChannelMessage(Guid.NewGuid ().ToString (), DateTimeOffset.Now, user.Name, initialMessage) });
+				task.SetResult (new ChannelMessage[] { new ChannelMessage(Guid.NewGuid ().ToString (), DateTimeOffset.Now, user.Name, initialMessage) });
 				return task.Task;
 			}
 			return null;

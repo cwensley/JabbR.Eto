@@ -101,8 +101,10 @@ namespace JabbR.Eto.Model
 		
 		protected virtual void OnOpenChannel (OpenChannelEventArgs e)
 		{
-			channels.Add (e.Channel);
-			channels.Sort ((x,y) => x.CompareTo (y));
+			if (!channels.Contains (e.Channel)) {
+				channels.Add (e.Channel);
+				channels.Sort ((x,y) => x.CompareTo (y));
+			}
 			
 			if (OpenChannel != null)
 				OpenChannel (this, e);

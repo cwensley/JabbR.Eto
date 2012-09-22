@@ -7,41 +7,13 @@ using Eto;
 using Eto.Platform.Mac.Forms.Controls;
 using Eto.Platform.Mac.Forms;
 using System.Diagnostics;
+using MonoMac.Security;
+using MonoMac.WebKit;
 
 namespace JabbR.Eto.Mac
 {
 	class MainClass
 	{
-		
-		class MyDel : TreeViewHandler.EtoOutlineDelegate
-		{
-			public bool AllowGroupSelection { get; set; }
-			
-			public override bool IsGroupItem (NSOutlineView outlineView, NSObject item)
-			{
-				return item != null && outlineView.LevelForItem(item) == 0;
-			}
-			
-			public override void WillDisplayCell (NSOutlineView outlineView, NSObject cell, NSTableColumn tableColumn, NSObject item)
-			{
-				var textCell = cell as MacImageListItemCell;
-				if (textCell != null) {
-					textCell.UseTextShadow = true;
-					textCell.SetGroupItem (this.IsGroupItem (outlineView, item), outlineView, NSFont.SmallSystemFontSize, NSFont.SmallSystemFontSize);
-				}
-			}
-			
-			public override float GetRowHeight (NSOutlineView outlineView, NSObject item)
-			{
-				return 18;
-			}
-			
-			public override bool ShouldSelectItem (NSOutlineView outlineView, NSObject item)
-			{
-				return AllowGroupSelection || !IsGroupItem(outlineView, item);
-			}
-		}
-		
 		static void Main (string[] args)
 		{
 #if DEBUG
@@ -50,7 +22,7 @@ namespace JabbR.Eto.Mac
 			Generator.Detect.AddAssembly(typeof(MainClass).Assembly);
 
 			Style.Add<TreeViewHandler>("channelList", h => {
-				h.Control.Delegate = new MyDel { Handler = h, AllowGroupSelection = true };
+				h.Control.Delegate = new CustomTreeViewDelegate { Handler = h, AllowGroupSelection = true };
 				h.Control.SelectionHighlightStyle = NSTableViewSelectionHighlightStyle.SourceList;
 				h.Scroll.BorderType = NSBorderType.NoBorder;
 			});
@@ -64,18 +36,22 @@ namespace JabbR.Eto.Mac
 			});
 			
 			Style.Add<TreeViewHandler> ("userList", h => {
-				h.Control.Delegate = new MyDel { Handler = h };
+				h.Control.Delegate = new CustomTreeViewDelegate { Handler = h };
 				h.Control.SelectionHighlightStyle = NSTableViewSelectionHighlightStyle.SourceList;
 				h.Scroll.BorderType = NSBorderType.NoBorder;
 				
 			});
 			
-			
+			Style.Add<WebViewHandler> (null, h => {
+				h.Control.Preferences.UsesPageCache = false;
+			});
 			
 			var app = new JabbRApplication ();
 			app.Initialized += delegate {
+#if DEBUG
 				NSUserDefaults.StandardUserDefaults.SetBool (true, "WebKitDeveloperExtras");
 				NSUserDefaults.StandardUserDefaults.Synchronize();
+#endif
 			};
 			app.Run (args);
 		}

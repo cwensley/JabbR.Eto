@@ -65,7 +65,7 @@ var pub = {
 			if (!v.loading && v.scrollContainer.scrollTop() == 0) {
 				pub.beginLoad ();
 				/**/
-				window.location.search = '?load_history';
+				window.location.search = '?load-history';
 				/**
 				setTimeout(function() {
 				pub.addHistory([
@@ -117,12 +117,13 @@ var pub = {
 			var notification = $(this).closest('.notification');
 			collapseNotifications(notification);
 		});
-		
-		v.messages.on('load', 'img', function(event) {
-			this.scrollToBottom();
+		v.messages.on('click', 'a[href^="#/rooms/"]', function(event) {
+			event.preventDefault ();
+			var name = $(this).attr('href').substring(8);
+			window.location.search = '?join-room=' + name;
 		});
 	},
-	finishLoad: function(noMoreHistory) {
+	finishLoad: function() {
 		v.loading = false;
 		$('#loader').hide();
 	},
@@ -141,6 +142,10 @@ var pub = {
 		else
 			v.scrollContainer.scrollTop(lastMessage.position().top - oldPos);
 			
+		$(msgContent).find('img').on('load', function () {
+			v.scrollContainer.scrollTop(v.scrollContainer.scrollTop() + $(this).height());
+		});
+			
 	},
 	addMessage: function(msg) {
 		var msgContent = this.translateContent($( "#template-message").render(msg));
@@ -150,8 +155,9 @@ var pub = {
 			existingMsg.replaceWith(msgContent);
 			return;
 		}
-		$(msgContent).find('img').one('load', function () {
-			pub.scrollToBottom ();
+		$(msgContent).find('img').on('load', function () {
+			//alert('boo!' + $(this).height());
+			v.scrollContainer.scrollTop(v.scrollContainer.scrollTop() + $(this).height());
 		});
 		v.messages.append(msgContent);
 		this.scrollToBottom();
@@ -166,11 +172,12 @@ var pub = {
 		return content;
 	},
 	
-	addNotification: function(msg) {
+	addNotification: function(msg, allowCollapsing) {
 		var msgContent = $(this.translateContent($( "#template-notification").render(msg)));
 
 		v.messages.append(msgContent);
-		collapseNotifications(msgContent);
+		if (allowCollapsing)
+			collapseNotifications(msgContent);
 		this.scrollToBottom();
 	},
 
@@ -188,18 +195,23 @@ var pub = {
 		if (existingMsg.length > 0) {
 			var scrollHeight = v.scrollContent.prop('scrollHeight');
 			var pos = existingMsg.position();
-			var shouldScroll = (pos.top + existingMsg.outerHeight() < scrollHeight + v.scrollContainer.outerHeight());
+			//var shouldScroll = (pos.top + existingMsg.outerHeight() < scrollHeight + v.scrollContainer.outerHeight());
 			
 			var msgContent = this.translateContent(msg.Content);
+			$(msgContent).find('img').on('load', function () {
+				v.scrollContainer.scrollTop(v.scrollContainer.scrollTop() + $(this).height());
+			});
+			/**
 			if (shouldScroll) {
 				$(msgContent).find('img').one('load', function () {
 					pub.scrollToBottom ();
 				});
 			}
+			/**/
 			existingMsg.append(msgContent);
 
-			if (shouldScroll)
-				this.scrollToBottom();
+			/*if (shouldScroll)
+				this.scrollToBottom();*/
 		}
 	},
 	scrollToBottom: function() {

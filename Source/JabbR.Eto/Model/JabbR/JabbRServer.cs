@@ -92,9 +92,7 @@ namespace JabbR.Eto.Model.JabbR
 					
 					InitializeChannels (logOnInfo.Rooms.Select (r => new JabbRRoom (this, r)));
 					
-					Application.Instance.Invoke (delegate {
-						OnConnected (EventArgs.Empty);
-					});
+					OnConnected (EventArgs.Empty);
 				});
 			});
 		}
@@ -154,7 +152,7 @@ namespace JabbR.Eto.Model.JabbR
 				Debug.WriteLine ("MessageReceived, Room: {3}, When: {0}, User: {1}, Content: {2}", message.When, message.User.Name, message.Content, room);
 				var channel = GetRoom (room);
 				if (channel != null) {
-					channel.TriggerMessage (new ChannelMessage (message.Id, message.When, message.User.Name, message.Content));
+					channel.TriggerMessage (JabbRRoom.CreateMessage (message));
 					OnChannelInfoChanged (new ChannelEventArgs (channel));
 				}
 			};
@@ -223,7 +221,10 @@ namespace JabbR.Eto.Model.JabbR
 			};
 			Client.JoinedRoom += (room) => {
 				Debug.WriteLine ("JoinedRoom, Room: {0}", room.Name);
-				var channel = new JabbRRoom (this, room);
+				var channel = GetRoom (room.Name);
+				if (channel == null) {
+					channel = new JabbRRoom (this, room);
+				}
 				OnOpenChannel (new OpenChannelEventArgs (channel, true));
 			};
 			Client.UserJoined += (user, room, isOwner) => {
@@ -291,7 +292,11 @@ namespace JabbR.Eto.Model.JabbR
 		
 		public override void JoinChannel (string name)
 		{
-			Client.JoinRoom (name);
+			var room = GetRoom (name);
+			if (room == null)
+				Client.JoinRoom (name);
+			else
+				OnOpenChannel (new OpenChannelEventArgs(room, true));
 		}
 		
 		public override void LeaveChannel (Channel channel)
@@ -341,34 +346,17 @@ namespace JabbR.Eto.Model.JabbR
 			return section;
 		}
 		
-		const string Salt = "JabbR.Eto";
-		static byte[] saltBytes = Encoding.UTF8.GetBytes (Salt);
-		
 		public override void ReadXml (System.Xml.XmlElement element)
 		{
 			base.ReadXml (element);
 			this.UseSocialLogin = element.GetBoolAttribute ("useSocialLogin") ?? false;
 			this.Address = element.GetStringAttribute ("address");
 			if (this.UseSocialLogin) {
-				try {
-					var token = element.GetStringAttribute ("userId");
-					if (!string.IsNullOrEmpty (token))
-						this.UserId = Encoding.UTF8.GetString (ProtectedData.Unprotect (Convert.FromBase64String (token), saltBytes, DataProtectionScope.CurrentUser));
-				} catch {
-				}
+				
+				this.UserId = JabbRApplication.Instance.DecryptString(this.Address, this.Id, element.GetStringAttribute ("userId"));
 			} else {
-				try {
-					var userName = element.GetStringAttribute ("userName");
-					if (!string.IsNullOrEmpty (userName))
-						this.UserName = Encoding.UTF8.GetString (ProtectedData.Unprotect (Convert.FromBase64String (userName), saltBytes, DataProtectionScope.CurrentUser));
-				} catch {
-				}
-				try {
-					var password = element.GetStringAttribute ("password");
-					if (!string.IsNullOrEmpty (password))
-						this.Password = Encoding.UTF8.GetString (ProtectedData.Unprotect (Convert.FromBase64String (password), saltBytes, DataProtectionScope.CurrentUser));
-				} catch {
-				}
+				this.UserName = JabbRApplication.Instance.DecryptString(this.Address, this.Id + "_user", element.GetStringAttribute ("userName"));
+				this.Password = JabbRApplication.Instance.DecryptString(this.Address, this.Id + "_pass", element.GetStringAttribute ("password"));
 			}
 		}
 		
@@ -378,10 +366,10 @@ namespace JabbR.Eto.Model.JabbR
 			element.SetAttribute ("useSocialLogin", this.UseSocialLogin);
 			element.SetAttribute ("address", this.Address);
 			if (this.UseSocialLogin)
-				element.SetAttribute ("userId", Convert.ToBase64String (ProtectedData.Protect (Encoding.UTF8.GetBytes (this.UserId ?? string.Empty), saltBytes, DataProtectionScope.CurrentUser)));
+				element.SetAttribute ("userId", JabbRApplication.Instance.EncryptString (this.Address, this.Id, this.UserId));
 			else {
-				element.SetAttribute ("userName", Convert.ToBase64String (ProtectedData.Protect (Encoding.UTF8.GetBytes (this.UserName ?? string.Empty), saltBytes, DataProtectionScope.CurrentUser)));
-				element.SetAttribute ("password", Convert.ToBase64String (ProtectedData.Protect (Encoding.UTF8.GetBytes (this.Password ?? string.Empty), saltBytes, DataProtectionScope.CurrentUser)));
+				element.SetAttribute ("userName", JabbRApplication.Instance.EncryptString (this.Address, this.Id + "_user", this.UserName));
+				element.SetAttribute ("password", JabbRApplication.Instance.EncryptString (this.Address, this.Id + "_pass", this.Password));
 			}
 		}
 	}

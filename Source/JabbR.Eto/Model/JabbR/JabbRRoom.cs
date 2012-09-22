@@ -49,7 +49,12 @@ namespace JabbR.Eto.Model.JabbR
 			if (string.IsNullOrEmpty (fromId)) {
 				task.SetResult (recentMessages ?? Enumerable.Empty<ChannelMessage> ());
 			}
-			else {
+			else if (recentMessages != null)
+			{
+				task.SetResult (recentMessages.TakeWhile(r => r.Id != fromId));
+			}
+			else
+			{
 				var previous = Server.Client.GetPreviousMessages (fromId);
 				previous.ContinueWith (t => {
 					task.TrySetResult (from m in t.Result select CreateMessage(m));
@@ -59,6 +64,7 @@ namespace JabbR.Eto.Model.JabbR
 					task.TrySetException (t.Exception);
 				}, TaskContinuationOptions.OnlyOnFaulted);
 			}
+			recentMessages = null;
 			
 			return task.Task;
 		}
@@ -100,7 +106,7 @@ namespace JabbR.Eto.Model.JabbR
 			this.users.Add (e.User);
 		}
 		
-		ChannelMessage CreateMessage(jab.Models.Message m)
+		public static ChannelMessage CreateMessage(jab.Models.Message m)
 		{
 			return new ChannelMessage (m.Id, m.When, m.User.Name, m.Content);
 		}
@@ -165,7 +171,6 @@ namespace JabbR.Eto.Model.JabbR
 				if (lastTypingRoom != this.Name || (lastTypingTime != null && lastTypingTime.Value < DateTime.Now)) {
 					lastTypingTime = DateTime.Now.AddSeconds (5);
 					lastTypingRoom = this.Name;
-					Debug.WriteLine (string.Format ("UserTyping, Room:{0}", this.Name));
 					Server.Client.SetTyping (this.Name);
 				}
 			}

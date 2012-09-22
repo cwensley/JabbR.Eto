@@ -9,7 +9,7 @@
     <ProjectTypeGuids>{948B3504-5B70-4649-8FE4-BDE1FB46EC69};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Exe</OutputType>
     <RootNamespace>JabbR.Eto.Mac</RootNamespace>
-    <AssemblyName>JabbR.Eto.Mac</AssemblyName>
+    <AssemblyName>JabbR Eto</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>True</DebugSymbols>
@@ -27,6 +27,7 @@
     <CreatePackage>False</CreatePackage>
     <CodeSigningKey>Mac Developer</CodeSigningKey>
     <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
+    <CodeSignEntitlements>Entitlements.plist</CodeSignEntitlements>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>none</DebugType>
@@ -36,12 +37,13 @@
     <WarningLevel>4</WarningLevel>
     <IncludeMonoRuntime>True</IncludeMonoRuntime>
     <PlatformTarget>x86</PlatformTarget>
-    <EnablePackageSigning>False</EnablePackageSigning>
+    <EnablePackageSigning>True</EnablePackageSigning>
     <ConsolePause>False</ConsolePause>
-    <EnableCodeSigning>False</EnableCodeSigning>
+    <EnableCodeSigning>True</EnableCodeSigning>
     <CreatePackage>False</CreatePackage>
     <CodeSigningKey>Mac Developer</CodeSigningKey>
-    <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
+    <PackageSigningKey>3rd Party Mac Developer Installer: Curtis Wensley</PackageSigningKey>
+    <CodeSignEntitlements>Entitlements.plist</CodeSignEntitlements>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -60,9 +62,11 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="Controls\JabbRApplicationHandler.cs" />
+    <Compile Include="CustomTreeViewDelegate.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
+    <None Include="Entitlements.plist" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />

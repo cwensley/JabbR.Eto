@@ -36,8 +36,17 @@ namespace JabbR.Eto.Interface.JabbR
 			if (useSocial) {
 				authSection.AddDockedControl (socialSection);
 				var authenticated = !string.IsNullOrEmpty (server.UserId);
-				statusLabel.Visible = authenticated;
-				authButton.Text = authenticated ? "Re-authenticate" : "Authenticate";
+				if (authenticated) {
+					authButton.Text = "Re-authenticate";
+					statusLabel.Text = "Authenticated";
+					statusLabel.TextColor = Colors.Green;
+				}
+				else {
+					authButton.Text = "Authenticate";
+					statusLabel.Text = "Not Authenticated";
+					statusLabel.TextColor = Colors.Red;
+				}
+					
 			}
 			else
 				authSection.AddDockedControl (loginSection);
@@ -69,8 +78,6 @@ namespace JabbR.Eto.Interface.JabbR
 		Control StatusLabel ()
 		{
 			var control = statusLabel = new Label {
-				Text = "Authenticated",
-				TextColor = Colors.Green,
 				HorizontalAlign = HorizontalAlign.Center
 			};
 			return control;

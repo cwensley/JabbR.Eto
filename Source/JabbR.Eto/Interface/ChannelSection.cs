@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using JabbR.Eto.Model;
+using System.Diagnostics;
 
 namespace JabbR.Eto.Interface
 {
@@ -16,13 +17,16 @@ namespace JabbR.Eto.Interface
 		bool noHistory;
 		bool retrievingHistory;
 		
+		const string JOIN_ROOM_PREFIX = "?join-room=";
+		const string LOAD_HISTORY_PREFIX = "?load-history";
+		
 		public UserList UserList { get; private set; }
 		
 		public Channel Channel { get; private set; }
 		
-		public override bool SupportsAutoComplete {
-			get { return true; }
-		}
+		public override bool SupportsAutoComplete { get { return true; } }
+		
+		public override bool AllowNotificationCollapsing { get { return true; } }
 		
 		public ChannelSection (Channel channel)
 		{
@@ -134,31 +138,51 @@ namespace JabbR.Eto.Interface
 				BeginLoad ();
 				var getChannelInfo = this.Channel.GetChannelInfo ();
 				if (getChannelInfo != null) {
-					getChannelInfo.ContinueWith(task => {
-						var channel = task.Result;
+					getChannelInfo.ContinueWith(t => {
+						var channel = t.Result;
 						SetTopic (this.Channel.Topic);
 						Application.Instance.AsyncInvoke (delegate {
 							UserList.SetUsers (channel.Users);
+							var getHistory = channel.GetHistory (LastHistoryMessageId);
+							if (getHistory != null) {
+								getHistory.ContinueWith(r => {
+									StartLive ();
+									AddHistory (r.Result, true);
+									ReplayDelayedCommands ();
+									FinishLoad ();
+								}, TaskContinuationOptions.OnlyOnRanToCompletion);
+								getHistory.ContinueWith (r => {
+									Debug.WriteLine ("Error getting history {0}", r.Exception);	
+								}, TaskContinuationOptions.OnlyOnFaulted);
+							}
+							else
+								FinishLoad ();
 						});
-						var getHistory = channel.GetHistory (LastHistoryMessageId);
-						getHistory.ContinueWith(getHistoryResult => {
-							StartLive ();
-							AddHistory (getHistoryResult.Result, true);
-							ReplayDelayedCommands ();
-							FinishLoad ();
-						}, TaskContinuationOptions.OnlyOnRanToCompletion);
 					}, TaskContinuationOptions.OnlyOnRanToCompletion);
+					getChannelInfo.ContinueWith (t => {
+						Debug.WriteLine ("Error getting channel info {0}", t.Exception);	
+					}, TaskContinuationOptions.OnlyOnFaulted);
 				}
+				else
+					FinishLoad ();
 			}
 		}
 
 		protected override void HandleAction (WebViewLoadingEventArgs e)
 		{
-			base.HandleAction (e);
-			if (e.Uri.PathAndQuery.EndsWith ("?load_history")) {
+			var historyIndex = e.Uri.PathAndQuery.IndexOf (LOAD_HISTORY_PREFIX);
+			if (historyIndex >= 0) {
 				LoadHistory ();
+				return;
 			}
 			
+			var joinRoomIndex = e.Uri.PathAndQuery.IndexOf (JOIN_ROOM_PREFIX);
+			if (joinRoomIndex >= 0) {
+				Channel.Server.JoinChannel (e.Uri.PathAndQuery.Substring (joinRoomIndex + JOIN_ROOM_PREFIX.Length));
+				return;
+			}
+			
+			base.HandleAction (e);
 		}
 		
 		protected void LoadHistory ()
@@ -180,18 +204,11 @@ namespace JabbR.Eto.Interface
 					retrievingHistory = false;
 				}, TaskContinuationOptions.OnlyOnFaulted);
 			}
+			else if (noHistory)
+				FinishLoad ();
+				
 		}
 		
-		protected void BeginLoad ()
-		{
-			SendCommandDirect ("beginLoad");
-		}
-		
-		protected void FinishLoad ()
-		{
-			SendCommandDirect ("finishLoad", noHistory);
-		}
-
 		public void MeMessage (MeMessage message)
 		{
 			SendCommand("addMeMessage", message);

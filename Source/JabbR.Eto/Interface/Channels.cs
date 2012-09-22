@@ -98,7 +98,9 @@ namespace JabbR.Eto.Interface
 
 		void HandleDisconnected (object sender, EventArgs e)
 		{
-			Update (false);
+			Application.Instance.AsyncInvoke (delegate {
+				Update (false);
+			});
 		}
 		
 		void HandleCloseChannel (object sender, ChannelEventArgs e)
@@ -138,18 +140,22 @@ namespace JabbR.Eto.Interface
 		
 		void HandleConnected (object sender, EventArgs e)
 		{
-			var server = sender as Server;
-			foreach (var channel in server.Channels) {
-				CreateSection (channel);
-			}
-			Update ();
+			Application.Instance.AsyncInvoke (delegate {
+				var server = sender as Server;
+				foreach (var channel in server.Channels) {
+					CreateSection (channel);
+				}
+				Update ();
+			});
 		}
 		
 		void HandleServerRemoved (object sender, ServerEventArgs e)
 		{
-			UnRegister (e.Server);
-			servers.Remove (e.Server);
-			Update (true);
+			Application.Instance.Invoke (delegate {
+				UnRegister (e.Server);
+				servers.Remove (e.Server);
+				Update (true);
+			});
 		}
 		
 		void HandleServerAdded (object sender, ServerEventArgs e)

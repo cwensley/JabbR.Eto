@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{FE74236A-EB06-4280-BB28-3509DAF06A3F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>JabbR.Eto.Client</RootNamespace>
-    <AssemblyName>JabbR.Eto.Client</AssemblyName>
+    <RootNamespace>JabbR.Eto.Wpf</RootNamespace>
+    <AssemblyName>JabbR.Eto.Wpf</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,7 +31,13 @@
     <Externalconsole>true</Externalconsole>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\JabbRApplicationHandler.cs" />
@@ -43,6 +49,10 @@
     <ProjectReference Include="..\..\Libraries\Eto.Forms\Source\Eto.Platform.Wpf\Eto.Platform.Wpf.csproj">
       <Project>{E3524178-5A24-47C0-B155-92314FE4B2B6}</Project>
       <Name>Eto.Platform.Wpf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\MahApps.Metro\MahApps.Metro\MahApps.Metro.csproj">
+      <Project>{5b1710d2-5dc8-4754-91b2-19165de49b3d}</Project>
+      <Name>MahApps.Metro</Name>
     </ProjectReference>
     <ProjectReference Include="..\JabbR.Eto\JabbR.Eto.csproj">
       <Project>{1CC5D427-7C46-44BB-ABE6-DA6F30828ED8}</Project>
@@ -86,5 +96,11 @@
       <Link>Styles\default\styles.css</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Controls.Menu.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 </Project>

@@ -15,7 +15,7 @@ namespace JabbR.Eto.Actions
 			this.channels = channels;
 			this.ID = ActionID;
 			this.MenuText = "Channel List...";
-			this.Accelerator = Application.Instance.CommonModifier | Key.J;
+			this.Accelerator = Application.Instance.CommonModifier | Key.L;
 		}
 		
 		public override bool Enabled {
@@ -33,7 +33,7 @@ namespace JabbR.Eto.Actions
 			if (!server.IsConnected)
 				return;
 			
-			var dialog = new Interface.Dialogs.SelectChannel(server);
+			var dialog = new Interface.Dialogs.ChannelListDialog(server);
 			if (dialog.ShowDialog (Application.Instance.MainForm) == DialogResult.Ok) {
 				if (dialog.SelectedChannel != null)
 					channels.JoinChannel (dialog.SelectedChannel.Server, dialog.SelectedChannel.Name);

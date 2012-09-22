@@ -7,7 +7,7 @@ using Eto.Drawing;
 
 namespace JabbR.Eto.Interface.Dialogs
 {
-	public class SelectChannel : Dialog
+	public class ChannelListDialog : Dialog
 	{
 		GridView grid;
 		
@@ -17,7 +17,7 @@ namespace JabbR.Eto.Interface.Dialogs
 			}
 		}
 		
-		public SelectChannel (Server server)
+		public ChannelListDialog (Server server)
 		{
 			this.ClientSize = new Size (600, 400);
 			this.Resizable = true;

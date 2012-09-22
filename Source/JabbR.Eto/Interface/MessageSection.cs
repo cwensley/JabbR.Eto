@@ -32,6 +32,10 @@ namespace JabbR.Eto.Interface
 			get { return false; }
 		}
 		
+		public virtual bool AllowNotificationCollapsing {
+			get { return false; }
+		}
+		
 		struct DelayedCommand
 		{
 			public string Command { get; set; }
@@ -72,19 +76,30 @@ namespace JabbR.Eto.Interface
 		
 		protected virtual void HandleAction(WebViewLoadingEventArgs e)
 		{
+			FinishLoad ();
 		}
 
 		void HandleDocumentLoading (object sender, WebViewLoadingEventArgs e)
 		{
 			e.Cancel = true;
+			Debug.WriteLine ("Loading {0}", e.Uri);
 			if (e.Uri.IsFile || e.Uri.IsLoopback) {
 				HandleAction (e);
 			} else {
-				Debug.WriteLine ("Opening {0}", e.Uri.AbsoluteUri);
 				Application.Instance.Open (e.Uri.AbsoluteUri);
 			}
 		}
 		
+		protected void BeginLoad ()
+		{
+			SendCommandDirect ("beginLoad");
+		}
+		
+		protected void FinishLoad ()
+		{
+			SendCommandDirect ("finishLoad");
+		}
+
 		public override void OnLoadComplete (EventArgs e)
 		{
 			base.OnLoadComplete (e);
@@ -146,7 +161,7 @@ namespace JabbR.Eto.Interface
 		
 		public void AddNotification (NotificationMessage notification)
 		{
-			SendCommand ("addNotification", notification);
+			SendCommand ("addNotification", notification, AllowNotificationCollapsing);
 		}
 
 		public void AddMessageContent (MessageContent content)
@@ -169,12 +184,12 @@ namespace JabbR.Eto.Interface
 		
 		protected void SendCommandDirect (string command, params object[] parameters)
 		{
-			string[] vals = new string[parameters.Length];
-			for (int i = 0; i < parameters.Length; i++) {
-				vals[i] = JsonConvert.SerializeObject (parameters[i]);
-			}
-			var script = string.Format ("JabbREto.{0}({1});", command, string.Join (", ", vals));
-			Application.Instance.Invoke (() => {
+			Application.Instance.Invoke(delegate {
+				string[] vals = new string[parameters.Length];
+				for (int i = 0; i < parameters.Length; i++) {
+					vals[i] = JsonConvert.SerializeObject (parameters[i]);
+				}
+				var script = string.Format ("JabbREto.{0}({1});", command, string.Join (", ", vals));
 				History.ExecuteScript (script);
 			});
 		}

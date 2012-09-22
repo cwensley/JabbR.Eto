@@ -9,15 +9,15 @@
 		<string>JabbREto.icns</string>
 	</array>
 	<key>CFBundleIdentifier</key>
-	<string>ca.picoe.JabbR.Eto.Mac</string>
+	<string>ca.picoe.jabbr-eto</string>
 	<key>CFBundleName</key>
-	<string>JabbR.Eto.Mac</string>
+	<string>JabbR.Eto</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
 	<key>LSApplicationCategoryType</key>
-	<string>public.app-category.social-networking</string>
+	<string>public.app-category.developer-tools</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.6</string>
 	<key>NSPrincipalClass</key>

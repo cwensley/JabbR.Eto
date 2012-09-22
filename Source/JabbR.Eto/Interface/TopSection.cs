@@ -19,7 +19,7 @@ namespace JabbR.Eto.Interface
 		{
 			this.Config = config;
 			Channels = new Channels (config);
-			Channels .ChannelChanged += HandleChannelChanged;
+			Channels.ChannelChanged += HandleChannelChanged;
 			
 			splitter = new Splitter{
 				Panel1 = Channels ,

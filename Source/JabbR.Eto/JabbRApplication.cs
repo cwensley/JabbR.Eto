@@ -7,12 +7,16 @@ using System.Collections.Generic;
 using JabbR.Eto.Model;
 using System.Net;
 using System.Diagnostics;
+using System.Linq;
 
 namespace JabbR.Eto
 {
 	public interface IJabbRApplication : IApplication
 	{
 		string BadgeLabel { get; set; }
+		
+		string EncryptString (string serverName, string accountName, string password);
+		string DecryptString (string serverName, string accountName, string value);
 	}
 	
 	
@@ -72,12 +76,27 @@ namespace JabbR.Eto
 				if (server.ConnectOnStartup)
 					server.Connect ();
 			}
+			
+			if (!Configuration.Servers.Any ()) {
+				Application.Instance.AsyncInvoke (delegate {
+					var action = new Actions.AddServer {
+						AutoConnect = true
+					};
+					action.Activate ();
+				});
+			}
+			
 		}
 		
 		public override void OnTerminating (System.ComponentModel.CancelEventArgs e)
 		{
 			base.OnTerminating (e);
 			Configuration.DisconnectAll ();
+			SaveConfiguration ();
+		}
+		
+		public void SaveConfiguration()
+		{
 			this.SaveXml (SettingsFileName, "jabbreto");
 		}
 		
@@ -85,6 +104,17 @@ namespace JabbR.Eto
 			get { return handler.BadgeLabel; }
 			set { handler.BadgeLabel = value; }
 		}
+		
+		public string EncryptString (string serverName, string accountName, string password)
+		{
+			return handler.EncryptString(serverName, accountName, password);
+		}
+		
+		public string DecryptString (string serverName, string accountName, string value)
+		{
+			return handler.DecryptString(serverName, accountName, value);
+		}
+		
 
 		#region IXmlReadable implementation
 		public void ReadXml (System.Xml.XmlElement element)

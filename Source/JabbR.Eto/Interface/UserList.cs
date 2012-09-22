@@ -139,6 +139,9 @@ namespace JabbR.Eto.Interface
 	
 		public void SetUsers (IEnumerable<User> users)
 		{
+			owners.Children.Clear ();
+			online.Children.Clear ();
+			away.Children.Clear ();
 			foreach (var user in users)
 				AddUser (user);
 			Update ();
