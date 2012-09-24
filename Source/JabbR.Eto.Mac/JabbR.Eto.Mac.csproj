@@ -40,7 +40,7 @@
     <EnablePackageSigning>True</EnablePackageSigning>
     <ConsolePause>False</ConsolePause>
     <EnableCodeSigning>True</EnableCodeSigning>
-    <CreatePackage>False</CreatePackage>
+    <CreatePackage>True</CreatePackage>
     <CodeSigningKey>Mac Developer</CodeSigningKey>
     <PackageSigningKey>3rd Party Mac Developer Installer: Curtis Wensley</PackageSigningKey>
     <CodeSignEntitlements>Entitlements.plist</CodeSignEntitlements>
