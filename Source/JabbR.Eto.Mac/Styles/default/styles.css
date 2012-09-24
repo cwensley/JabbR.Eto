@@ -29,9 +29,10 @@ li.clearfix {
 	visibility: hidden;
 }
 
+/*
 html, body, #container {
 	height: 100%;
-}
+}*/
 
 #topic {
 	position: fixed;
