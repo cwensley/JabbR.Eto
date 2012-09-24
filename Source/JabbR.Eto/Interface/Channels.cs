@@ -76,15 +76,20 @@ namespace JabbR.Eto.Interface
 			servers.Clear ();
 			servers.AddRange (Config.Servers);
 			foreach (var server in Config.Servers) {
-				server.Connected += HandleConnected;
-				server.Disconnected += HandleDisconnected;
-				server.OpenChannel += HandleOpenChannel;
-				server.CloseChannel += HandleCloseChannel;
-				server.ChannelInfoChanged += HandleChannelInfoChanged;
-				CreateSection (server);
+				Register (server);
 			}
 			Update (true);
 			channelList.SelectedItem = servers.FirstOrDefault ();
+		}
+		
+		void Register (Server server)
+		{
+			server.Connected += HandleConnected;
+			server.Disconnected += HandleDisconnected;
+			server.OpenChannel += HandleOpenChannel;
+			server.CloseChannel += HandleCloseChannel;
+			server.ChannelInfoChanged += HandleChannelInfoChanged;
+			CreateSection (server);
 		}
 
 		void UnRegister (Server server)
@@ -155,13 +160,19 @@ namespace JabbR.Eto.Interface
 				UnRegister (e.Server);
 				servers.Remove (e.Server);
 				Update (true);
+				OnChannelChanged (EventArgs.Empty);
 			});
 		}
 		
 		void HandleServerAdded (object sender, ServerEventArgs e)
 		{
-			servers.Add (e.Server);
-			Update (true);
+			Application.Instance.Invoke (delegate {
+				servers.Add (e.Server);
+				Register (e.Server);
+				Update (true);
+				channelList.SelectedItem = e.Server;
+				OnChannelChanged (EventArgs.Empty);
+			});
 		}
 		
 		public Control CreateSection ()

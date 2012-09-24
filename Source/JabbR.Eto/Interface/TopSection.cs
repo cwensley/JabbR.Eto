@@ -28,26 +28,26 @@ namespace JabbR.Eto.Interface
 			
 			this.AddDockedControl (splitter);
 			
-			SetChannel ();
+			SetView ();
 		}
 
 		public new void Initialize ()
 		{
 			Channels.Initialize ();
-			SetChannel ();
+			SetView ();
 		}
 
 		void HandleChannelChanged (object sender, EventArgs e)
 		{
-			SetChannel ();
+			SetView ();
 		}
 
-		void SetChannel ()
+		void SetView ()
 		{
-			var channel = Channels.CreateSection ();
-			splitter.Panel2 = channel;
-			if (channel != null)
-				channel.Focus ();
+			var view = Channels.CreateSection ();
+			splitter.Panel2 = view;
+			if (view != null)
+				view.Focus ();
 		}
 
 		public void CreateActions (GenerateActionArgs args)
