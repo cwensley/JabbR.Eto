@@ -1,0 +1,13 @@
+JabbReto is a client for the open-source real time chat protocol JabbR. JabbR is an easy way to connect with friends and colleagues in real time.
+
+Features
+
+- Multiple servers
+- Login with Social & Username/Password accounts
+- Channel list with user counts
+- Private chats
+- View rich content (video, pictures, code snippets)
+- View channel history
+
+
+Tags: jabbr,chat,real time,realtime,IRC,social,development,signalr

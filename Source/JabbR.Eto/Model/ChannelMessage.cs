@@ -3,9 +3,11 @@ using System;
 namespace JabbR.Eto.Model
 {
 	
-	public class ChannelMessage
+	public class ChannelMessage : Message
 	{
 		public string Id { get; set; }
+		
+		public override string Type { get { return "message"; } }
 		
 		public DateTimeOffset When { get; set; }
 		

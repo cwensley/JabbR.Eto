@@ -9,7 +9,9 @@
     <ProjectTypeGuids>{948B3504-5B70-4649-8FE4-BDE1FB46EC69};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Exe</OutputType>
     <RootNamespace>JabbR.Eto.Mac</RootNamespace>
-    <AssemblyName>JabbR Eto</AssemblyName>
+    <AssemblyName>JabbReto</AssemblyName>
+    <ReleaseVersion>1.0</ReleaseVersion>
+    <SynchReleaseVersion>False</SynchReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>True</DebugSymbols>
@@ -41,9 +43,14 @@
     <ConsolePause>False</ConsolePause>
     <EnableCodeSigning>True</EnableCodeSigning>
     <CreatePackage>True</CreatePackage>
-    <CodeSigningKey>Mac Developer</CodeSigningKey>
-    <PackageSigningKey>3rd Party Mac Developer Installer: Curtis Wensley</PackageSigningKey>
+    <CodeSigningKey>3rd Party Mac Developer Application</CodeSigningKey>
+    <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
     <CodeSignEntitlements>Entitlements.plist</CodeSignEntitlements>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="codesign -v --force --sign &quot;3rd Party Mac Developer Application: Curtis Wensley&quot; &quot;${TargetDir}/JabbReto.app/Contents/MonoBundle/libMonoPosixHelper.dylib&quot;" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -107,9 +114,11 @@
     <Content Include="Styles\default\jsrender.js" />
     <Content Include="Styles\default\channel.html" />
     <Content Include="Styles\default\channel.js" />
-    <Content Include="JabbREto.icns" />
     <Content Include="Styles\default\jquery.blockUI.js" />
     <Content Include="Styles\default\loader.gif" />
     <Content Include="Styles\default\loader%402x.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="JabbReto.icns" />
   </ItemGroup>
 </Project>

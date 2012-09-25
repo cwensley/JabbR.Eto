@@ -3,8 +3,10 @@ using System;
 namespace JabbR.Eto.Model
 {
 
-	public class NotificationMessage
+	public class NotificationMessage : Message
 	{
+		public override string Type { get { return "notification"; } }
+		
 		public DateTimeOffset When { get; set; }
 		
 		public string Time { get; set; }

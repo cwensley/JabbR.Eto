@@ -23,7 +23,7 @@ namespace JabbR.Eto
 		public MainForm (Configuration config)
 		{
 			this.config = config;
-			this.Title = "JabbR.Eto";
+			this.Title = "JabbReto";
 			this.ClientSize = new Size (800, 600);
 			this.MinimumSize = new Size (640, 400);
 			this.Style = "mainForm";

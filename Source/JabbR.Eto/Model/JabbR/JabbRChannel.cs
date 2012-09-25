@@ -31,19 +31,19 @@ namespace JabbR.Eto.Model.JabbR
 			OnClosed (e);
 		}
 		
-		internal void TriggerMessage (ChannelMessage message)
+		public virtual void TriggerMessage (ChannelMessage message)
 		{
 			UnreadCount ++;
 			OnMessageReceived (new MessageEventArgs (message));
 		}
 		
-		internal void TriggerActivityChanged (IEnumerable<jab.Models.User> users)
+		public virtual void TriggerActivityChanged (IEnumerable<jab.Models.User> users)
 		{
 			var theusers = from r in users select new JabbRUser (r);
 			OnUsersActivityChanged (new UsersEventArgs (theusers, DateTimeOffset.Now));
 		}
 		
-		internal void TriggerMessageContent (string messageId, string content)
+		public virtual void TriggerMessageContent (string messageId, string content)
 		{
 			OnMessageContent (new MessageContentEventArgs (new MessageContent (messageId, content)));
 		}

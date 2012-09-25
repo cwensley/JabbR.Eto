@@ -11,7 +11,7 @@ namespace JabbR.Eto.Actions
 		public About ()
 		{
 			this.ID = ActionID;
-			this.MenuText = "About JabbR.Eto";
+			this.MenuText = "About JabbReto";
 		}
 		
 		protected override void OnActivated (EventArgs e)

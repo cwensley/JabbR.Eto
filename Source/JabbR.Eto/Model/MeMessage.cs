@@ -2,8 +2,10 @@ using System;
 
 namespace JabbR.Eto.Model
 {
-	public class MeMessage
+	public class MeMessage : Message
 	{
+		public override string Type { get { return "memessage"; } }
+		
 		public string Content { get; set; }
 		
 		public DateTimeOffset When { get; set; }

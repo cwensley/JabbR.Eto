@@ -37,7 +37,7 @@ namespace JabbR.Eto
 			ServicePointManager.DefaultConnectionLimit = 100;
 			
 			this.Style = "application";
-			this.Name = "JabbR.Eto";
+			this.Name = "JabbReto";
 			this.Configuration = new JabbR.Eto.Model.Configuration();
 			HandleEvent (TerminatingEvent);
 			handler = (IJabbRApplication)Handler;

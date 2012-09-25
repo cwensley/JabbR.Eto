@@ -14,6 +14,8 @@ namespace JabbR.Eto.Model.JabbR
 		List<User> users = new List<User> ();
 		List<string> owners = new List<string> ();
 		IEnumerable<ChannelMessage> recentMessages;
+		ChannelMessage firstMessage;
+		bool historyLoaded;
 		
 		static Image image = Bitmap.FromResource (typeof(JabbRRoom).Assembly, "JabbR.Eto.Resources.room.png");
 		
@@ -51,7 +53,7 @@ namespace JabbR.Eto.Model.JabbR
 			}
 			else if (recentMessages != null)
 			{
-				task.SetResult (recentMessages.TakeWhile(r => r.Id != fromId));
+				task.SetResult (recentMessages);
 			}
 			else
 			{
@@ -89,10 +91,19 @@ namespace JabbR.Eto.Model.JabbR
 			}, TaskContinuationOptions.OnlyOnFaulted);
 		}
 		
-		internal void TriggerMeMessage (string user, string content)
+		public override void TriggerMessage (ChannelMessage message)
 		{
-			OnMeMessageReceived (new MeMessageEventArgs (new MeMessage (DateTimeOffset.Now, user, content)));
-		}		
+			if (firstMessage == null && !historyLoaded)
+				firstMessage = message;
+			base.TriggerMessage (message);
+		}
+		
+		public void TriggerMeMessage (string user, string content)
+		{
+			var message = new MeMessageEventArgs (new MeMessage (DateTimeOffset.Now, user, content));
+			OnMeMessageReceived (message);
+		}
+		
 		
 		internal void TriggerUserLeft (UserEventArgs e)
 		{
@@ -124,6 +135,12 @@ namespace JabbR.Eto.Model.JabbR
 					this.owners.Clear ();
 					this.owners.AddRange (task.Result.Owners);
 					this.recentMessages = (from m in task.Result.RecentMessages select CreateMessage(m)).ToArray ();
+					historyLoaded = true;
+					if (firstMessage != null) {
+						// filter up to the first already received message
+						this.recentMessages = this.recentMessages.TakeWhile (r => r.When < firstMessage.When || (r.When == firstMessage.When && r.Content != firstMessage.Content)).ToArray ();
+						firstMessage = null;
+					}
 					tcs.SetResult (this);
 				}
 			});

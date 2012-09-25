@@ -184,12 +184,12 @@ namespace JabbR.Eto.Interface
 		
 		protected void SendCommandDirect (string command, params object[] parameters)
 		{
-			Application.Instance.Invoke(delegate {
-				string[] vals = new string[parameters.Length];
-				for (int i = 0; i < parameters.Length; i++) {
-					vals[i] = JsonConvert.SerializeObject (parameters[i]);
-				}
-				var script = string.Format ("JabbREto.{0}({1});", command, string.Join (", ", vals));
+			string[] vals = new string[parameters.Length];
+			for (int i = 0; i < parameters.Length; i++) {
+				vals[i] = JsonConvert.SerializeObject (parameters[i]);
+			}
+			var script = string.Format ("JabbREto.{0}({1});", command, string.Join (", ", vals));
+			Application.Instance.Invoke (delegate {
 				History.ExecuteScript (script);
 			});
 		}

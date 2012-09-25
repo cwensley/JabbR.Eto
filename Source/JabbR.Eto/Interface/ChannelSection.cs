@@ -13,7 +13,6 @@ namespace JabbR.Eto.Interface
 {
 	public class ChannelSection : MessageSection
 	{
-		string historyId;
 		bool noHistory;
 		bool retrievingHistory;
 		
@@ -140,8 +139,8 @@ namespace JabbR.Eto.Interface
 				if (getChannelInfo != null) {
 					getChannelInfo.ContinueWith(t => {
 						var channel = t.Result;
-						SetTopic (this.Channel.Topic);
 						Application.Instance.AsyncInvoke (delegate {
+							SetTopic (channel.Topic);
 							UserList.SetUsers (channel.Users);
 							var getHistory = channel.GetHistory (LastHistoryMessageId);
 							if (getHistory != null) {
