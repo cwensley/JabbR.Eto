@@ -91,11 +91,15 @@ namespace JabbR.Eto.Interface
 
 		public void UsersActivityChanged (IEnumerable<User> users)
 		{
+			bool changed = false;
 			foreach (var user in users) {
-				RemoveUser (user);
-				AddUser (user);
+				if (RemoveUser (user)) {
+					AddUser (user);
+					changed = true;
+				}
 			}
-			Update ();
+			if (changed)
+				Update ();
 		}
 			
 		bool RemoveItem (TreeItemCollection items, string key)
