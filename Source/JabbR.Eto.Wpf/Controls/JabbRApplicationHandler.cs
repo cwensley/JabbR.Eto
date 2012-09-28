@@ -34,5 +34,11 @@ namespace JabbR.Eto.Client.Controls
 			}
 			return null;
 		}
+
+
+		public void SendNotification (string text)
+		{
+			
+		}
 	}
 }

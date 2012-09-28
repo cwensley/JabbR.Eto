@@ -2,11 +2,12 @@
 <html>
 <head>
 	<title>JabbReto</title>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=9"/>
 	<link rel='stylesheet' href='styles.css'/>
 	<script type='text/javascript' src='jquery.min.js'></script>
-	<script type='text/javascript' src='jsrender.js'></script>
-	<script type='text/javascript' src='channel.js'></script>
+  <script type='text/javascript' src='jquery.captureDocumentWrite.min.js'></script>
+  <script type='text/javascript' src='jsrender.js'></script>
+  <script type='text/javascript' src='channel.js'></script>
 </head>
 <body>
 	<div>
@@ -117,11 +118,20 @@
         <img class="delayimg1" src="http://cwensley.github.com/JabbR.Eto/images/screenshots/Main-OSX.png" >\
     </div>\
 </div>'});
-			JabbREto.finishLoad();
-			//});
-			});
-			/**/
-		</script>
+
+      JabbREto.addMessage({Time: '10:60:00 AM', User: 'User', Content: '<a rel="nofollow external" target="_blank" href="http://pastie.org/pastes/4825232" title="http://pastie.org/pastes/4825232">http://pastie.org/pastes/4825232</a><p>\
+        <div id="a5a8aebc-0978-4050-920c-935a28a5ced3"></div>\
+        <script type="text/javascript">\
+          captureDocumentWrite("http://pastie.org/4825232.js", "http://pastie.org/4825232", $("#a5a8aebc-0978-4050-920c-935a28a5ced3"));\
+        \x3C/script>\
+      </p>'});
+
+		JabbREto.addMessage({Time: '10:60:00 AM', User: 'User', Content: '<a rel=\"nofollow external\" target=\"_blank\" href=\"https://twitter.com/jabbr/statuses/243149346655305728\" title=\"https://twitter.com/jabbr/statuses/243149346655305728\">https://twitter.com/jabbr/statuses/243149346655305728</a><p><div class=\"collapsible_content\"><div class=\"collapsible_pin\"></div><h3 class=\"collapsible_title\">https://twitter.com/jabbr/statuses/243149346655305728 (click to show/hide)</h3><div class=\"collapsible_box\"><div class=\"tweet_243149346655305728\"><script src=\"https://api.twitter.com/1/statuses/show/243149346655305728.json?include_entities=false&amp;callback=addTweet\">\x3C/script></div></div></div></p>'});
+      JabbREto.finishLoad();
+      //});
+      });
+      /**/
+    </script>
 	</div>
 </body>
 </html>

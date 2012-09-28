@@ -94,6 +94,10 @@
       <Link>Styles\default\jquery.blockUI.js</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\JabbR.Eto.Mac\Styles\default\jquery.captureDocumentWrite.min.js">
+      <Link>Styles\default\jquery.captureDocumentWrite.min.js</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\JabbR.Eto.Mac\Styles\default\jquery.min.js">
       <Link>Styles\default\jquery.min.js</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

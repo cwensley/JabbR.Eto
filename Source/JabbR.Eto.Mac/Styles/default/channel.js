@@ -264,6 +264,33 @@ var pub = {
 		else $topic.hide();
 		$('#container').css('padding-top', height + 'px');
 		restoreScroll(scroll);
+	},
+	captureDocumentWrite: function (documentWritePath, headerText, elementToAppendTo) {
+        $.fn.captureDocumentWrite(documentWritePath, function (content) {
+            var scroll = shouldScrollToBottom(),
+                collapsible = null,
+                insertContent = null,
+                links = null;
+
+            collapsible = $('<div><h3 class="collapsible_title">' + headerText + ' (click to show/hide)</h3><div class="collapsible_box captureDocumentWrite_content"></div></div>');
+            $('.captureDocumentWrite_content', collapsible).append(content);
+
+            // Since IE doesn't render the css if the links are not in the head element, we move those to the head element
+            links = $('link', collapsible);
+            links.remove();
+            $('head').append(links);
+
+            // Remove the target off any existing anchor tags, then re-add target as _blank so it opens new tab (or window)
+            $('a', collapsible).removeAttr('target').attr('target', '_blank');
+
+            insertContent = collapsible[0].outerHTML;
+
+			// TODO: collapse rich content if setting is set
+
+            elementToAppendTo.append(insertContent);
+
+			pub.scrollToBottom(scroll);
+        });
 	}
 };
 
@@ -271,8 +298,15 @@ return pub;
 
 }());
 
+
 $(function() {
-	$.fn.reverse = [].reverse;
 
 	JabbREto.initialize();
-})
+
+    window.captureDocumentWrite = function (documentWritePath, headerText, elementToAppendTo) {
+    	JabbREto.captureDocumentWrite (documentWritePath, headerText, elementToAppendTo);
+    };
+    
+    window.addTweet = function () {
+	};
+});

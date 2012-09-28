@@ -35,7 +35,7 @@ namespace JabbR.Eto.Interface.Dialogs
 			
 			layout.Add (grid, yscale: true);
 			layout.BeginVertical ();
-			layout.AddRow (null, CancelButton (), JoinButton ());
+			layout.AddRow (null, this.CancelButton (), this.OkButton ("Join Channel", CanJoin));
 			layout.EndVertical ();
 			
 			var channelTask = server.GetChannelList ();
@@ -48,42 +48,13 @@ namespace JabbR.Eto.Interface.Dialogs
 
 		void HandleMouseDoubleClick (object sender, MouseEventArgs e)
 		{
-			TriggerJoin ();
+			if (CanJoin ())
+				Close (DialogResult.Ok);
 		}
 		
-		void TriggerJoin ()
+		bool CanJoin ()
 		{
-			if (SelectedChannel != null) {
-				DialogResult = DialogResult.Ok;
-				Close ();
-			}
-		}
-		
-		Control CancelButton ()
-		{
-			var button = new Button {
-				Text = "Cancel"
-			};
-			AbortButton = button;
-			
-			button.Click += (sender, e) => {
-				DialogResult = DialogResult.Cancel;
-				Close ();
-			};
-			return button;
-		}
-
-		Control JoinButton ()
-		{
-			var button = new Button {
-				Text = "Join Channel"
-			};
-			DefaultButton = button;
-			
-			button.Click += (sender, e) => {
-				TriggerJoin ();
-			};
-			return button;
+			return SelectedChannel != null;
 		}
 	}
 }

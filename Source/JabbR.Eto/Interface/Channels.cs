@@ -15,7 +15,7 @@ namespace JabbR.Eto.Interface
 	{
 		TreeView channelList;
 		TreeItemCollection servers = new TreeItemCollection();
-		ConcurrentDictionary<string, Control> sectionCache = new ConcurrentDictionary<string, Control> ();
+		Dictionary<string, Control> sectionCache = new Dictionary<string, Control> ();
 		
 		public Configuration Config { get; private set; }
 
@@ -42,8 +42,10 @@ namespace JabbR.Eto.Interface
 			if (ChannelChanged != null)
 				ChannelChanged (this, e);
 			var selected = SelectedChannel;
-			if (selected != null)
+			if (selected != null) {
 				selected.ResetUnreadCount ();
+				SetUnreadCount();
+			}
 		}
 		
 		public Channels (Configuration config)
@@ -60,6 +62,19 @@ namespace JabbR.Eto.Interface
 			config.ServerRemoved += HandleServerRemoved;
 			
 			this.AddDockedControl (channelList);
+		}
+		
+		public override void OnLoad (EventArgs e)
+		{
+			base.OnLoad (e);
+			this.ParentWindow.Shown += (sender, ee) => {
+				var selected = SelectedChannel;
+				if (selected != null) {
+					selected.ResetUnreadCount ();
+					SetUnreadCount ();
+					Update ();
+				}
+			};
 		}
 
 		void HandleActivated (object sender, TreeViewItemEventArgs e)
@@ -85,7 +100,9 @@ namespace JabbR.Eto.Interface
 		void Register (Server server)
 		{
 			server.Connected += HandleConnected;
+			server.ConnectError += HandleConnectError;
 			server.Disconnected += HandleDisconnected;
+			server.Disconnecting += HandleDisconnecting;
 			server.OpenChannel += HandleOpenChannel;
 			server.CloseChannel += HandleCloseChannel;
 			server.ChannelInfoChanged += HandleChannelInfoChanged;
@@ -94,16 +111,37 @@ namespace JabbR.Eto.Interface
 
 		void UnRegister (Server server)
 		{
+			server.Disconnecting -= HandleDisconnecting;
 			server.Disconnected -= HandleDisconnected;
 			server.Connected -= HandleConnected;
+			server.ConnectError -= HandleConnectError;
 			server.OpenChannel -= HandleOpenChannel;
 			server.CloseChannel -= HandleCloseChannel;
 			server.ChannelInfoChanged -= HandleChannelInfoChanged;
 		}
 
+		void HandleConnectError (object sender, ConnectionErrorEventArgs e)
+		{
+			MessageBox.Show (this, e.Exception.GetBaseException ().Message, string.Format ("Error connecting to server {0}", e.Server.Name));
+			var serverSection = GetServerSection (e.Server);
+			serverSection.AddNotification (new NotificationMessage("Error connecting to server {0}.  Reason: {1}", e.Server.Name, e.Exception));
+		}
+		
+		void HandleDisconnecting (object sender, EventArgs e)
+		{
+			var server = sender as Server;
+			Application.Instance.Invoke (delegate {
+				foreach (var channel in server.Channels)
+				{
+					RemoveSection (channel);	
+				}
+			});
+		}
+		
+		
 		void HandleDisconnected (object sender, EventArgs e)
 		{
-			Application.Instance.AsyncInvoke (delegate {
+			Application.Instance.Invoke (delegate {
 				Update (false);
 			});
 		}
@@ -112,12 +150,14 @@ namespace JabbR.Eto.Interface
 		{
 			Application.Instance.AsyncInvoke (delegate {
 				var isSelected = channelList.SelectedItem == e.Channel;
-				Control control;
-				sectionCache.TryRemove(e.Channel.Id, out control);
+				RemoveSection (e.Channel);
 				
 				Update ();
 				if (isSelected)
 					channelList.SelectedItem = e.Channel.Server;
+
+				var serverSection = GetServerSection (e.Channel.Server);
+				serverSection.AddNotification (new NotificationMessage("You have left {0}", e.Channel.Name));
 			});
 		}
 
@@ -129,6 +169,9 @@ namespace JabbR.Eto.Interface
 		
 				if (e.ShouldFocus)
 					channelList.SelectedItem = e.Channel;
+
+				var serverSection = GetServerSection (e.Channel.Server);
+				serverSection.AddNotification (new NotificationMessage("Joined {0}", e.Channel.Name));
 			});
 		}
 		
@@ -136,11 +179,21 @@ namespace JabbR.Eto.Interface
 		{
 			Application.Instance.AsyncInvoke (delegate
 			{
-				if (SelectedChannel == e.Channel) {
+				if (SelectedChannel == e.Channel && this.ParentWindow.HasFocus) {
 					e.Channel.ResetUnreadCount ();
 				}
+				SetUnreadCount();
 				Update ();
 			});
+		}
+		
+		void SetUnreadCount ()
+		{
+			var count = this.EnumerateChannels().Sum (r => r.UnreadCount);
+			
+			var form = this.ParentWindow as MainForm;
+			if (form != null)
+				form.SetUnreadCount(count);
 		}
 		
 		void HandleConnected (object sender, EventArgs e)
@@ -182,17 +235,28 @@ namespace JabbR.Eto.Interface
 			return CreateSection(channelList.SelectedItem);
 		}
 		
-		Control CreateSection(ITreeItem channel)
+		void RemoveSection (ITreeItem item)
 		{
-			var generator = channel as ISectionGenerator;
+			var generator = item as ISectionGenerator;
+			if (generator != null && sectionCache.ContainsKey (item.Key)) {
+				sectionCache.Remove (item.Key);
+			}
+		}
+		
+		MessageSection GetServerSection (Server server)
+		{
+			return CreateSection (server) as MessageSection;
+		}
+			
+		Control CreateSection (ITreeItem item)
+		{
+			var generator = item as ISectionGenerator;
 			
 			Control section = null;
-			if (generator != null && !sectionCache.TryGetValue (channel.Key, out section)) {
+			if (generator != null && !sectionCache.TryGetValue (item.Key, out section)) {
 				section = generator.GenerateSection ();
 				
-				while (!sectionCache.TryAdd (channel.Key, section)) {
-					Thread.Sleep (0);
-				}
+				sectionCache.Add (item.Key, section);
 			}
 			
 			return section;

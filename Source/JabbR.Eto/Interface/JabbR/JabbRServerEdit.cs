@@ -4,6 +4,7 @@ using JabbR.Eto.Model;
 using JabbR.Eto.Model.JabbR;
 using Eto;
 using Eto.Drawing;
+using SignalR.Client;
 
 namespace JabbR.Eto.Interface.JabbR
 {
@@ -16,9 +17,11 @@ namespace JabbR.Eto.Interface.JabbR
 		CheckBox useSocialLogin;
 		Label statusLabel;
 		Button authButton;
+		bool isNew;
 		
-		public JabbRServerEdit (JabbRServer server, DynamicLayout layout)
+		public JabbRServerEdit (JabbRServer server, DynamicLayout layout, bool isNew)
 		{
+			this.isNew = isNew;
 			this.server = server;
 			layout.AddRow (new Label { Text = "Address" }, EditAddress ());
 			layout.EndBeginVertical ();
@@ -27,6 +30,7 @@ namespace JabbR.Eto.Interface.JabbR
 			layout.EndBeginVertical ();
 			LoginSection();
 			SocialSection();
+			
 			SetVisibility ();
 		}
 		
@@ -88,6 +92,7 @@ namespace JabbR.Eto.Interface.JabbR
 			var control = authButton = new Button { Text = "Authenticate" };
 			control.Click += delegate {
 				var dlg = new JabbRAuthDialog(server);
+				dlg.DisplayMode = DialogDisplayMode.Attached;
 				var result = dlg.ShowDialog (control);
 				if (result == DialogResult.Ok) {
 					server.UserId = dlg.UserID;

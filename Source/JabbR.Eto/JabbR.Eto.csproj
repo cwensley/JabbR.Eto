@@ -34,7 +34,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\ShowPreferences.cs" />
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Interface\Dialogs\DialogExtensions.cs" />
+    <Compile Include="Interface\Dialogs\PreferencesDialog.cs" />
     <Compile Include="JabbRApplication.cs" />
     <Compile Include="MainForm.cs" />
     <Compile Include="Actions\Quit.cs" />
@@ -87,6 +90,7 @@
     <Compile Include="Model\MeMessageEventArgs.cs" />
     <Compile Include="Interface\Dialogs\ChannelListDialog.cs" />
     <Compile Include="Model\Message.cs" />
+    <Compile Include="Model\ConnectionErrorEventArgs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -2,6 +2,7 @@ using System;
 using Eto.Platform.Mac.Forms;
 using MonoMac.Security;
 using System.Text;
+using MonoMac.Foundation;
 
 
 namespace JabbR.Eto.Mac.Controls
@@ -12,9 +13,10 @@ namespace JabbR.Eto.Mac.Controls
 		{
 		}
 
-		public string BadgeLabel {
-			get { return Control.DockTile.BadgeLabel; }
-			set { Control.DockTile.BadgeLabel = value ?? string.Empty; }
+		public void SendNotification (string text)
+		{
+			var notify = NSNotificationCenter.DefaultCenter;
+			notify.PostNotificationName(text, null);
 		}
 		
 		public string EncryptString (string serverName, string accountName, string password)

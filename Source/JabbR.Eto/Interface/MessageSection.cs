@@ -135,7 +135,7 @@ namespace JabbR.Eto.Interface
 				loaded = true;
 			}
 			
-		
+			
 			History.DocumentLoading += HandleDocumentLoading;
 		}
 		

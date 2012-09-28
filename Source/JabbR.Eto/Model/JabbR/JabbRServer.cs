@@ -20,6 +20,8 @@ namespace JabbR.Eto.Model.JabbR
 {
 	public class JabbRServer : Server
 	{
+		Task<jab.Models.LogOnInfo> connect;
+		
 		public const string JabbRTypeId = "jabbr";
 		
 		public jab.JabbRClient Client { get; private set; }
@@ -51,48 +53,53 @@ namespace JabbR.Eto.Model.JabbR
 		
 		public override void Connect ()
 		{
-			if (string.IsNullOrEmpty (Address))
+			OnConnecting (EventArgs.Empty);
+
+			if (string.IsNullOrEmpty (Address)) {
+				OnConnectError (new ConnectionErrorEventArgs (this, new Exception ("Address is empty")));
 				return;
+			}
 			if (UseSocialLogin) {
-				if (string.IsNullOrEmpty (UserId))
+				if (string.IsNullOrEmpty (UserId)) {
+					OnConnectError (new ConnectionErrorEventArgs (this, new Exception ("Not authenticated to this server")));
 					return;
-			} else if (string.IsNullOrEmpty (UserName) || string.IsNullOrEmpty (Password))
+				}
+			} else if (string.IsNullOrEmpty (UserName) || string.IsNullOrEmpty (Password)) {
+				OnConnectError (new ConnectionErrorEventArgs (this, new Exception ("Username or password are not specified")));
 				return;
+			}
+
+			ServicePointManager.FindServicePoint(new Uri(Address)).ConnectionLimit = 100;
 			
-			OnGlobalMessageReceived (new NotificationEventArgs (new NotificationMessage (DateTimeOffset.Now, "Connecting...")));
 			Client = new jab.JabbRClient (Address);//, new ServerSentEventsTransport());//new LongPollingTransport ());
 			HookupEvents ();
-			Task<jab.Models.LogOnInfo> connect;
-			
+			 
 			if (UseSocialLogin) {
 				connect = Client.Connect (UserId);
 			} else {
 				connect = Client.Connect (UserName, Password);
 			}
 				
-			connect.ContinueWith (task => {
-				if (!task.IsCompleted || task.Exception != null) {
-					Debug.WriteLine ("Error: {0}", task.Exception);
-					Application.Instance.Invoke (delegate {
-						var ex = task.Exception; //.GetBaseException();
-						MessageBox.Show (Application.Instance.MainForm, string.Format ("Unable to log in. Reason: {0}", ex.Message));
-					});
+			connect.ContinueWith (connectTask => {
+				if (!connectTask.IsCompleted) {
+					Debug.WriteLine ("Error: {0}", connectTask.Exception);
+					OnConnectError (new ConnectionErrorEventArgs(this, connectTask.Exception));
 					return;
 				}
-				var logOnInfo = task.Result;
-
-				Client.GetUserInfo ().ContinueWith (task2 => {
-					if (task2.Exception != null) {
-						Debug.WriteLine ("Failed to login {0}", task2.Exception);
-						Application.Instance.Invoke (delegate {
-							// failed!
-						});
+				var logOnInfo = connectTask.Result;
+				
+				Client.GetUserInfo ().ContinueWith (userTask => {
+					if (userTask.Exception != null) {
+						OnConnectError (new ConnectionErrorEventArgs(this, connectTask.Exception));
+						Client.Disconnect ();
+						return;
 					}
-					this.CurrentUser = new JabbRUser (task2.Result);
+					this.CurrentUser = new JabbRUser (userTask.Result);
 					
 					InitializeChannels (logOnInfo.Rooms.Select (r => new JabbRRoom (this, r)));
-					
+					connect = null;
 					OnConnected (EventArgs.Empty);
+					
 				});
 			});
 		}
@@ -159,6 +166,7 @@ namespace JabbR.Eto.Model.JabbR
 			Client.Disconnected += () => {
 				Debug.WriteLine ("Disconnected");
 				OnDisconnected (EventArgs.Empty);
+				
 			};
 			Client.FlagChanged += (user, flag) => {
 				Debug.WriteLine ("FlagChanged, User: {0}, Flag: {1}", user.Name, flag);
@@ -222,10 +230,12 @@ namespace JabbR.Eto.Model.JabbR
 			Client.JoinedRoom += (room) => {
 				Debug.WriteLine ("JoinedRoom, Room: {0}", room.Name);
 				var channel = GetRoom (room.Name);
+				bool newlyJoined = false;
 				if (channel == null) {
 					channel = new JabbRRoom (this, room);
+					newlyJoined = true;
 				}
-				OnOpenChannel (new OpenChannelEventArgs (channel, true));
+				OnOpenChannel (new OpenChannelEventArgs (channel, true, newlyJoined));
 			};
 			Client.UserJoined += (user, room, isOwner) => {
 				Debug.WriteLine ("UserJoined, User: {0}, Room: {1}", user.Name, room);
@@ -266,11 +276,9 @@ namespace JabbR.Eto.Model.JabbR
 				if (channel != null)
 					channel.TriggerMessageContent (messageId, content);
 			};
-			/*
 			Client.StateChanged += (status) => {
 				Debug.WriteLine ("StateChange, Old State: {0}, New State: {1}", status.OldState, status.NewState);
 			};
-			*/
 		}
 		
 		public override void SendMessage (string command)
@@ -296,7 +304,7 @@ namespace JabbR.Eto.Model.JabbR
 			if (room == null)
 				Client.JoinRoom (name);
 			else
-				OnOpenChannel (new OpenChannelEventArgs(room, true));
+				OnOpenChannel (new OpenChannelEventArgs(room, true, false));
 		}
 		
 		public override void LeaveChannel (Channel channel)
@@ -326,17 +334,17 @@ namespace JabbR.Eto.Model.JabbR
 			chat = GetChat (user.Name);
 			if (chat == null) {
 				chat = new JabbRChat(this, user, initialMessage);
-				OnOpenChannel (new OpenChannelEventArgs (chat, shouldFocus));
+				OnOpenChannel (new OpenChannelEventArgs (chat, shouldFocus, true));
 				return false;
 			}
 			return true;
 			
 		}
 		
-		public override void GenerateEditControls (DynamicLayout layout)
+		public override void GenerateEditControls (DynamicLayout layout, bool isNew)
 		{
-			base.GenerateEditControls (layout);
-			new JabbRServerEdit (this, layout);
+			base.GenerateEditControls (layout, isNew);
+			new JabbRServerEdit (this, layout, isNew);
 		}
 		
 		public override Control GenerateSection ()

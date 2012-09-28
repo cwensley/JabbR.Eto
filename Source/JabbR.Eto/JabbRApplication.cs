@@ -13,7 +13,7 @@ namespace JabbR.Eto
 {
 	public interface IJabbRApplication : IApplication
 	{
-		string BadgeLabel { get; set; }
+		void SendNotification (string text);
 		
 		string EncryptString (string serverName, string accountName, string password);
 		string DecryptString (string serverName, string accountName, string value);
@@ -87,22 +87,33 @@ namespace JabbR.Eto
 			}
 			
 		}
+
+		bool disconnecting;
+		bool disconnected;
 		
 		public override void OnTerminating (System.ComponentModel.CancelEventArgs e)
 		{
 			base.OnTerminating (e);
-			Configuration.DisconnectAll ();
-			SaveConfiguration ();
+			if (!disconnecting)
+			{
+				disconnecting = true;
+				SaveConfiguration ();
+				Configuration.DisconnectAll (() => {
+					Application.Instance.AsyncInvoke (delegate {
+						disconnected = true;
+						this.Quit ();
+					});
+				});
+				e.Cancel = true;
+			}
+			else
+				e.Cancel = !disconnected;
+			
 		}
 		
 		public void SaveConfiguration()
 		{
 			this.SaveXml (SettingsFileName, "jabbreto");
-		}
-		
-		public string BadgeLabel {
-			get { return handler.BadgeLabel; }
-			set { handler.BadgeLabel = value; }
 		}
 		
 		public string EncryptString (string serverName, string accountName, string password)
@@ -113,6 +124,11 @@ namespace JabbR.Eto
 		public string DecryptString (string serverName, string accountName, string value)
 		{
 			return handler.DecryptString(serverName, accountName, value);
+		}
+		
+		public void SendNotification (string text)
+		{
+			handler.SendNotification (text);
 		}
 		
 

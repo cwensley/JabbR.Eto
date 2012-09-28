@@ -91,21 +91,9 @@ namespace JabbR.Eto.Interface
 
 		public void UsersActivityChanged (IEnumerable<User> users)
 		{
-			var onlineLookup = online.Children.ToDictionary (r => r.Key);
-			var awayLookup = away.Children.ToDictionary (r => r.Key);
 			foreach (var user in users) {
-				ITreeItem item;
-				if (user.Active) {
-					if (awayLookup.TryGetValue (user.Id, out item)) {
-						away.Children.Remove (item);
-						online.Children.Add (item);
-					}
-				} else {
-					if (onlineLookup.TryGetValue (user.Id, out item)) {
-						online.Children.Remove (item);
-						away.Children.Add (item);
-					}
-				}
+				RemoveUser (user);
+				AddUser (user);
 			}
 			Update ();
 		}

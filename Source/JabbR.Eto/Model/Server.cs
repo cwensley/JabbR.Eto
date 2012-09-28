@@ -27,7 +27,8 @@ namespace JabbR.Eto.Model
 		}
 		
 		public bool IsConnected { get; protected set; }
-
+		public bool IsConnecting { get; protected set; }
+		
 		List<Channel> channels = new List<Channel> ();
 
 		public string Id { get; set; }
@@ -43,15 +44,44 @@ namespace JabbR.Eto.Model
 		public IEnumerable<Channel> Channels {
 			get { return channels; }
 		}
+		
+		public event EventHandler<ConnectionErrorEventArgs> ConnectError;
+		
+		protected virtual void OnConnectError (ConnectionErrorEventArgs e)
+		{
+			if (ConnectError != null)
+				ConnectError (this, e);
+		}
 
+		public event EventHandler<EventArgs> Disconnecting;
+
+		protected virtual void OnDisconnecting (EventArgs e)
+		{
+			if (Disconnecting != null)
+				Disconnecting (this, e);
+		}
+			
 		public event EventHandler<EventArgs> Disconnected;
 		
 		protected virtual void OnDisconnected (EventArgs e)
 		{
+			OnDisconnecting (e);
+			channels.Clear ();
 			this.IsConnected = false;
+			this.IsConnecting = false;
 			OnGlobalMessageReceived (new NotificationEventArgs (new NotificationMessage (DateTimeOffset.Now, "Disconnected")));
 			if (Disconnected != null)
 				Disconnected (this, e);
+		}
+
+		public event EventHandler<EventArgs> Connecting;
+		
+		protected virtual void OnConnecting (EventArgs e)
+		{
+			this.IsConnecting = true;
+			OnGlobalMessageReceived (new NotificationEventArgs (new NotificationMessage (DateTimeOffset.Now, "Connecting...")));
+			if (Connecting != null)
+				Connecting (this, e);
 		}
 		
 		public event EventHandler<EventArgs> Connected;
@@ -59,6 +89,7 @@ namespace JabbR.Eto.Model
 		protected virtual void OnConnected (EventArgs e)
 		{
 			this.IsConnected = true;
+			this.IsConnecting = false;
 			OnGlobalMessageReceived (new NotificationEventArgs (new NotificationMessage (DateTimeOffset.Now, "Connected")));
 			if (Connected != null)
 				Connected (this, e);
@@ -120,7 +151,7 @@ namespace JabbR.Eto.Model
 		
 		protected void InitializeChannels (IEnumerable<Channel> channels)
 		{
-			this.channels.Clear();
+			this.channels.Clear ();
 			this.channels.AddRange (channels.OrderBy (r => r.Name));
 		}
 		
@@ -154,7 +185,7 @@ namespace JabbR.Eto.Model
 
 		public abstract void LeaveChannel (Channel channel);
 		
-		public virtual void GenerateEditControls (DynamicLayout layout)
+		public virtual void GenerateEditControls (DynamicLayout layout, bool isNew)
 		{
 		}
 
@@ -181,7 +212,8 @@ namespace JabbR.Eto.Model
 		
 		int IDataStore<ITreeItem>.Count { get { return channels.Count; } }
 		
-		ITreeItem IDataStore<ITreeItem>.this[int index] { get { return channels[index]; } }
+		ITreeItem IDataStore<ITreeItem>.this [int index] { get { return channels [index]; }
+		}
 		
 		ITreeItem ITreeItem<ITreeItem>.Parent { get; set; }
 	}

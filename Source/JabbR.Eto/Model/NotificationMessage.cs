@@ -18,6 +18,12 @@ namespace JabbR.Eto.Model
 		{
 			
 		}
+
+		public NotificationMessage(string content, params object[] values)
+			: this (DateTimeOffset.Now, content, values)
+		{
+			
+		}
 			
 		public NotificationMessage(DateTimeOffset when, string content)
 		{
@@ -25,6 +31,13 @@ namespace JabbR.Eto.Model
 			this.Time = this.When.ToString ("h:mm:ss tt");
 			this.Content = content;
 		}
+		
+		public NotificationMessage(string content)
+			: this (DateTimeOffset.Now, content)
+		{
+			
+		}
+		
 	}
 	
 }

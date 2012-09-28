@@ -1,6 +1,7 @@
 using System;
 using Eto.Forms;
 using JabbR.Eto.Interface;
+using Eto;
 
 namespace JabbR.Eto.Actions
 {
@@ -15,7 +16,10 @@ namespace JabbR.Eto.Actions
 			this.Channels = channels;
 			this.ID = ActionID;
 			this.MenuText = "Previous Channel";
-			this.Accelerator = Application.Instance.CommonModifier | Key.Shift | Key.Up;
+			if (channels.Generator.ID == Generators.Mac)
+				this.Accelerator = Application.Instance.CommonModifier | Key.Shift | Key.Up;
+			else
+				this.Accelerator = Key.Alt | Key.Shift | Key.Up;
 		}
 		
 		protected override void OnActivated (EventArgs e)

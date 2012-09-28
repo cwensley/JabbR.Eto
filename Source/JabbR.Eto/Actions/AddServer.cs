@@ -22,7 +22,8 @@ namespace JabbR.Eto.Actions
 		{
 			base.OnActivated (e);
 			var server = new JabbRServer { Name = "JabbR.net", Address = "http://jabbr.net" };
-			using (var dialog = new ServerDialog(server)) {
+			using (var dialog = new ServerDialog(server, true)) {
+				dialog.DisplayMode = DialogDisplayMode.Attached;
 				var ret = dialog.ShowDialog (Application.Instance.MainForm);
 				if (ret == DialogResult.Ok) {
 					Debug.WriteLine ("Added Server, Name: {0}", server.Name);

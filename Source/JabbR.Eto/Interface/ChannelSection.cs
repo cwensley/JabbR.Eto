@@ -23,6 +23,8 @@ namespace JabbR.Eto.Interface
 		
 		public Channel Channel { get; private set; }
 		
+		public Server Server { get { return Channel.Server; } }
+		
 		public override bool SupportsAutoComplete { get { return true; } }
 		
 		public override bool AllowNotificationCollapsing { get { return true; } }
@@ -133,7 +135,7 @@ namespace JabbR.Eto.Interface
 
 		protected override void HandleDocumentLoaded (object sender, WebViewLoadedEventArgs e)
 		{
-			if (this.Channel != null) {
+			if (this.Channel != null && Server.IsConnected) {
 				BeginLoad ();
 				var getChannelInfo = this.Channel.GetChannelInfo ();
 				if (getChannelInfo != null) {
@@ -148,6 +150,8 @@ namespace JabbR.Eto.Interface
 									StartLive ();
 									AddHistory (r.Result, true);
 									ReplayDelayedCommands ();
+									AddNotification (new NotificationMessage (DateTimeOffset.Now, string.Format ("You just entered {0}", Channel.Name)));
+
 									FinishLoad ();
 								}, TaskContinuationOptions.OnlyOnRanToCompletion);
 								getHistory.ContinueWith (r => {
@@ -164,6 +168,11 @@ namespace JabbR.Eto.Interface
 				}
 				else
 					FinishLoad ();
+			}
+			else {
+				StartLive ();
+				ReplayDelayedCommands ();
+				AddNotification (new NotificationMessage(DateTimeOffset.Now, "Disconnected"));
 			}
 		}
 

@@ -20,7 +20,7 @@ namespace JabbR.Eto.Interface.JabbR
 		WebView web;
 		JabbRServer server;
 		HttpServer webserver;
-		Size defaultSize = new Size (408, 174);
+		Size defaultSize = new Size (408, 174 + 40 + 20);
 		Size expandedSize = new Size (800, 500);
 		const string AppName = "jabbr";
 		bool isLocal = true;
@@ -47,10 +47,26 @@ namespace JabbR.Eto.Interface.JabbR
 			
 			web = new WebView ();
 			web.DocumentLoaded += HandleDocumentLoaded;
-			this.AddDockedControl (web);
 			web.Url = webserver.Url;
 			
+			var layout = new DynamicLayout(this);
+			layout.Add (web, yscale: true);
+			layout.AddSeparateRow (Padding.Empty).Add (null, CancelButton ());
+			
 			HandleEvent (ClosedEvent);
+		}
+		
+		Control CancelButton ()
+		{
+			var control = new Button {
+				Text = "Cancel"
+			};
+			this.AbortButton = control;
+			control.Click += (sender, e) => {
+				this.DialogResult = DialogResult.Cancel;
+				Close ();
+			};
+			return control;
 		}
 
 		void HandleReceivedRequest (object sender, HttpServerRequestEventArgs e)
@@ -84,8 +100,11 @@ namespace JabbR.Eto.Interface.JabbR
 			if (isLocal != newIsLocal) {
 				isLocal = newIsLocal;
 				var newSize = isLocal ? defaultSize : expandedSize;
-				var rect = new Rectangle(this.Location, this.ClientSize);
+				var location = this.Location;
+				var rect = new Rectangle(location, this.ClientSize);
 				rect.Inflate ((newSize.Width - rect.Width) / 2, (newSize.Height - rect.Height) / 2);
+				if (Generator.ID == Generators.Mac)
+					rect.Y = location.Y;
 				this.Location = rect.Location;
 				this.ClientSize = rect.Size;
 			}

@@ -3,14 +3,18 @@ using Eto.Forms;
 using JabbR.Eto.Model;
 using Eto.Drawing;
 using Eto;
+using System.Linq;
 
 namespace JabbR.Eto.Interface.Dialogs
 {
 	public class ServerDialog : Dialog
 	{
-		public Server Server { get; private set; }
-		
 		Button cancelButton;
+		Button connectButton;
+		Button disconnectButton;
+		bool isNew;
+		
+		public Server Server { get; private set; }
 		
 		public bool AllowCancel
 		{
@@ -18,8 +22,9 @@ namespace JabbR.Eto.Interface.Dialogs
 			set { cancelButton.Enabled = cancelButton.Visible = value; }
 		}
 		
-		public ServerDialog (Server server)
+		public ServerDialog (Server server, bool isNew)
 		{
+			this.isNew = isNew;
 			this.Server = server;
 			this.Title = "Add Server";
 			this.MinimumSize = new Size (300, 0);
@@ -31,15 +36,29 @@ namespace JabbR.Eto.Interface.Dialogs
 			layout.AddRow (new Label { Text = "Server Name"}, ServerName ());
 			
 			// generate server-specific edit controls
-			server.GenerateEditControls (layout);
+			server.GenerateEditControls (layout, isNew);
 			
 			layout.AddRow (null, AutoConnectButton());
 			
 			layout.EndBeginVertical ();
-			
-			layout.AddRow (null, CancelButton(), SaveButton ());
+
+			layout.AddRow (Connect (), Disconnect (), null, this.CancelButton (), this.OkButton ("Save", SaveData));
 			
 			layout.EndVertical ();
+			
+			SetVisibility ();
+		}
+
+		bool SaveData ()
+		{
+			UpdateBindings ();
+			return true;
+		}
+		
+		void SetVisibility()
+		{
+			connectButton.Visible = !isNew && !Server.IsConnected;
+			disconnectButton.Visible = !isNew && Server.IsConnected;
 		}
 		
 		Control AutoConnectButton ()
@@ -56,27 +75,37 @@ namespace JabbR.Eto.Interface.Dialogs
 			return control;
 		}
 
-		Control CancelButton ()
+		Control Connect ()
 		{
-			var control = cancelButton = new Button { Text = "Cancel" };
-			this.AbortButton = control;
+			var control = connectButton = new Button {
+				Text = "Connect"
+			};
 			control.Click += (sender, e) => {
-				DialogResult = DialogResult.Cancel;
-				Close ();
+				Server.Connect ();
+				var parent = control.ParentWindow as Dialog;
+				parent.Close (DialogResult.Ok);
 			};
 			return control;
 		}
 		
-		Control SaveButton ()
+		Control Disconnect ()
 		{
-			var control = new Button { Text = "Save" };
-			this.DefaultButton = control;
+			var control = disconnectButton = new Button {
+				Text = "Disconnect"
+			};
 			control.Click += (sender, e) => {
-				UpdateBindings ();
-				DialogResult = DialogResult.Ok;
-				Close ();
+				Server.Disconnect ();
+				var parent = control.ParentWindow as Dialog;
+				parent.Close (DialogResult.Ok);
 			};
 			return control;
+		}
+		
+		public override void OnClosed (EventArgs e)
+		{
+			base.OnClosed (e);
+			if (DialogResult == DialogResult.Ok)
+				UpdateBindings ();
 		}
 	}
 }

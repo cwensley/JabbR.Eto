@@ -24,10 +24,13 @@ namespace JabbR.Eto.Model
 	{
 		public bool ShouldFocus { get; private set; }
 		
-		public OpenChannelEventArgs(Channel channel, bool shouldFocus)
+		public bool NewlyJoined { get; private set; }
+		
+		public OpenChannelEventArgs(Channel channel, bool shouldFocus, bool newlyJoined)
 			: base (channel)
 		{
 			this.ShouldFocus = shouldFocus;
+			this.NewlyJoined = newlyJoined;
 		}
 	}
 	

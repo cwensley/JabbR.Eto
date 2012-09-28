@@ -13,9 +13,10 @@ namespace JabbR.Eto.Model.JabbR
 	{
 		List<User> users = new List<User> ();
 		List<string> owners = new List<string> ();
-		IEnumerable<ChannelMessage> recentMessages;
+		TaskCompletionSource<IEnumerable<ChannelMessage>> recentMessages;
 		ChannelMessage firstMessage;
 		bool historyLoaded;
+		TaskCompletionSource<Channel> getChannelInfo = new TaskCompletionSource<Channel> ();
 		
 		static Image image = Bitmap.FromResource (typeof(JabbRRoom).Assembly, "JabbR.Eto.Resources.room.png");
 		
@@ -29,12 +30,10 @@ namespace JabbR.Eto.Model.JabbR
 			get { return base.Server as JabbRServer; }
 		}
 		
-		public JabbRRoom (JabbRServer server, jab.Models.Room room = null)
+		public JabbRRoom (JabbRServer server, jab.Models.Room room)
 			: base(server)
 		{
-			if (room != null) {
-				Set (room);
-			}
+			Set (room);
 		}
 
 		void Set (jab.Models.Room room)
@@ -43,30 +42,57 @@ namespace JabbR.Eto.Model.JabbR
 			this.Id = room.Name;
 			this.Topic = room.Topic;
 			this.Private = room.Private;
+			
+			recentMessages = new TaskCompletionSource<IEnumerable<ChannelMessage>>();
+			getChannelInfo = new TaskCompletionSource<Channel>();
+			Server.Client.GetRoomInfo (this.Id).ContinueWith (task => {
+				if (task.Exception != null) {
+					getChannelInfo.SetException (task.Exception);
+					recentMessages.SetException (task.Exception);
+				}
+				else {
+					this.Topic = task.Result.Topic;
+					this.Private = task.Result.Private;
+					
+					this.users.Clear ();
+					this.users.AddRange (from r in task.Result.Users select new JabbRUser (r));
+					this.owners.Clear ();
+					this.owners.AddRange (task.Result.Owners);
+					var messages = (from m in task.Result.RecentMessages select CreateMessage(m));
+					historyLoaded = true;
+					if (firstMessage != null) {
+						// filter up to the first already received message
+						messages = messages.TakeWhile (r => r.When < firstMessage.When || (r.When == firstMessage.When && r.Content != firstMessage.Content));
+						firstMessage = null;
+					}
+					recentMessages.SetResult (messages);
+					getChannelInfo.SetResult (this);
+				}
+			});
 		}
 		
 		public override Task<IEnumerable<ChannelMessage>> GetHistory (string fromId)
 		{
-			var task = new TaskCompletionSource<IEnumerable<ChannelMessage>>();
-			if (string.IsNullOrEmpty (fromId)) {
-				task.SetResult (recentMessages ?? Enumerable.Empty<ChannelMessage> ());
+			var task = new TaskCompletionSource<IEnumerable<ChannelMessage>> ();
+			if (recentMessages != null) {
+				recentMessages.Task.ContinueWith (messages => {
+					if (messages.IsCompleted) {
+						task.SetResult (messages.Result);
+						recentMessages = null;
+					}
+					else 
+						task.SetException (messages.Exception);
+				});
 			}
-			else if (recentMessages != null)
-			{
-				task.SetResult (recentMessages);
-			}
-			else
-			{
+			else {
 				var previous = Server.Client.GetPreviousMessages (fromId);
 				previous.ContinueWith (t => {
-					task.TrySetResult (from m in t.Result select CreateMessage(m));
-				}, TaskContinuationOptions.OnlyOnRanToCompletion);
-				
-				previous.ContinueWith (t => {
-					task.TrySetException (t.Exception);
-				}, TaskContinuationOptions.OnlyOnFaulted);
+					if (t.IsCompleted)
+						task.TrySetResult (from m in t.Result select CreateMessage(m));
+					else
+						task.TrySetException (t.Exception);
+				});
 			}
-			recentMessages = null;
 			
 			return task.Task;
 		}
@@ -124,28 +150,7 @@ namespace JabbR.Eto.Model.JabbR
 		
 		public override Task<Channel> GetChannelInfo ()
 		{
-			var tcs = new TaskCompletionSource<Channel> ();
-			Server.Client.GetRoomInfo (this.Id).ContinueWith (task => {
-				if (task.Exception != null)
-					tcs.SetException (task.Exception);
-				else {
-					Set (task.Result);
-					this.users.Clear ();
-					this.users.AddRange (from r in task.Result.Users select new JabbRUser (r));
-					this.owners.Clear ();
-					this.owners.AddRange (task.Result.Owners);
-					this.recentMessages = (from m in task.Result.RecentMessages select CreateMessage(m)).ToArray ();
-					historyLoaded = true;
-					if (firstMessage != null) {
-						// filter up to the first already received message
-						this.recentMessages = this.recentMessages.TakeWhile (r => r.When < firstMessage.When || (r.When == firstMessage.When && r.Content != firstMessage.Content)).ToArray ();
-						firstMessage = null;
-					}
-					tcs.SetResult (this);
-				}
-			});
-			
-			return tcs.Task;
+			return getChannelInfo.Task;
 		}
 
 		internal void TriggerOwnerAdded (jab.Models.User user)

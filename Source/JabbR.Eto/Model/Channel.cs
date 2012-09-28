@@ -178,7 +178,7 @@ namespace JabbR.Eto.Model
 
 		public virtual Image Image { get { return null; } }
 		
-		string IListItem.Key { get { return this.Id; } }
+		string IListItem.Key { get { return this.Server.Id + "_" + this.Id; } }
 		
 		bool ITreeItem<ITreeItem>.Expanded { get; set; }
 

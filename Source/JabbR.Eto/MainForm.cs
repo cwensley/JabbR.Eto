@@ -20,10 +20,12 @@ namespace JabbR.Eto
 		TopSection top;
 		Configuration config;
 		
+		const string DEFAULT_TITLE = "JabbReto";
+		
 		public MainForm (Configuration config)
 		{
 			this.config = config;
-			this.Title = "JabbReto";
+			this.Title = DEFAULT_TITLE;
 			this.ClientSize = new Size (800, 600);
 			this.MinimumSize = new Size (640, 400);
 			this.Style = "mainForm";
@@ -31,6 +33,17 @@ namespace JabbR.Eto
 			CreateActions ();
 			this.AddDockedControl (top);
 			HandleEvent (ShownEvent);
+		}
+		
+		public void SetUnreadCount (int count)
+		{
+			if (count > 0) {
+				Title = string.Format ("{0} ({1})", DEFAULT_TITLE, count);
+				Application.Instance.BadgeLabel = count.ToString ();
+			} else {
+				Title = DEFAULT_TITLE;
+				Application.Instance.BadgeLabel = null;
+			}
 		}
 		
 		void CreateActions ()
@@ -49,10 +62,12 @@ namespace JabbR.Eto
 			args.Actions.Add (new Actions.ChannelList (top.Channels));
 			args.Actions.Add (new Actions.Quit ());
 			args.Actions.Add (new Actions.About ());
+			args.Actions.Add (new Actions.ShowPreferences (config));
 			
 			var file = args.Menu.FindAddSubMenu ("&File", 100);
 			var help = args.Menu.FindAddSubMenu ("&Help", 900);
 			var server = args.Menu.FindAddSubMenu ("&Server", 500);
+			var view = args.Menu.FindAddSubMenu ("&View", 500);
 			
 
 			server.Actions.Add (Actions.ServerConnect.ActionID);
@@ -64,13 +79,16 @@ namespace JabbR.Eto
 			server.Actions.AddSeparator ();
 			server.Actions.Add (Actions.ChannelList.ActionID);
 			
-			if (Generator.ID == "mac") {
+			if (Generator.ID == Generators.Mac) {
 				var application = args.Menu.FindAddSubMenu (Application.Instance.Name, 100);
 				application.Actions.Add (Actions.About.ActionID, 100);
+				application.Actions.Add (Actions.ShowPreferences.ActionID);
 				application.Actions.Add (Actions.Quit.ActionID, 900);
-			} else {
+			}
+			else
+			{
 				file.Actions.Add (Actions.Quit.ActionID, 900);
-				
+				view.Actions.Add (Actions.ShowPreferences.ActionID);
 				help.Actions.Add (Actions.About.ActionID, 100);
 			}
 			
