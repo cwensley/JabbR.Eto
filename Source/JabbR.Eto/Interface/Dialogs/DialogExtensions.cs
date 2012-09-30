@@ -15,7 +15,7 @@ namespace JabbR.Eto.Interface.Dialogs
 			control.Click += (sender, e) => {
 				if (clicked != null && !clicked ())
 					return;
-				dialog.Close (DialogResult.Cancel);
+				dialog.Close (DialogResult.Ok);
 			};
 			return control;
 		}
