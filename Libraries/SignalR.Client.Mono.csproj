@@ -68,7 +68,6 @@
     <Compile Include="SignalR\SignalR.Client\Transports\IClientTransport.cs" />
     <Compile Include="SignalR\SignalR.Client\Transports\LongPollingTransport.cs" />
     <Compile Include="SignalR\SignalR.Client\Transports\ServerSentEventsTransport.cs" />
-    <Compile Include="SignalR\SignalR.Client\Properties\VersionInfo.cs" />
     <Compile Include="SignalR\Common\CommonAssemblyInfo.cs">
       <Link>SignalR\SignalR.Client\Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
@@ -92,8 +91,8 @@
     <Compile Include="SignalR\SignalR.Client\Infrastructure\ThreadSafeInvoker.cs" />
     <Compile Include="SignalR\SignalR.Client\Infrastructure\ErrorExtensions.cs" />
     <Compile Include="SignalR\SignalR.Client\Infrastructure\SignalRError.cs" />
-    <Compile Include="SignalR\SignalR\Infrastructure\PerformanceCounterExtensions.cs">
-      <Link>SignalR\SignalR.Client\Infrastructure\PerformanceCounterExtensions.cs</Link>
+    <Compile Include="SignalR\Common\CommonVersionInfo.cs">
+      <Link>SignalR\SignalR.Client\Properties\CommonVersionInfo.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>
