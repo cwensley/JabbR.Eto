@@ -8,7 +8,7 @@ namespace JabbR.Eto.Interface.Dialogs
 {
 	static class DialogExtensions
 	{
-		public static Control OkButton (this Dialog dialog, string text = null, Func<bool> clicked = null)
+		public static Button OkButton (this Dialog dialog, string text = null, Func<bool> clicked = null)
 		{
 			var control = new Button { Text = text ?? "OK" };
 			dialog.DefaultButton = control;
@@ -20,7 +20,7 @@ namespace JabbR.Eto.Interface.Dialogs
 			return control;
 		}
 
-		public static Control CancelButton (this Dialog dialog, string text = null, Func<bool> clicked = null)
+		public static Button CancelButton (this Dialog dialog, string text = null, Func<bool> clicked = null)
 		{
 			var control = new Button { Text = text ?? "Cancel" };
 			dialog.AbortButton = control;

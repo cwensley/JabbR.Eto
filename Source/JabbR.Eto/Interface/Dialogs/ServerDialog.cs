@@ -42,7 +42,7 @@ namespace JabbR.Eto.Interface.Dialogs
 			
 			layout.EndBeginVertical ();
 
-			layout.AddRow (Connect (), Disconnect (), null, this.CancelButton (), this.OkButton ("Save", SaveData));
+			layout.AddRow (Connect (), Disconnect (), null, cancelButton = this.CancelButton (), this.OkButton ("Save", SaveData));
 			
 			layout.EndVertical ();
 			

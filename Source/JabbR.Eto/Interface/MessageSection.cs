@@ -82,12 +82,18 @@ namespace JabbR.Eto.Interface
 		void HandleDocumentLoading (object sender, WebViewLoadingEventArgs e)
 		{
 			e.Cancel = true;
-			Debug.WriteLine ("Loading {0}", e.Uri);
-			if (e.Uri.IsFile || e.Uri.IsLoopback) {
-				HandleAction (e);
-			} else {
-				Application.Instance.Open (e.Uri.AbsoluteUri);
-			}
+			Application.Instance.AsyncInvoke (delegate
+			{
+				Debug.WriteLine ("Loading {0}", e.Uri);
+				if (e.Uri.IsFile || e.Uri.IsLoopback)
+				{
+					HandleAction (e);
+				}
+				else
+				{
+					Application.Instance.Open (e.Uri.AbsoluteUri);
+				}
+			});
 		}
 		
 		protected void BeginLoad ()

@@ -178,13 +178,13 @@ namespace JabbR.Eto.Interface
 
 		protected override void HandleAction (WebViewLoadingEventArgs e)
 		{
-			var historyIndex = e.Uri.PathAndQuery.IndexOf (LOAD_HISTORY_PREFIX);
+			var historyIndex = e.Uri.LocalPath.IndexOf (LOAD_HISTORY_PREFIX);
 			if (historyIndex >= 0) {
 				LoadHistory ();
 				return;
 			}
-			
-			var joinRoomIndex = e.Uri.PathAndQuery.IndexOf (JOIN_ROOM_PREFIX);
+
+			var joinRoomIndex = e.Uri.LocalPath.IndexOf (JOIN_ROOM_PREFIX);
 			if (joinRoomIndex >= 0) {
 				Channel.Server.JoinChannel (e.Uri.PathAndQuery.Substring (joinRoomIndex + JOIN_ROOM_PREFIX.Length));
 				return;

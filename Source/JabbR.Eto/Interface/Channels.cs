@@ -245,9 +245,16 @@ namespace JabbR.Eto.Interface
 		
 		MessageSection GetServerSection (Server server)
 		{
+			if (server == null) return null;
 			return CreateSection (server) as MessageSection;
 		}
-			
+
+		MessageSection GetChannelSection (Channel channel)
+		{
+			if (channel == null) return null;
+			return CreateSection (channel) as ChannelSection;
+		}
+		
 		Control CreateSection (ITreeItem item)
 		{
 			var generator = item as ISectionGenerator;
