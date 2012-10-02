@@ -12,13 +12,6 @@ namespace JabbR.Eto.Client.Controls
 		const string Salt = "JabbR.Eto";
 		static byte[] saltBytes = Encoding.UTF8.GetBytes (Salt);
 		
-		public string BadgeLabel
-		{
-			get;
-			set;
-		}
-
-
 		public string EncryptString (string serverName, string accountName, string password)
 		{
 			return Convert.ToBase64String (ProtectedData.Protect (Encoding.UTF8.GetBytes (password ?? string.Empty), saltBytes, DataProtectionScope.CurrentUser));

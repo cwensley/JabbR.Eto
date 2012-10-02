@@ -4,12 +4,12 @@ using System.Runtime.CompilerServices;
 // Information about this assembly is defined by the following attributes. 
 // Change them to the values specific to your project.
 
-[assembly: AssemblyTitle("JabbR.Eto.Wpf")]
+[assembly: AssemblyTitle ("JabbReto")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany ("Picoe Software Solutions Inc.")]
 [assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("Curtis Wensley")]
+[assembly: AssemblyCopyright ("2012 Curtis Wensley")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

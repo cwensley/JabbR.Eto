@@ -8,21 +8,30 @@
     <ProjectGuid>{FE74236A-EB06-4280-BB28-3509DAF06A3F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>JabbR.Eto.Wpf</RootNamespace>
-    <AssemblyName>JabbR.Eto.Wpf</AssemblyName>
-    <PublishUrl>publish\</PublishUrl>
+    <AssemblyName>JabbReto</AssemblyName>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <PublishUrl>Z:\Projects\download.picoe.ca/JabbReto/windows/</PublishUrl>
     <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Background</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
+    <InstallUrl>http://download.picoe.ca/JabbReto/windows/</InstallUrl>
+    <SupportUrl>https://github.com/cwensley/JabbR.Eto</SupportUrl>
+    <ErrorReportUrl>https://github.com/cwensley/JabbR.Eto/issues</ErrorReportUrl>
+    <ProductName>JabbReto</ProductName>
+    <PublisherName>Picoe Software Solutions Inc.</PublisherName>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+    <WebPage>index.html</WebPage>
+    <ApplicationRevision>14</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <ExcludeDeploymentUrl>true</ExcludeDeploymentUrl>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -48,17 +57,45 @@
   <PropertyGroup>
     <ApplicationIcon>JabbReto.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>66D83B46CBCB3CA0B27B03C50B1F8C7F15F12F98</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>JabbR.Eto.Wpf_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CefSharp">
+      <HintPath>..\..\Libraries\CefSharp\CefSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="CefSharp.Wpf">
+      <HintPath>..\..\Libraries\CefSharp\CefSharp.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.Security" />
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\CustomDialog.cs" />
+    <Compile Include="Controls\CustomForm.cs" />
     <Compile Include="Controls\JabbRApplicationHandler.cs" />
+    <Compile Include="Controls\CefSharpWebViewHandler.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
@@ -82,9 +119,46 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\Libraries\CefSharp\avcodec-54.dll">
+      <Link>avcodec-54.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\avformat-54.dll">
+      <Link>avformat-54.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\avutil-51.dll">
+      <Link>avutil-51.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\d3dcompiler_43.dll">
+      <Link>d3dcompiler_43.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\d3dx9_43.dll">
+      <Link>d3dx9_43.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\icudt.dll">
+      <Link>icudt.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\libcef.dll">
+      <Link>libcef.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\libEGL.dll">
+      <Link>libEGL.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\libGLESv2.dll">
+      <Link>libGLESv2.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\JabbR.Eto.Mac\Styles\default\channel.html">
       <Link>Styles\default\channel.html</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="..\JabbR.Eto.Mac\Styles\default\channel.js">
       <Link>Styles\default\channel.js</Link>
@@ -148,4 +222,230 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\Libraries\CefSharp\chrome.pak">
+      <Link>chrome.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\am.pak">
+      <Link>locales\am.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\ar.pak">
+      <Link>locales\ar.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\bg.pak">
+      <Link>locales\bg.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\bn.pak">
+      <Link>locales\bn.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\ca.pak">
+      <Link>locales\ca.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\cs.pak">
+      <Link>locales\cs.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\da.pak">
+      <Link>locales\da.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\de.pak">
+      <Link>locales\de.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\el.pak">
+      <Link>locales\el.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\en-GB.pak">
+      <Link>locales\en-GB.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\en-US.pak">
+      <Link>locales\en-US.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\es-419.pak">
+      <Link>locales\es-419.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\es.pak">
+      <Link>locales\es.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\et.pak">
+      <Link>locales\et.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\fa.pak">
+      <Link>locales\fa.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\fi.pak">
+      <Link>locales\fi.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\fil.pak">
+      <Link>locales\fil.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\fr.pak">
+      <Link>locales\fr.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\gu.pak">
+      <Link>locales\gu.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\he.pak">
+      <Link>locales\he.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\hi.pak">
+      <Link>locales\hi.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\hr.pak">
+      <Link>locales\hr.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\hu.pak">
+      <Link>locales\hu.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\id.pak">
+      <Link>locales\id.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\it.pak">
+      <Link>locales\it.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\ja.pak">
+      <Link>locales\ja.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\kn.pak">
+      <Link>locales\kn.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\ko.pak">
+      <Link>locales\ko.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\lt.pak">
+      <Link>locales\lt.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\lv.pak">
+      <Link>locales\lv.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\ml.pak">
+      <Link>locales\ml.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\mr.pak">
+      <Link>locales\mr.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\ms.pak">
+      <Link>locales\ms.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\nb.pak">
+      <Link>locales\nb.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\nl.pak">
+      <Link>locales\nl.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\pl.pak">
+      <Link>locales\pl.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\pt-BR.pak">
+      <Link>locales\pt-BR.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\pt-PT.pak">
+      <Link>locales\pt-PT.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\ro.pak">
+      <Link>locales\ro.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\ru.pak">
+      <Link>locales\ru.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\sk.pak">
+      <Link>locales\sk.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\sl.pak">
+      <Link>locales\sl.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\sr.pak">
+      <Link>locales\sr.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\sv.pak">
+      <Link>locales\sv.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\sw.pak">
+      <Link>locales\sw.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\ta.pak">
+      <Link>locales\ta.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\te.pak">
+      <Link>locales\te.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\th.pak">
+      <Link>locales\th.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\tr.pak">
+      <Link>locales\tr.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\uk.pak">
+      <Link>locales\uk.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\vi.pak">
+      <Link>locales\vi.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\zh-CN.pak">
+      <Link>locales\zh-CN.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Libraries\CefSharp\locales\zh-TW.pak">
+      <Link>locales\zh-TW.pak</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="App.config" />
+    <None Include="JabbR.Eto.Wpf_TemporaryKey.pfx" />
+    <None Include="Properties\app.manifest" />
+  </ItemGroup>
+  <ItemGroup />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>

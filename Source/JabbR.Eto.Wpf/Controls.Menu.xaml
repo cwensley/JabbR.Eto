@@ -2,16 +2,16 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     >
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/MahApps.Metro;component/Styles/Colours.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colours.xaml" />
     </ResourceDictionary.MergedDictionaries>
     <!--Menu-->
     
     <SolidColorBrush x:Key="MenuBackground" Color="{DynamicResource WhiteColor}"/>
     <SolidColorBrush x:Key="MenuSeparatorBorderBrush" Color="#333337"/>
     <SolidColorBrush x:Key="MenuItemHighlightedBackground" Color="{DynamicResource HighlightLightColor}"/>
-    <SolidColorBrush x:Key="SubmenuItemBackground" Color="#FFDADADA"/>
+    <SolidColorBrush x:Key="SubmenuItemBackground" Color="#FFEEEEEE"/>
     <SolidColorBrush x:Key="SubmenuItemBackgroundHighlighted" Color="#FFFFFFFF"/>
-    <SolidColorBrush x:Key="MenuDisabledForeground" Color="{DynamicResource Gray9}"/>
+    <SolidColorBrush x:Key="MenuDisabledForeground" Color="#FFFFFFFF"/>
     <SolidColorBrush x:Key="BackgroundSelected" Color="#007ACC"/>
 
     <Color x:Key="DropShadowColor">#22EEEEEE</Color>
@@ -34,23 +34,19 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type MenuItem}">
                             <!--Border 1-->
-                            <Border x:Name="Border" Background="Transparent" BorderBrush="Transparent" 
-                                    BorderThickness="1" SnapsToDevicePixels="False">
+                            <Border x:Name="Border" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" SnapsToDevicePixels="False">
                                 <Grid x:Name="Grid">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition x:Name="Col0" MinWidth="17" Width="Auto" 
-                                                          SharedSizeGroup="MenuItemIconColumnGroup"/>
+                                        <ColumnDefinition x:Name="Col0" MinWidth="17" Width="Auto" SharedSizeGroup="MenuItemIconColumnGroup"/>
                                         <ColumnDefinition Width="Auto" SharedSizeGroup="MenuTextColumnGroup"/>
                                         <ColumnDefinition Width="Auto" SharedSizeGroup="MenuItemIGTColumnGroup"/>
                                         <ColumnDefinition x:Name="Col3" Width="14"/>
                                     </Grid.ColumnDefinitions>
-                                    <ContentPresenter Grid.Column="0" x:Name="Icon" VerticalAlignment="Center" 
-                                                      ContentSource="Icon"/>
+                                    <ContentPresenter Grid.Column="0" x:Name="Icon" VerticalAlignment="Center" ContentSource="Icon"/>
                                     <ContentPresenter Grid.Column="1" Margin="{TemplateBinding Padding}" 
                                                       x:Name="HeaderHost" RecognizesAccessKey="True" 
-                                                      ContentSource="Header" VerticalAlignment="Center"/>
-                                    <ContentPresenter Grid.Column="2" Margin="8,1,8,1" x:Name="IGTHost" 
-                                                      ContentSource="InputGestureText" VerticalAlignment="Center"/>
+                                                      ContentSource="Header" VerticalAlignment="Center" />
+                                    <ContentPresenter Grid.Column="2" Margin="8,1,8,1" x:Name="IGTHost" ContentSource="InputGestureText" VerticalAlignment="Center"/>
                                     <Grid Grid.Column="3" Margin="4,0,6,0" x:Name="ArrowPanel" VerticalAlignment="Center">
                                         <Path x:Name="ArrowPanelPath" HorizontalAlignment="Right" VerticalAlignment="Center" 
                                               Fill="{TemplateBinding Foreground}" Data="M0,0 L0,8 L4,4 z"/>
@@ -66,8 +62,7 @@
                                                     BorderThickness="1" Background="{StaticResource SubmenuItemBackground}" 
                                                     SnapsToDevicePixels="True">
                                                 <Grid x:Name="SubMenu" Grid.IsSharedSizeScope="True" Margin="2">
-                                                    <StackPanel IsItemsHost="True" 
-                                                                KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                                                    <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle"/>
                                                 </Grid>
                                                 <Border.Effect>
                                                     <DropShadowEffect ShadowDepth="4" Color="{StaticResource DropShadowColor}"/>
