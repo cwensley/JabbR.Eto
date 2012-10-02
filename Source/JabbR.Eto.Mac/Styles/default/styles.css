@@ -90,6 +90,10 @@ html, body, #container {
 	word-wrap: break-word;
 }
 
+#messages > li.marker {
+	border-bottom: 2px solid #9BF;
+}
+
 
 /* regular message */
 .message {
