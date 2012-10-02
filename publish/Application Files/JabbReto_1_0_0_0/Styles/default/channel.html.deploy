@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>JabbReto</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+	<link rel='stylesheet' href='styles.css'/>
+	<script type='text/javascript' src='jquery.min.js'></script>
+  <script type='text/javascript' src='jquery.captureDocumentWrite.min.js'></script>
+  <script type='text/javascript' src='jsrender.js'></script>
+  <script type='text/javascript' src='channel.js'></script>
+</head>
+<body>
+	<div>
+		<script id='template-message' type='text/x-jsrender'>
+			<li class='message clearfix' id='m-{{:Id}}'>
+				<div class='user'>{{:User}}</div>
+				<div class='content'>{{:Content}}</div>
+				<div class='time'>{{:Time}}</div>
+			</li>
+		</script>
+		<script id='template-notification' type='text/x-jsrender'>
+			<li class='notification clearfix'>
+				<div class='content'>{{:Content}}<a href='#' class='collapse-info'></a></div>
+				<div class='time'>{{:Time}}</div>
+			</li>
+		</script>
+		<script id='template-memessage' type='text/x-jsrender'>
+			<li class='notification clearfix'>
+				<div class='content'>*{{:User}} {{:Content}}</div>
+				<div class='time'>{{:Time}}</div>
+			</li>
+		</script>
+		<script id='template-datestamp' type='text/x-jsrender'>
+			<li class='datestamp clearfix'>
+				<div class='content'>*{{:Date}}</div>
+			</li>
+		</script>
+	</div>	
+	<div id='topic'>
+	</div>	
+	<div id='container'>
+		<div id='loader' class='notification clearfix'>
+			<div class='icon'></div>
+			<div class='content'>Loading...</div>
+		</div>
+		<ul id='messages'></ul>
+	</div>
+	<div>
+		<script type='text/javascript'>
+		/**
+		$(function() {
+			JabbREto.beginLoad();
+			JabbREto.addNotification({Content: '---'}, true);
+			JabbREto.setTopic('this is the topic of the channel. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum');
+			JabbREto.addMessage({Time: '10:30:00 AM', Content: 'Hello there!', User: 'User'});
+			JabbREto.addNotification({Time: '10:31:00 AM', Content: 'Joe Joined', User: 'User'}, true);
+			JabbREto.addMessage({Time: '10:31:00 AM', Content: 'Hi!', User: 'Joe'});
+			JabbREto.addMessage({Time: '10:32:00 AM', Content: 'What\'s your name?', User: 'User'});
+			JabbREto.addMessage({Time: '10:35:00 AM', User: 'User', Content: '<div class="collapsible_content">\
+	<h3 class="collapsible_title">Paste (click to show/hide)</h3>\
+	<div class="collapsible_box" style="display: block; ">\
+		<img class="delayimg2" src="http://cwensley.github.com/JabbR.Eto/images/screenshots/Main-MetroWPF.png" >\
+	</div>\
+</div>'});
+			JabbREto.addMessage({Time: '10:33:00 AM', Content: 'Joe', User: 'Joe'});
+			JabbREto.addMeMessage({Time: '10:33:20 AM', Content: 'is trying to make this thing work', User: 'Joe'});
+			JabbREto.addNotification({Time: '10:33:30 AM', Content: 'Joe Left', User: 'User'}, true);
+			JabbREto.addMessage({Time: '10:34:00 AM', User: 'User', Content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'});
+			JabbREto.addMessage({Time: '10:35:00 AM', User: 'User', Content: '<div class="collapsible_content">\
+	<h3 class="collapsible_title">Paste (click to show/hide)</h3>\
+	<div class="collapsible_box" style="display: block; ">\
+		<pre class="multiline">error: function (e) {\n\
+    alert(e.statusText);\n\
+}</pre>\
+	</div>\
+</div>'});
+			JabbREto.addMessage({Time: '10:42:00 AM', User: 'User', Content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'});
+			JabbREto.addMessage({Time: '10:42:00 AM', User: 'User', Content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'});
+			JabbREto.addNotification({Time: '10:40:30 AM', Content: 'Doop Left', User: 'User'}, true);
+			JabbREto.addMessage({Time: '10:42:00 AM', User: 'User', Content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'});
+			JabbREto.addMessage({Time: '10:42:00 AM', User: 'User', Content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'});
+			JabbREto.addMessage({Time: '10:42:00 AM', User: 'User', Content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'});
+			JabbREto.addMessage({Time: '10:42:00 AM', User: 'User', Content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'});
+			JabbREto.addNotification({Time: '10:40:30 AM', Content: 'Doop Left', User: 'User'}, true);
+			JabbREto.addNotification({Time: '10:40:30 AM', Content: 'Doop Left', User: 'User'}, true);
+			JabbREto.addNotification({Time: '10:40:30 AM', Content: 'Doop Left', User: 'User'}, true);
+			JabbREto.addNotification({Time: '10:40:30 AM', Content: 'Doop Left', User: 'User'}, true);
+			//setTimeout(function() { $('.delayimg2').attr('src', "http://cwensley.github.com/JabbR.Eto/images/screenshots/Main-WPF.png"); }, 4000);
+			//setTimeout(function() { $('.delayimg1').attr('src', "http://cwensley.github.com/JabbR.Eto/images/screenshots/Main-OSX.png"); }, 4000);
+			JabbREto.addNotification({Time: '10:40:30 AM', Content: 'Doop Left', User: 'User'});
+			JabbREto.addNotification({Time: '10:40:30 AM', Content: 'Doop Left', User: 'User'});
+			JabbREto.addNotification({Time: '10:40:30 AM', Content: 'Doop Left', User: 'User'});
+			JabbREto.addNotification({Time: '10:36:30 AM', Content: 'Joe Left', User: 'User'}, true);
+			JabbREto.addNotification({Time: '10:37:30 AM', Content: 'Curtis Left', User: 'User'}, true);
+			JabbREto.addNotification({Time: '10:38:30 AM', Content: 'Woot Left', User: 'User'}, true);
+			JabbREto.addNotification({Time: '10:39:30 AM', Content: 'Bing Left', User: 'User'}, true);
+			JabbREto.addNotification({Time: '10:40:30 AM', Content: 'Doop Left', User: 'User'}, true);
+			JabbREto.addNotification({Time: '10:40:30 AM', Content: 'Doop Left', User: 'User'}, true);
+			JabbREto.addNotification({Time: '10:40:30 AM', Content: 'Doop Left', User: 'User'}, true);
+			JabbREto.addNotification({Time: '10:40:30 AM', Content: 'Doop Left', User: 'User'}, true);
+			JabbREto.addNotification({Time: '10:40:30 AM', Content: 'Doop Left', User: 'User'}, true);
+			JabbREto.addNotification({Time: '10:40:30 AM', Content: 'Doop Left', User: 'User'}, true);
+			JabbREto.addNotification({Time: '10:40:30 AM', Content: 'Doop Left', User: 'User'}, true);
+			JabbREto.addNotification({Time: '10:40:30 AM', Content: 'Doop Left', User: 'User'}, true);
+			//setTimeout(function() {
+			JabbREto.addNotification({Time: '10:40:30 AM', Content: 'Doop Left', User: 'User'}, true);
+			JabbREto.addNotification({Time: '10:41:30 AM', Content: 'Derp Left', User: 'User'}, true);
+			JabbREto.addMessage({Time: '10:42:00 AM', User: 'User', Content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'});
+			JabbREto.setMarker ();
+			JabbREto.addMessage({Time: '10:42:00 AM', User: 'User', Content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'});
+			JabbREto.addMessage({Time: '10:42:00 AM', User: 'User', Content: 'Join some room <a href="#/rooms/general-chat">#general-chat</a>'});
+			//JabbREto.finishLoad();
+			//JabbREto.scrollToBottom();
+			//}, 1000);
+			JabbREto.addMessage({Time: '10:35:00 AM', User: 'User', Content: '<div class="collapsible_content">\
+	<h3 class="collapsible_title">Paste (click to show/hide)</h3>\
+	<div class="collapsible_box" style="display: block; ">\
+		<img class="delayimg1" src="http://cwensley.github.com/JabbR.Eto/images/screenshots/Main-OSX.png" >\
+	</div>\
+</div>'});
+
+			JabbREto.addMessage({Time: '10:60:00 AM', User: 'User', Content: '<a rel="nofollow external" target="_blank" href="http://pastie.org/pastes/4825232" title="http://pastie.org/pastes/4825232">http://pastie.org/pastes/4825232</a><p>\
+	<div id="a5a8aebc-0978-4050-920c-935a28a5ced3"></div>\
+	<script type="text/javascript">\
+		captureDocumentWrite("http://pastie.org/4825232.js", "http://pastie.org/4825232", $("#a5a8aebc-0978-4050-920c-935a28a5ced3"));\
+	\x3C/script>\
+</p>'});
+
+			JabbREto.addMessage({Time: '10:60:00 AM', User: 'User', Content: '<a rel=\"nofollow external\" target=\"_blank\" href=\"https://twitter.com/jabbr/statuses/243149346655305728\" title=\"https://twitter.com/jabbr/statuses/243149346655305728\">https://twitter.com/jabbr/statuses/243149346655305728</a><p><div class=\"collapsible_content\"><div class=\"collapsible_pin\"></div><h3 class=\"collapsible_title\">https://twitter.com/jabbr/statuses/243149346655305728 (click to show/hide)</h3><div class=\"collapsible_box\"><div class=\"tweet_243149346655305728\"><script src=\"https://api.twitter.com/1/statuses/show/243149346655305728.json?include_entities=false&amp;callback=addTweet\">\x3C/script></div></div></div></p>'});
+			JabbREto.finishLoad();
+		});
+		/**/
+		</script>
+	</div>
+</body>
+</html>
