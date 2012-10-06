@@ -16,6 +16,8 @@ namespace JabbR.Eto.Interface.JabbR
 		Container socialSection;
 		CheckBox useSocialLogin;
 		Label statusLabel;
+		TextBox janrainAppName;
+		TextBox serverAddress;
 		Button authButton;
 		bool isNew;
 		
@@ -72,11 +74,22 @@ namespace JabbR.Eto.Interface.JabbR
 			var layout = new DynamicLayout (socialSection = new GroupBox{ Text = "Janrain"});
 
 			layout.Add (null);
+			layout.AddSeparateRow (new Label { Text = "App Name" }, JanrainAppName ());
+			layout.Add (null);
+			layout.BeginVertical ();
 			layout.AddRow (null, StatusLabel (), null);
 			layout.AddRow (null, AuthButton(), null);
+			layout.EndVertical ();
 			layout.Add (null);
 
 			return layout.Container;
+		}
+		
+		Control JanrainAppName ()
+		{
+			var control = janrainAppName = new TextBox ();
+			control.Bind ("Text", server, "JanrainAppName", DualBindingMode.OneWay);
+			return control;
 		}
 		
 		Control StatusLabel ()
@@ -91,7 +104,7 @@ namespace JabbR.Eto.Interface.JabbR
 		{
 			var control = authButton = new Button { Text = "Authenticate" };
 			control.Click += delegate {
-				var dlg = new JabbRAuthDialog(server);
+				var dlg = new JabbRAuthDialog(serverAddress.Text, janrainAppName.Text);
 				dlg.DisplayMode = DialogDisplayMode.Attached;
 				var result = dlg.ShowDialog (control);
 				if (result == DialogResult.Ok) {
@@ -115,7 +128,7 @@ namespace JabbR.Eto.Interface.JabbR
 		
 		Control EditAddress ()
 		{
-			var control = new TextBox ();
+			var control = serverAddress = new TextBox ();
 			control.Bind ("Text", server, "Address", DualBindingMode.OneWay);
 			return control;
 		}

@@ -5,8 +5,18 @@ var JabbREto = (function(){
 	var v = {
 		scrollPos: 0,
 		bottomThreshold: 20,
-		scrolls: []
+		scrolls: [],
+		settings: {
+			html5video: true,
+			fullscreenVideo: true,
+			showRichContent: true,
+			maxHistory: 500
+		}
 	};
+	
+	function addParameter(url, param){
+		return url + (url.indexOf('?') < 0 ? '?':'&') + param;
+	}
 
 	function shouldScrollToBottom () {
 		var bottomPos = v.scrollPos + v.scrollContainer.height();
@@ -83,15 +93,15 @@ var JabbREto = (function(){
 	}
 	
 	function imageLoadFix(msgContent) {
-		$(msgContent).find('img').each(function() {
+		msgContent.find('img').each(function() {
 			var img = $(this);
 			var src = img.attr('src');
 			var loaderImg = $("<img>").attr('src', src);
 			if (!loaderImg[0].complete) {
 				img.attr('src', 'loader.gif');
-				loaderImg.load(function() {
+				loaderImg.one('load', function() {
 					var scroll = saveScroll();
-					img.load(function() {
+					img.one('load', function() {
 						restoreScroll(scroll);
 					});
 					img.attr('src', src);
@@ -99,6 +109,32 @@ var JabbREto = (function(){
 			}
 		});
 	}
+	
+	var reg = /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
+	function youtubeToHtml5(content) {
+		content.find('object > embed').each(function() {
+			var embed = $(this); //.find('embed');
+			var container = embed.closest('object');
+			//console.log('found!!');
+			var src = embed.attr('src');
+			var id = (src.match( reg ) || [])[1];
+			if (id) {
+				if (v.settings.fullscreenVideo) id = addParameter(id, 'fs=1');
+				//if (v.settings.html5video) id = addParameter(id, 'html5=1');
+				container.replaceWith('<iframe width="425" height="344" src="http://www.youtube.com/embed/' + id + '" frameborder="0"></iframe>');
+			};
+		});
+	}
+
+	function encodeHtml(html) {
+		return $("<div/>").text(html).html();
+	}
+
+	function markdownToHtml(markdown) {
+		var converter = new Markdown.Converter().makeHtml;
+		return converter(markdown);
+	}
+
 
 var pub = {
 	initialize: function() {
@@ -111,9 +147,8 @@ var pub = {
 			for (var scroll in v.scrolls) {
 				scroll.pos += v.scrollPos - newScroll;
 			}
-			v.scrollPos = newScroll;
 			
-			if (!v.loading && v.scrollPos == 0) {
+			if (!v.loading && newScroll < 10 && v.scrollPos > 10) {
 				pub.beginLoad ();
 				/**/
 				window.location.search = '?load-history';
@@ -140,6 +175,7 @@ var pub = {
 				}, 2000);
 				/**/
 			}
+			v.scrollPos = newScroll;
 		});
 
 		$(window).resize(function() {
@@ -160,30 +196,38 @@ var pub = {
 			var notification = $(this).closest('.notification');
 			expandNotifications(notification);
 		});
+		
 		v.messages.on('click', '.notification-collapse', function(event) {
 			event.preventDefault();
 			var notification = $(this).closest('.notification');
 			collapseNotifications(notification, true);
 		});
+		
 		v.messages.on('click', 'a[href^="#/rooms/"]', function(event) {
 			event.preventDefault ();
 			var name = $(this).attr('href').substring(8);
 			window.location.search = '?join-room=' + name;
 		});
 	},
+	
+	settings: function(settings) {
+		$.extend(v.settings, settings);
+	},
+
 	finishLoad: function() {
 		v.loading = false;
 		$('#loader').hide();
 	},
+
 	beginLoad: function() {
 		v.loading = true;
 		$('#loader').show();
 	},
+
 	addHistory: function(messages, scrollToBottom) {
 		var scroll = scrollToBottom ? shouldScrollToBottom() : saveScroll();
 		var msgContent = this.translateContent($( "#template-message").render(messages));
 
-		imageLoadFix(msgContent);
 		v.messages.prepend(msgContent);
 		if (scrollToBottom)
 			pub.scrollToBottom(scroll);
@@ -191,6 +235,7 @@ var pub = {
 			restoreScroll(scroll);
 			
 	},
+
 	addMessage: function(msg) {
 		var scroll = shouldScrollToBottom ();
 		var msgContent = this.translateContent($( "#template-message").render(msg));
@@ -200,7 +245,6 @@ var pub = {
 			existingMsg.replaceWith(msgContent);
 			return;
 		}
-		imageLoadFix(msgContent);
 		v.messages.append(msgContent);
 		pub.scrollToBottom(scroll);
 	},
@@ -211,6 +255,8 @@ var pub = {
 			var img = $(this);
 			img.attr('src', img.attr('src').replace(/^proxy[?]url[=]/, ''));
 		});
+		imageLoadFix(content);
+		//youtubeToHtml5(content);
 		return content;
 	},
 	
@@ -231,7 +277,6 @@ var pub = {
 		v.messages.append(msgContent);
 		pub.scrollToBottom(scroll);
 	},
-	
 
 	addMessageContent: function(msg) {
 		
@@ -240,18 +285,19 @@ var pub = {
 			var scroll = saveScroll (existingMsg);
 			
 			var msgContent = this.translateContent(msg.Content);
-			imageLoadFix(msgContent);
 			existingMsg.append(msgContent);
 
 			restoreScroll(scroll);
 		}
 	},
+
 	scrollToBottom: function(shouldScrollToBottom) {
 		if (shouldScrollToBottom === undefined || shouldScrollToBottom) {
 			v.scrollPos = Math.max(0, $(document).height() - v.scrollContainer.height());
 			v.scrollContainer.scrollTop (v.scrollPos);
 		}
 	},
+
 	setTopic: function(topic) {
 		var scroll = saveScroll();
 		var $topic = $('#topic');
@@ -265,40 +311,83 @@ var pub = {
 		$('#container').css('padding-top', height + 'px');
 		restoreScroll(scroll);
 	},
+
 	setMarker: function () {
 		if (v.marker)
-			v.marker.removeClass('marker');
-		
-		v.marker = v.messages.children(':last');
-		if (v.marker)
-			v.marker.addClass('marker');
+			v.marker.remove ();
+		else
+			v.marker = $('<li class="marker"></li>');
+		v.messages.append(v.marker);
 	},
+
 	captureDocumentWrite: function (documentWritePath, headerText, elementToAppendTo) {
-	$.fn.captureDocumentWrite(documentWritePath, function (content) {
-		var scroll = shouldScrollToBottom(),
-			collapsible = null,
-			insertContent = null,
-			links = null;
+		$.fn.captureDocumentWrite(documentWritePath, function (content) {
+			var scroll = shouldScrollToBottom(),
+				collapsible = null,
+				insertContent = null,
+				links = null;
 	
-		collapsible = $('<div><h3 class="collapsible_title">' + headerText + ' (click to show/hide)</h3><div class="collapsible_box captureDocumentWrite_content"></div></div>');
-		$('.captureDocumentWrite_content', collapsible).append(content);
+			collapsible = $('<div><h3 class="collapsible_title">' + headerText + ' (click to show/hide)</h3><div class="collapsible_box captureDocumentWrite_content"></div></div>');
+			$('.captureDocumentWrite_content', collapsible).append(content);
 	
-		// Since IE doesn't render the css if the links are not in the head element, we move those to the head element
-		links = $('link', collapsible);
-		links.remove();
-		$('head').append(links);
+			// Since IE doesn't render the css if the links are not in the head element, we move those to the head element
+			links = $('link', collapsible);
+			links.remove();
+			$('head').append(links);
 	
-		// Remove the target off any existing anchor tags, then re-add target as _blank so it opens new tab (or window)
-		$('a', collapsible).removeAttr('target').attr('target', '_blank');
+			// Remove the target off any existing anchor tags, then re-add target as _blank so it opens new tab (or window)
+			$('a', collapsible).removeAttr('target').attr('target', '_blank');
 	
-		insertContent = collapsible[0].outerHTML;
+			insertContent = collapsible[0].outerHTML;
 	
-		// TODO: collapse rich content if setting is set
+			// TODO: collapse rich content if setting is set
 	
-		elementToAppendTo.append(insertContent);
+			elementToAppendTo.append(insertContent);
 	
+			pub.scrollToBottom(scroll);
+		});
+	},
+
+	addTweet: function(tweet) {
+		var scroll = shouldScrollToBottom();
+
+		var elements = $('div.tweet_' + tweet.id_str)
+			.removeClass('tweet_' + tweet.id_str)
+			.addClass('tweet');
+
+		tweet.text = markdownToHtml(tweet.text);
+
+		var content = $('#tweet-template').render(tweet);
+		elements.append(content);
+		//$("time.js-relative-date").timeago();
+
+		$('a', elements).removeAttr('target').attr('target', '_blank');
+
 		pub.scrollToBottom(scroll);
-	});
+	},
+
+	addGitHubIssue: function (issue) {
+		var scroll = shouldScrollToBottom ();
+
+		var elements = $('div.git-hub-issue-' + issue.data.number)
+			.removeClass('git-hub-issue-' + issue.data.number);
+
+
+		issue.data.body = markdownToHtml(encodeHtml(issue.data.body));
+
+		var content = $('#github-issues-template').render(issue.data);
+		elements.append(content);
+
+		$('a', elements).removeAttr('target').attr('target', '_blank');
+
+		//$('.js-relative-date').timeago();
+
+		pub.scrollToBottom(scroll);
+
+		elements.append('<script src="https://api.github.com/users/' + issue.data.user.login + '?callback=addGitHubIssuesUser"></script>');
+		if (issue.data.assignee != undefined) {
+			elements.append('<script src="https://api.github.com/users/' + issue.data.assignee.login + '?callback=addGitHubIssuesUser"></script>');
+		}
 	}
 };
 
@@ -311,10 +400,14 @@ $(function() {
 
 	JabbREto.initialize();
 
-	window.captureDocumentWrite = function (documentWritePath, headerText, elementToAppendTo) {
-		JabbREto.captureDocumentWrite (documentWritePath, headerText, elementToAppendTo);
-	};
-	
-	window.addTweet = function () {
+	window.captureDocumentWrite = JabbREto.captureDocumentWrite;
+
+	window.addTweet = JabbREto.addTweet;
+
+	window.addGitHubIssue = JabbREto.addGitHubIssue;
+
+	window.addGitHubIssuesUser = function (user) {
+		var elements = $("a.github-issue-user-" + user.data.login);
+		elements.attr("href", user.data.html_url);
 	};
 });

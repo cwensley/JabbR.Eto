@@ -21,6 +21,8 @@ namespace JabbR.Eto.Mac.Controls
 		
 		public string EncryptString (string serverName, string accountName, string password)
 		{
+			if (string.IsNullOrEmpty (password))
+				return null;
 			byte[] passwordBytes = Encoding.UTF8.GetBytes (password);
 			var code = SecKeyChain.AddInternetPassword(serverName, accountName, passwordBytes);
 			if (code == SecStatusCode.DuplicateItem) {

@@ -15,6 +15,7 @@ using System.IO;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
+using SignalR.Client;
 
 namespace JabbR.Eto.Model.JabbR
 {
@@ -36,15 +37,15 @@ namespace JabbR.Eto.Model.JabbR
 		
 		public string Address { get; set; }
 		
-		// TODO: store in keychain
 		public string UserName { get; set; }
 
-		// TODO: store in keychain
 		public string Password { get; set; }
 		
 		public string UserId { get; set; }
 
 		public bool UseSocialLogin { get; set; }
+		
+		public string JanrainAppName { get; set; }
 		
 		public JabbRServer ()
 		{
@@ -166,7 +167,6 @@ namespace JabbR.Eto.Model.JabbR
 			Client.Disconnected += () => {
 				Debug.WriteLine ("Disconnected");
 				OnDisconnected (EventArgs.Empty);
-				
 			};
 			Client.FlagChanged += (user, flag) => {
 				Debug.WriteLine ("FlagChanged, User: {0}, Flag: {1}", user.Name, flag);
@@ -360,7 +360,7 @@ namespace JabbR.Eto.Model.JabbR
 			this.UseSocialLogin = element.GetBoolAttribute ("useSocialLogin") ?? false;
 			this.Address = element.GetStringAttribute ("address");
 			if (this.UseSocialLogin) {
-				
+				this.JanrainAppName = element.GetStringAttribute ("janrainAppName") ?? "jabbr";
 				this.UserId = JabbRApplication.Instance.DecryptString(this.Address, this.Id, element.GetStringAttribute ("userId"));
 			} else {
 				this.UserName = JabbRApplication.Instance.DecryptString(this.Address, this.Id + "_user", element.GetStringAttribute ("userName"));
@@ -373,8 +373,10 @@ namespace JabbR.Eto.Model.JabbR
 			base.WriteXml (element);
 			element.SetAttribute ("useSocialLogin", this.UseSocialLogin);
 			element.SetAttribute ("address", this.Address);
-			if (this.UseSocialLogin)
+			if (this.UseSocialLogin) {
+				element.SetAttribute ("janrainAppName", JanrainAppName);
 				element.SetAttribute ("userId", JabbRApplication.Instance.EncryptString (this.Address, this.Id, this.UserId));
+			}
 			else {
 				element.SetAttribute ("userName", JabbRApplication.Instance.EncryptString (this.Address, this.Id + "_user", this.UserName));
 				element.SetAttribute ("password", JabbRApplication.Instance.EncryptString (this.Address, this.Id + "_pass", this.Password));

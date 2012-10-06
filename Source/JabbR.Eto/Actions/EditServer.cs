@@ -39,7 +39,7 @@ namespace JabbR.Eto.Actions
 					dialog.DisplayMode = DialogDisplayMode.Attached;
 					var ret = dialog.ShowDialog (Application.Instance.MainForm);
 					if (ret == DialogResult.Ok) {
-						Debug.WriteLine ("Edited Server, Name: {0}", server.Name);
+						Debug.WriteLine (string.Format ("Edited Server, Name: {0}", server.Name));
 					}
 				}
 			}

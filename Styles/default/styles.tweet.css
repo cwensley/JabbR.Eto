@@ -1,0 +1,30 @@
+﻿/* tweet */
+.tweet {
+	margin-left: 30px;
+	margin-right: 10px;
+	border: 1px solid #ccc;
+	padding: 6px;
+	min-height: 48px;
+}
+
+.tweet .user {
+	margin-bottom: 5px;
+}
+
+.tweet p {
+	margin: 0;
+	padding: 0;
+}
+.tweet .name {
+	font-weight: bold;
+	font-size: 15px;
+}
+
+.tweet img {
+	float: left;
+	margin-right: 5px;
+}
+
+.tweet time {
+	font-size: .8em;
+}

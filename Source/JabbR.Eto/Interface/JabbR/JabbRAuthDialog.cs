@@ -12,26 +12,29 @@ using System.Threading.Tasks;
 using JabbR.Client.Models;
 using System.Diagnostics;
 using Eto;
+using JabbR.Eto.Interface.Dialogs;
 
 namespace JabbR.Eto.Interface.JabbR
 {
 	public class JabbRAuthDialog : Dialog
 	{
 		WebView web;
-		JabbRServer server;
 		HttpServer webserver;
 		Size defaultSize = new Size (408, 174 + 40 + 20);
 		Size expandedSize = new Size (800, 500);
-		const string AppName = "jabbr";
 		bool isLocal = true;
 
 		Uri LocalhostTokenUrl { get; set; }
 		
 		public string UserID { get; set; }
 		
-		public JabbRAuthDialog (JabbRServer server)
+		public string ServerAddress { get; set; }
+		public string AppName { get; set; }
+		
+		public JabbRAuthDialog (string serverAddress, string appName)
 		{
-			this.server = server;
+			this.ServerAddress = serverAddress;
+			this.AppName = appName;
 			
 			this.ClientSize = defaultSize;
 			this.Resizable = true;
@@ -51,24 +54,11 @@ namespace JabbR.Eto.Interface.JabbR
 			
 			var layout = new DynamicLayout(this);
 			layout.Add (web, yscale: true);
-			layout.AddSeparateRow (Padding.Empty).Add (null, CancelButton ());
+			layout.AddSeparateRow (Padding.Empty).Add (null, this.CancelButton ());
 			
 			HandleEvent (ClosedEvent);
 		}
 		
-		Control CancelButton ()
-		{
-			var control = new Button {
-				Text = "Cancel"
-			};
-			this.AbortButton = control;
-			control.Click += (sender, e) => {
-				this.DialogResult = DialogResult.Cancel;
-				Close ();
-			};
-			return control;
-		}
-
 		void HandleReceivedRequest (object sender, HttpServerRequestEventArgs e)
 		{
 			if (e.Request.Url == LocalhostTokenUrl) {
@@ -153,7 +143,7 @@ namespace JabbR.Eto.Interface.JabbR
 		string AuthenticateToken (string token)
 		{
 			var cookieContainer = new CookieContainer ();
-			var address = server.Address.TrimEnd ('/');
+			var address = this.ServerAddress.TrimEnd ('/');
 			var request = (HttpWebRequest)System.Net.WebRequest.Create (address + "/Auth/Login.ashx");
 			request.CookieContainer = cookieContainer;
 			request.Method = "POST";

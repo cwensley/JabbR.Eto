@@ -1,4 +1,8 @@
 
+@import url("styles.tweet.css");
+@import url("styles.bbcnews.css");
+@import url("styles.githubissues.css");
+
 html, body {
 	padding: 0;
 	margin: 0;
@@ -165,6 +169,7 @@ h3.collapsible_title {
 	color: #BBB;
 }
 
+/* loader */
 #loader {
 	display: none;
 }
@@ -185,3 +190,5 @@ h3.collapsible_title {
 		background-size: 16px 16px; 
 	}
 }
+
+

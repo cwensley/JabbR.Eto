@@ -197,8 +197,10 @@ namespace JabbR.Eto.Interface
 		{
 			if (!noHistory && !retrievingHistory) {
 				retrievingHistory = true;
+				//Debug.WriteLine ("**LOADING HISTORY");
 				var history = Channel.GetHistory (LastHistoryMessageId);
 				history.ContinueWith (t => {
+					//Debug.WriteLine ("History loaded");
 					if (t.Result != null) {
 						noHistory = !t.Result.Any ();
 						AddHistory (t.Result);

@@ -79,21 +79,30 @@ namespace JabbR.Eto.Interface
 			FinishLoad ();
 		}
 
+		void HandleOpenNewWindow (object sender, WebViewNewWindowEventArgs e)
+		{
+			Application.Instance.AsyncInvoke (delegate {
+				Application.Instance.Open (e.Uri.AbsoluteUri);
+			});
+			e.Cancel = true;
+		}
+		
 		void HandleDocumentLoading (object sender, WebViewLoadingEventArgs e)
 		{
-			e.Cancel = true;
-			Application.Instance.AsyncInvoke (delegate
-			{
+			if (e.IsMainFrame) {
 				Debug.WriteLine ("Loading {0}", e.Uri);
-				if (e.Uri.IsFile || e.Uri.IsLoopback)
-				{
-					HandleAction (e);
+				if (e.Uri.IsFile || e.Uri.IsLoopback) {
+					Application.Instance.AsyncInvoke (delegate {
+						HandleAction (e);
+					});
+					e.Cancel = true;
+				} else {
+					Application.Instance.AsyncInvoke (delegate {
+						Application.Instance.Open (e.Uri.AbsoluteUri);
+					});
+					e.Cancel = true;
 				}
-				else
-				{
-					Application.Instance.Open (e.Uri.AbsoluteUri);
-				}
-			});
+			}
 		}
 		
 		protected void BeginLoad ()
@@ -127,6 +136,9 @@ namespace JabbR.Eto.Interface
 			lock (sync) {
 				loaded = true;
 			}
+			if (Generator.ID == Generators.Wpf) {
+				SendCommandDirect("settings", new { html5video = false });
+			}
 		}
 		
 		protected void ReplayDelayedCommands ()
@@ -143,8 +155,9 @@ namespace JabbR.Eto.Interface
 			
 			
 			History.DocumentLoading += HandleDocumentLoading;
+			History.OpenNewWindow += HandleOpenNewWindow;
 		}
-		
+
 		public void AddMessage (ChannelMessage message)
 		{
 			if (LastHistoryMessageId == null)
@@ -255,7 +268,7 @@ namespace JabbR.Eto.Interface
 			var index = autoCompleteIndex ?? text.LastIndexOf (' ');
 			if (index > text.Length) {
 				ResetAutoComplete ();
-				return false;
+				return true;
 			}
 			var prefix = (index >= 0 ? text.Substring (index + 1) : text);
 			if (prefix.Length > 0) {
@@ -265,7 +278,7 @@ namespace JabbR.Eto.Interface
 				var task = GetAutoCompleteNames (searchPrefix);
 				if (task == null) {
 					ResetAutoComplete ();
-					return false;
+					return true;
 				}
 				
 				task.ContinueWith (t => {

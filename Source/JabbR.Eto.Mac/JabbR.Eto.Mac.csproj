@@ -109,16 +109,45 @@
     <Folder Include="Controls\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Styles\default\styles.css" />
-    <Content Include="Styles\default\jquery.min.js" />
-    <Content Include="Styles\default\jsrender.js" />
-    <Content Include="Styles\default\channel.html" />
-    <Content Include="Styles\default\channel.js" />
-    <Content Include="Styles\default\jquery.blockUI.js" />
-    <Content Include="Styles\default\loader.gif" />
-    <Content Include="Styles\default\loader%402x.gif" />
-  </ItemGroup>
-  <ItemGroup>
     <BundleResource Include="JabbReto.icns" />
+    <BundleResource Include="..\..\Styles\default\channel.html">
+      <Link>Styles\default\channel.html</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\Styles\default\channel.js">
+      <Link>Styles\default\channel.js</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\Styles\default\jquery.blockUI.js">
+      <Link>Styles\default\jquery.blockUI.js</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\Styles\default\jquery.captureDocumentWrite.min.js">
+      <Link>Styles\default\jquery.captureDocumentWrite.min.js</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\Styles\default\jquery.min.js">
+      <Link>Styles\default\jquery.min.js</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\Styles\default\jsrender.js">
+      <Link>Styles\default\jsrender.js</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\Styles\default\loader.gif">
+      <Link>Styles\default\loader.gif</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\Styles\default\loader%402x.gif">
+      <Link>Styles\default\loader%402x.gif</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\Styles\default\Markdown.Converter.js">
+      <Link>Styles\default\Markdown.Converter.js</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\Styles\default\styles.css">
+      <Link>Styles\default\styles.css</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\Styles\default\styles.bbcnews.css">
+      <Link>Styles\default\styles.bbcnews.css</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\Styles\default\styles.githubissues.css">
+      <Link>Styles\default\styles.githubissues.css</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\Styles\default\styles.tweet.css">
+      <Link>Styles\default\styles.tweet.css</Link>
+    </BundleResource>
   </ItemGroup>
 </Project>

@@ -1,25 +1,54 @@
-﻿using Eto.Drawing;
+﻿
+//#define ENABLE_DEV_TOOLS
+
+using Eto;
+using Eto.Drawing;
 using Eto.Forms;
 using Eto.Platform.CustomControls;
 using Eto.Platform.Wpf.Forms;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using csw = CefSharp.Wpf;
 
+
 namespace JabbR.Eto.Wpf.Controls
 {
-	public class CefSharpWebViewHandler : WpfFrameworkElement<csw.WebView, WebView>, IWebView, CefSharp.IRequestHandler
+	public class CefSharpWebViewHandler : WpfFrameworkElement<csw.WebView, WebView>, IWebView, CefSharp.IRequestHandler, CefSharp.ILifeSpanHandler
 	{
 		HttpServer server;
-		
+
+		static CefSharpWebViewHandler ()
+		{
+			var settings = new CefSharp.Settings
+			{
+#if ENABLE_DEV_TOOLS
+				PackLoadingDisabled = false
+#else
+				PackLoadingDisabled = true
+#endif
+			};
+			CefSharp.CEF.Initialize (settings);
+		}
+
 		public CefSharpWebViewHandler ()
 		{
 			Control = new csw.WebView
 			{
-				RequestHandler = this
+				RequestHandler = this,
+				LifeSpanHandler = this
 			};
+#if ENABLE_DEV_TOOLS
+			Control.PropertyChanged += (sender, e) => {
+				if (e.PropertyName == "IsBrowserInitialized" && Control.IsBrowserInitialized)
+				{
+					Control.ShowDevTools ();
+				}
+			};
+#endif
 		}
 
 		public override void AttachEvent (string handler)
@@ -117,15 +146,18 @@ namespace JabbR.Eto.Wpf.Controls
 			Control.Print ();
 		}
 
-		bool CefSharp.IRequestHandler.OnBeforeBrowse (CefSharp.IWebBrowser browser, CefSharp.IRequest request, CefSharp.NavigationType naigationvType, bool isRedirect)
+		bool CefSharp.IRequestHandler.OnBeforeBrowse (CefSharp.IWebBrowser browser, CefSharp.IRequest request, CefSharp.NavigationType navigationType, bool isRedirect)
 		{
-			
 			var uri = new Uri (request.Url);
 			if (uri.Scheme != "chrome-devtools")
 			{
-				var args = new WebViewLoadingEventArgs (uri);
-				Widget.OnDocumentLoading (args);
-				return args.Cancel;
+				// hack since we can't tell if we're loading from an iframe or a new page. grr.
+				if (uri.IsFile || navigationType != CefSharp.NavigationType.Other)
+				{
+					var args = new WebViewLoadingEventArgs (uri);
+					Widget.OnDocumentLoading (args);
+					return args.Cancel;
+				}
 			}
 			return false;
 		}
@@ -145,5 +177,17 @@ namespace JabbR.Eto.Wpf.Controls
 			set { }
 		}
 
+
+		public bool OnBeforePopup (CefSharp.IWebBrowser browser, string url, ref int x, ref int y, ref int width, ref int height)
+		{
+			var uri = new Uri (url);
+			if (uri.Scheme != "chrome-devtools")
+			{
+				var args = new WebViewLoadingEventArgs (uri);
+				Widget.OnDocumentLoading (args);
+				return args.Cancel;
+			}
+			return false;
+		}
 	}
 }
