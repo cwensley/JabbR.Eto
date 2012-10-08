@@ -1,5 +1,5 @@
 ﻿
-//#define ENABLE_DEV_TOOLS
+#define ENABLE_DEV_TOOLS
 
 using Eto;
 using Eto.Drawing;
@@ -67,6 +67,7 @@ namespace JabbR.Eto.Wpf.Controls
 				};
 				break;
 			case WebView.DocumentLoadingEvent:
+			case WebView.OpenNewWindowEvent:
 				break;
 			case WebView.DocumentTitleChangedEvent:
 				Control.PropertyChanged += (sender, e) => {
@@ -138,7 +139,12 @@ namespace JabbR.Eto.Wpf.Controls
 
 		public string ExecuteScript (string script)
 		{
-			return Convert.ToString (Control.EvaluateScript (script, TimeSpan.FromSeconds(10)));
+			/**/
+			Control.ExecuteScript (script);
+			return null;
+			/**
+			return Convert.ToString (Control.EvaluateScript (script));
+			/**/
 		}
 
 		public void ShowPrintDialog ()
@@ -154,7 +160,7 @@ namespace JabbR.Eto.Wpf.Controls
 				// hack since we can't tell if we're loading from an iframe or a new page. grr.
 				if (uri.IsFile || navigationType != CefSharp.NavigationType.Other)
 				{
-					var args = new WebViewLoadingEventArgs (uri);
+					var args = new WebViewLoadingEventArgs (uri, true);
 					Widget.OnDocumentLoading (args);
 					return args.Cancel;
 				}
@@ -183,8 +189,8 @@ namespace JabbR.Eto.Wpf.Controls
 			var uri = new Uri (url);
 			if (uri.Scheme != "chrome-devtools")
 			{
-				var args = new WebViewLoadingEventArgs (uri);
-				Widget.OnDocumentLoading (args);
+				var args = new WebViewNewWindowEventArgs (uri, null);
+				Widget.OnOpenNewWindow (args);
 				return args.Cancel;
 			}
 			return false;

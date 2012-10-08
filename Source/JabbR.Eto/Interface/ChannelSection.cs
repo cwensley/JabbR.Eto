@@ -147,15 +147,17 @@ namespace JabbR.Eto.Interface
 							var getHistory = channel.GetHistory (LastHistoryMessageId);
 							if (getHistory != null) {
 								getHistory.ContinueWith(r => {
-									StartLive ();
-									AddHistory (r.Result, true);
-									ReplayDelayedCommands ();
-									AddNotification (new NotificationMessage (DateTimeOffset.Now, string.Format ("You just entered {0}", Channel.Name)));
+									Application.Instance.AsyncInvoke (delegate {
+										StartLive ();
+										AddHistory (r.Result, true);
+										ReplayDelayedCommands ();
+										AddNotification (new NotificationMessage (DateTimeOffset.Now, string.Format ("You just entered {0}", Channel.Name)));
 
-									FinishLoad ();
+										FinishLoad ();
+									});
 								}, TaskContinuationOptions.OnlyOnRanToCompletion);
 								getHistory.ContinueWith (r => {
-									Debug.WriteLine ("Error getting history {0}", r.Exception);	
+									Debug.WriteLine ("Error getting history {0}", r.Exception);
 								}, TaskContinuationOptions.OnlyOnFaulted);
 							}
 							else
