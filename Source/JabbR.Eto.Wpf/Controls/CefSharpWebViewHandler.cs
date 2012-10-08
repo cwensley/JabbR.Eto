@@ -1,5 +1,5 @@
 ﻿
-#define ENABLE_DEV_TOOLS
+//#define ENABLE_DEV_TOOLS
 
 using Eto;
 using Eto.Drawing;
