@@ -54,10 +54,14 @@ namespace JabbR.Eto.Model.JabbR
 					this.Topic = task.Result.Topic;
 					this.Private = task.Result.Private;
 					
-					this.users.Clear ();
-					this.users.AddRange (from r in task.Result.Users select new JabbRUser (r));
-					this.owners.Clear ();
-					this.owners.AddRange (task.Result.Owners);
+					lock (users) {
+						this.users.Clear ();
+						this.users.AddRange (from r in task.Result.Users select new JabbRUser (r));
+					}
+					lock (owners) {
+						this.owners.Clear ();
+						this.owners.AddRange (task.Result.Owners);
+					}
 					var messages = (from m in task.Result.RecentMessages select CreateMessage(m));
 					historyLoaded = true;
 					if (firstMessage != null) {
@@ -134,13 +138,18 @@ namespace JabbR.Eto.Model.JabbR
 		internal void TriggerUserLeft (UserEventArgs e)
 		{
 			OnUserLeft (e);
-			this.users.Remove (e.User);
+			lock (users)
+				users.RemoveAll (r => r.Name == e.User.Name);
 		}
 		
 		internal void TriggerUserJoined (UserEventArgs e)
 		{
 			OnUserJoined (e);
-			this.users.Add (e.User);
+			lock (users) {
+				if (!users.Any (r => r.Name == e.User.Name)) {
+					users.Add (e.User);
+				}
+			}
 		}
 		
 		public static ChannelMessage CreateMessage(jab.Models.Message m)
