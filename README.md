@@ -2,6 +2,12 @@ JabbR.Eto
 =========
 ### A cross platform JabbR client for OS X, Windows, and Linux
 
+Download
+--------
+
+* [Windows Click-Once Installer](http://download.picoe.ca/JabbReto/windows/setup.exe)
+* [OS X Native App Bundle](http://download.picoe.ca/JabbReto/mac/JabbReto.Mac-1.0.zip)
+
 Description
 -----------
 
