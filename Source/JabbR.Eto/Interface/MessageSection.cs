@@ -225,8 +225,8 @@ namespace JabbR.Eto.Interface
 					e.Handled = true;
 				}
 				if (SupportsAutoComplete && e.KeyData == Key.Tab) {
-					if (ProcessAutoComplete (control.Text))
-						e.Handled = true;
+					ProcessAutoComplete (control.Text);
+					e.Handled = true;	
 				}
 			};
 			control.TextChanged += (sender, e) => {
