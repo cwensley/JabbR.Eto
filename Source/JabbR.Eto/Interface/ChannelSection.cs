@@ -150,8 +150,9 @@ namespace JabbR.Eto.Interface
 									Application.Instance.AsyncInvoke (delegate {
 										StartLive ();
 										AddHistory (r.Result, true);
-										ReplayDelayedCommands ();
 										AddNotification (new NotificationMessage (DateTimeOffset.Now, string.Format ("You just entered {0}", Channel.Name)));
+										SetMarker ();
+										ReplayDelayedCommands ();
 
 										FinishLoad ();
 									});

@@ -75,6 +75,11 @@ namespace JabbR.Eto.Interface
 					Update ();
 				}
 			};
+			this.ParentWindow.Hidden += (sender, ee) => {
+				var section = GetCurrentSection ();
+				if (section != null)
+					section.SetMarker ();
+			};
 		}
 
 		void HandleActivated (object sender, TreeViewItemEventArgs e)
@@ -252,7 +257,13 @@ namespace JabbR.Eto.Interface
 		MessageSection GetChannelSection (Channel channel)
 		{
 			if (channel == null) return null;
-			return CreateSection (channel) as ChannelSection;
+			return CreateSection (channel) as MessageSection;
+		}
+		
+		MessageSection GetCurrentSection ()
+		{
+			var current = channelList.SelectedItem;
+			return CreateSection (current) as MessageSection;
 		}
 		
 		Control CreateSection (ITreeItem item)

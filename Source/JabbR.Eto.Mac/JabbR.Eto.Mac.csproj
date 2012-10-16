@@ -52,6 +52,48 @@
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release Developer|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\ReleaseDeveloper</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
+    <IncludeMonoRuntime>True</IncludeMonoRuntime>
+    <CodeSignEntitlements>Entitlements.plist</CodeSignEntitlements>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="${ProjectDir}/codesign.sh &quot;${TargetDir}&quot; &quot;Developer ID Application:&quot;" />
+      </CustomCommands>
+    </CustomCommands>
+    <EnablePackageSigning>True</EnablePackageSigning>
+    <CreatePackage>False</CreatePackage>
+    <CodeSigningKey>Mac Developer</CodeSigningKey>
+    <EnableCodeSigning>True</EnableCodeSigning>
+    <ConsolePause>False</ConsolePause>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release AppStore|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\ReleaseAppStore</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
+    <IncludeMonoRuntime>True</IncludeMonoRuntime>
+    <CodeSignEntitlements>Entitlements.plist</CodeSignEntitlements>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="${ProjectDir}/codesign.sh &quot;${TargetDir}&quot; &quot;3rd Party Mac Developer Application&quot; &quot;3rd Party Mac Developer Installer&quot;" />
+      </CustomCommands>
+    </CustomCommands>
+    <EnablePackageSigning>True</EnablePackageSigning>
+    <CreatePackage>False</CreatePackage>
+    <CodeSigningKey>3rd Party Mac Developer Application</CodeSigningKey>
+    <EnableCodeSigning>True</EnableCodeSigning>
+    <ConsolePause>False</ConsolePause>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Xml" />

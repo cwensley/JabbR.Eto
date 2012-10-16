@@ -107,11 +107,6 @@ namespace JabbR.Eto
 			base.OnLoadComplete (e);
 		}
 		
-		public override void OnShown (EventArgs e)
-		{
-			base.OnShown (e);
-		}
-
 		#region IXmlReadable implementation
 		
 		public void ReadXml (XmlElement element)
@@ -122,7 +117,7 @@ namespace JabbR.Eto
 
 		public void WriteXml (XmlElement element)
 		{
-			element.WriteChildXml ("clientSize", this.ClientSize);
+			element.WriteChildSizeXml ("clientSize", this.ClientSize);
 			element.WriteChildXml ("top", top);
 			
 		}

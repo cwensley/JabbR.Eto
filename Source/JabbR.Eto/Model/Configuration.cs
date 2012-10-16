@@ -18,7 +18,7 @@ namespace JabbR.Eto.Model
 		List<Server> servers = new List<Server>();
 		
 		public IEnumerable<Server> Servers { get { return servers; } }
-
+		
 		public BadgeDisplayMode BadgeDisplay { get; set; }
 		
 		public event EventHandler<ServerEventArgs> ServerAdded;

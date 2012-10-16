@@ -1,10 +1,11 @@
-﻿using Eto;
+using Eto;
 using Eto.Forms;
 using JabbR.Eto.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using JabbR.Eto.Interface.Dialogs;
 
 namespace JabbR.Eto.Actions
 {
@@ -33,7 +34,7 @@ namespace JabbR.Eto.Actions
 		protected override void OnActivated (EventArgs e)
 		{
 			base.OnActivated (e);
-
+			
 			var dialog = new Interface.Dialogs.PreferencesDialog (config);
 			if (dialog.ShowDialog (Application.Instance.MainForm) == DialogResult.Ok)
 			{

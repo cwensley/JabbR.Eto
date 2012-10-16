@@ -6,6 +6,7 @@ var JabbREto = (function(){
 		scrollPos: 0,
 		bottomThreshold: 20,
 		scrolls: [],
+		addMarker: false,
 		settings: {
 			html5video: true,
 			fullscreenVideo: true,
@@ -237,6 +238,16 @@ var pub = {
 	},
 
 	addMessage: function(msg) {
+		if (v.addMarker) {
+			if (v.marker)
+				v.marker.remove ();
+			else
+				v.marker = $('<li class="marker"></li>');
+			v.messages.append(v.marker);
+			v.addMarker = false;
+		}			
+
+	
 		var scroll = shouldScrollToBottom ();
 		var msgContent = this.translateContent($( "#template-message").render(msg));
 		
@@ -313,13 +324,9 @@ var pub = {
 	},
 
 	setMarker: function () {
-		if (v.marker)
-			v.marker.remove ();
-		else
-			v.marker = $('<li class="marker"></li>');
-		v.messages.append(v.marker);
+		v.addMarker = true;
 	},
-
+	
 	captureDocumentWrite: function (documentWritePath, headerText, elementToAppendTo) {
 		$.fn.captureDocumentWrite(documentWritePath, function (content) {
 			var scroll = shouldScrollToBottom(),

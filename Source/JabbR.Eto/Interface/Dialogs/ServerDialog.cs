@@ -28,6 +28,7 @@ namespace JabbR.Eto.Interface.Dialogs
 			this.Server = server;
 			this.Title = "Add Server";
 			this.MinimumSize = new Size (300, 0);
+			this.DataContext = server;
 			
 			var layout = new DynamicLayout (this);
 			
@@ -64,14 +65,14 @@ namespace JabbR.Eto.Interface.Dialogs
 		Control AutoConnectButton ()
 		{
 			var control = new CheckBox { Text = "Connect on Startup" };
-			control.Bind ("Checked", Server, "ConnectOnStartup", DualBindingMode.OneWay);
+			control.Bind ("Checked", "ConnectOnStartup", DualBindingMode.OneWay);
 			return control;
 		}
 		
 		Control ServerName ()
 		{
 			var control = new TextBox ();
-			control.Bind ("Text", Server, "Name", DualBindingMode.OneWay);
+			control.Bind ("Text", "Name", DualBindingMode.OneWay);
 			return control;
 		}
 

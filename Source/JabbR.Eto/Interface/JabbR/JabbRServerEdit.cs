@@ -88,7 +88,7 @@ namespace JabbR.Eto.Interface.JabbR
 		Control JanrainAppName ()
 		{
 			var control = janrainAppName = new TextBox ();
-			control.Bind ("Text", server, "JanrainAppName", DualBindingMode.OneWay);
+			control.Bind ("Text", "JanrainAppName", DualBindingMode.OneWay);
 			return control;
 		}
 		
@@ -118,7 +118,7 @@ namespace JabbR.Eto.Interface.JabbR
 		Control UseSocialLogin ()
 		{
 			var control = useSocialLogin = new CheckBox { Text = "Use Social Login" };
-			control.Bind ("Checked", server, "UseSocialLogin", DualBindingMode.OneWay);
+			control.Bind ("Checked", "UseSocialLogin", DualBindingMode.OneWay);
 			control.CheckedChanged += delegate {
 				SetVisibility ();
 			};
@@ -129,21 +129,21 @@ namespace JabbR.Eto.Interface.JabbR
 		Control EditAddress ()
 		{
 			var control = serverAddress = new TextBox ();
-			control.Bind ("Text", server, "Address", DualBindingMode.OneWay);
+			control.Bind ("Text", "Address", DualBindingMode.OneWay);
 			return control;
 		}
 		
 		Control EditUserName ()
 		{
 			var control = new TextBox ();
-			control.Bind ("Text", server, "UserName", DualBindingMode.OneWay);
+			control.Bind ("Text", "UserName", DualBindingMode.OneWay);
 			return control;
 		}
 		
 		Control EditPassword ()
 		{
 			var control = new PasswordBox ();
-			control.Bind ("Text", server, "Password", DualBindingMode.OneWay);
+			control.Bind ("Text", "Password", DualBindingMode.OneWay);
 			return control;
 		}
 	}

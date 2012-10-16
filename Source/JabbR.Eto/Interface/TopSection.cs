@@ -44,6 +44,10 @@ namespace JabbR.Eto.Interface
 
 		void SetView ()
 		{
+			var oldSection = splitter.Panel2 as MessageSection;
+			if (oldSection != null)
+				oldSection.SetMarker ();
+			
 			var view = Channels.CreateSection ();
 			splitter.Panel2 = view;
 			if (view != null)

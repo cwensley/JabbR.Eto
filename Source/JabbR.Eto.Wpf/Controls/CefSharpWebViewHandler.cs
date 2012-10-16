@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using csw = CefSharp.Wpf;
+using swm = System.Windows.Media;
 
 
 namespace JabbR.Eto.Wpf.Controls

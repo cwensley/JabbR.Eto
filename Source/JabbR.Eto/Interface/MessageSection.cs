@@ -128,17 +128,20 @@ namespace JabbR.Eto.Interface
 
 		protected virtual void HandleDocumentLoaded (object sender, WebViewLoadedEventArgs e)
 		{
-			ReplayDelayedCommands ();
+			Application.Instance.AsyncInvoke (delegate {
+				StartLive ();
+				ReplayDelayedCommands ();
+			});
 		}
 		
 		protected void StartLive ()
 		{
-			lock (sync) {
-				loaded = true;
-			}
+			loaded = true;
 			if (Generator.ID == Generators.Wpf) {
 				SendCommandDirect("settings", new { html5video = false });
 			}
+			History.DocumentLoading += HandleDocumentLoading;
+			History.OpenNewWindow += HandleOpenNewWindow;
 		}
 		
 		protected void ReplayDelayedCommands ()
@@ -154,8 +157,6 @@ namespace JabbR.Eto.Interface
 			}
 			
 			
-			History.DocumentLoading += HandleDocumentLoading;
-			History.OpenNewWindow += HandleOpenNewWindow;
 		}
 
 		public void AddMessage (ChannelMessage message)
@@ -188,17 +189,27 @@ namespace JabbR.Eto.Interface
 			SendCommand ("addMessageContent", content);
 		}
 		
+		public void SetMarker ()
+		{
+			SendCommand ("setMarker");
+		}
+		
 		protected void SendCommand (string command, params object[] parameters)
 		{
-			lock (sync) { 
+			string[] vals = new string[parameters.Length];
+			for (int i = 0; i < parameters.Length; i++) {
+				vals[i] = JsonConvert.SerializeObject (parameters[i]);
+			}
+			var script = string.Format ("JabbREto.{0}({1});", command, string.Join (", ", vals));
+			Application.Instance.Invoke (delegate {
 				if (!loaded) {
 					if (delayedCommands == null)
 						delayedCommands = new List<DelayedCommand> ();
 					delayedCommands.Add (new DelayedCommand { Command = command, Parameters = parameters });
 					return;
 				}
-			}
-			SendCommandDirect (command, parameters);
+				History.ExecuteScript (script);
+			});
 		}
 		
 		protected void SendCommandDirect (string command, params object[] parameters)
