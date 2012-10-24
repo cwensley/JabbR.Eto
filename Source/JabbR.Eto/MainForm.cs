@@ -26,7 +26,7 @@ namespace JabbR.Eto
 		{
 			this.config = config;
 			this.Title = DEFAULT_TITLE;
-			this.ClientSize = new Size (800, 600);
+			this.ClientSize = new Size (1000, 600);
 			this.MinimumSize = new Size (640, 400);
 			this.Style = "mainForm";
 			top = new TopSection (config);
@@ -54,7 +54,7 @@ namespace JabbR.Eto
 			
 			//top.GetActions(args);
 			
-			args.Actions.Add (new Actions.AddServer ());
+			args.Actions.Add (new Actions.AddServer { AutoConnect = true });
 			args.Actions.Add (new Actions.EditServer (top.Channels, config));
 			args.Actions.Add (new Actions.RemoveServer (top.Channels, config));
 			args.Actions.Add (new Actions.ServerConnect (top.Channels, config));
@@ -82,7 +82,10 @@ namespace JabbR.Eto
 			if (Generator.ID == Generators.Mac) {
 				var application = args.Menu.FindAddSubMenu (Application.Instance.Name, 100);
 				application.Actions.Add (Actions.About.ActionID, 100);
+#if DEBUG
+				// TODO: not yet implemented!
 				application.Actions.Add (Actions.ShowPreferences.ActionID);
+#endif
 				application.Actions.Add (Actions.Quit.ActionID, 900);
 			}
 			else

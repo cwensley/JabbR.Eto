@@ -127,9 +127,15 @@ namespace JabbR.Eto.Interface
 
 		void HandleConnectError (object sender, ConnectionErrorEventArgs e)
 		{
-			MessageBox.Show (this, e.Exception.GetBaseException ().Message, string.Format ("Error connecting to server {0}", e.Server.Name));
 			var serverSection = GetServerSection (e.Server);
-			serverSection.AddNotification (new NotificationMessage("Error connecting to server {0}.  Reason: {1}", e.Server.Name, e.Exception));
+			if (e.Exception is NotAuthenticatedException) {
+				if (e.Server.Authenticate (this)) {
+					JabbRApplication.Instance.SaveConfiguration ();
+					e.Server.Connect ();
+				}
+			} else {
+				MessageBox.Show (this, e.Exception.GetBaseException ().Message, string.Format ("Could not connect to server {0}. {1}", e.Server.Name));
+			}
 		}
 		
 		void HandleDisconnecting (object sender, EventArgs e)
@@ -205,8 +211,13 @@ namespace JabbR.Eto.Interface
 		{
 			Application.Instance.AsyncInvoke (delegate {
 				var server = sender as Server;
-				foreach (var channel in server.Channels) {
-					CreateSection (channel);
+				if (!server.Channels.Any ()) {
+					var action = new Actions.ChannelList(this);
+					action.Activate ();
+				} else {
+					foreach (var channel in server.Channels) {
+						CreateSection (channel);
+					}
 				}
 				Update ();
 			});

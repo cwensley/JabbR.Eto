@@ -35,10 +35,11 @@ namespace JabbR.Eto.Actions
 			base.OnActivated (e);
 			var server = channels.SelectedServer;
 			if (server != null) {
-				using (var dialog = new ServerDialog(server, false)) {
+				using (var dialog = new ServerDialog(server, false, true)) {
 					dialog.DisplayMode = DialogDisplayMode.Attached;
 					var ret = dialog.ShowDialog (Application.Instance.MainForm);
 					if (ret == DialogResult.Ok) {
+						JabbRApplication.Instance.SaveConfiguration ();
 						Debug.WriteLine (string.Format ("Edited Server, Name: {0}", server.Name));
 					}
 				}

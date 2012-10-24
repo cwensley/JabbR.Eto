@@ -91,6 +91,9 @@
     <Compile Include="Interface\Dialogs\ChannelListDialog.cs" />
     <Compile Include="Model\Message.cs" />
     <Compile Include="Model\ConnectionErrorEventArgs.cs" />
+    <Compile Include="Model\Highlight.cs" />
+    <Compile Include="Interface\Controls\PreferencesDialog.cs" />
+    <Compile Include="Model\NotAuthenticatedException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -121,5 +124,8 @@
     <EmbeddedResource Include="Interface\JabbR\GetUserID.html" />
     <EmbeddedResource Include="Resources\room.png" />
     <EmbeddedResource Include="Resources\chat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Interface\Controls\" />
   </ItemGroup>
 </Project>

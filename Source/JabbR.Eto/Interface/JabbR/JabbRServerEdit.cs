@@ -33,7 +33,9 @@ namespace JabbR.Eto.Interface.JabbR
 			LoginSection();
 			SocialSection();
 			
-			SetVisibility ();
+			authSection.DataContextChanged += (sender, e) => {
+				SetVisibility ();
+			};
 		}
 		
 		void SetVisibility ()

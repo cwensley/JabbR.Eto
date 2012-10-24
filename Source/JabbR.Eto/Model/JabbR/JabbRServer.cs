@@ -16,6 +16,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using SignalR.Client;
+using JabbR.Eto.Interface.Dialogs;
 
 namespace JabbR.Eto.Model.JabbR
 {
@@ -50,6 +51,17 @@ namespace JabbR.Eto.Model.JabbR
 		public JabbRServer ()
 		{
 			this.UseSocialLogin = true;
+			this.JanrainAppName = "jabbr";
+		}
+		
+		public override bool IsAuthenticated
+		{
+			get {
+				if (UseSocialLogin)
+					return !string.IsNullOrEmpty (UserId);
+				else
+					return !string.IsNullOrEmpty (UserName) && !string.IsNullOrEmpty (Password);
+			}
 		}
 		
 		public override void Connect ()
@@ -62,11 +74,11 @@ namespace JabbR.Eto.Model.JabbR
 			}
 			if (UseSocialLogin) {
 				if (string.IsNullOrEmpty (UserId)) {
-					OnConnectError (new ConnectionErrorEventArgs (this, new Exception ("Not authenticated to this server")));
+					OnConnectError (new ConnectionErrorEventArgs (this, new NotAuthenticatedException ("Not authenticated to this server")));
 					return;
 				}
 			} else if (string.IsNullOrEmpty (UserName) || string.IsNullOrEmpty (Password)) {
-				OnConnectError (new ConnectionErrorEventArgs (this, new Exception ("Username or password are not specified")));
+				OnConnectError (new ConnectionErrorEventArgs (this, new NotAuthenticatedException ("Username or password are not specified")));
 				return;
 			}
 
@@ -82,7 +94,7 @@ namespace JabbR.Eto.Model.JabbR
 			}
 				
 			connect.ContinueWith (connectTask => {
-				if (!connectTask.IsCompleted) {
+				if (connectTask.IsFaulted) {
 					Debug.WriteLine ("Error: {0}", connectTask.Exception);
 					OnConnectError (new ConnectionErrorEventArgs(this, connectTask.Exception));
 					return;
@@ -352,6 +364,44 @@ namespace JabbR.Eto.Model.JabbR
 			var section = new Interface.ServerSection (this);
 			section.Initialize ();
 			return section;
+		}
+		
+		public override bool Authenticate (Control parent)
+		{
+			if (this.UseSocialLogin) {
+				var dlg = new JabbRAuthDialog (this.Address, this.JanrainAppName);
+				var result = dlg.ShowDialog (parent);
+				if (result == DialogResult.Ok) {
+					this.UserId = dlg.UserID;
+					return true;
+				}
+			} else {
+				var dialog = new ServerDialog(this, false, false);
+				dialog.DisplayMode = DialogDisplayMode.Attached;
+				var ret = dialog.ShowDialog (Application.Instance.MainForm);
+				return ret == DialogResult.Ok;
+			}
+			return false;
+		}
+		
+		public override bool CheckAuthentication (Control parent, bool allowCancel, bool isEditing)
+		{
+			if (!IsAuthenticated) {
+				if (!isEditing || UseSocialLogin) {
+					var result = MessageBox.Show (parent, "You have not authenticated with this server. Do you want to authenticate now?", allowCancel ? MessageBoxButtons.YesNoCancel : MessageBoxButtons.YesNo);
+					if (result == DialogResult.Yes)
+						return this.Authenticate (parent);
+					else if (allowCancel)
+						return result == DialogResult.No;
+					else
+						return false;
+				}
+				else if (!UseSocialLogin) {
+					var result = MessageBox.Show (parent, "You have not entered your user name and password. Are you sure you want to continue?", MessageBoxButtons.YesNo);
+					return result == DialogResult.Yes;
+				}
+			}
+			return true;
 		}
 		
 		public override void ReadXml (System.Xml.XmlElement element)

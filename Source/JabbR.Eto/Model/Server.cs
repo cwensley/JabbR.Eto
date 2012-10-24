@@ -41,6 +41,8 @@ namespace JabbR.Eto.Model
 
 		public User CurrentUser { get; protected set; }
 		
+		public abstract bool IsAuthenticated { get; }
+		
 		public IEnumerable<Channel> Channels {
 			get { return channels; }
 		}
@@ -49,6 +51,7 @@ namespace JabbR.Eto.Model
 		
 		protected virtual void OnConnectError (ConnectionErrorEventArgs e)
 		{
+			OnGlobalMessageReceived (new NotificationEventArgs(new NotificationMessage ("Could not connect to server {0}. {1}", this.Name, e.Exception.GetBaseException ().Message)));
 			if (ConnectError != null)
 				ConnectError (this, e);
 		}
@@ -175,6 +178,10 @@ namespace JabbR.Eto.Model
 			element.SetAttribute ("connectOnStartup", this.ConnectOnStartup);
 		}
 		
+		public abstract bool Authenticate (Control parent);
+
+		public abstract bool CheckAuthentication (Control parent, bool allowCancel, bool isEditing);
+		
 		public abstract void Connect ();
 		
 		public abstract void Disconnect ();
@@ -187,6 +194,11 @@ namespace JabbR.Eto.Model
 		
 		public virtual void GenerateEditControls (DynamicLayout layout, bool isNew)
 		{
+		}
+
+		public virtual bool PreSaveSettings (Control parent)
+		{
+			return true;
 		}
 
 		public virtual Control GenerateSection ()

@@ -13,6 +13,7 @@ namespace JabbR.Eto.Interface.Dialogs
 		Button connectButton;
 		Button disconnectButton;
 		bool isNew;
+		bool allowConnect;
 		
 		public Server Server { get; private set; }
 		
@@ -22,9 +23,10 @@ namespace JabbR.Eto.Interface.Dialogs
 			set { cancelButton.Enabled = cancelButton.Visible = value; }
 		}
 		
-		public ServerDialog (Server server, bool isNew)
+		public ServerDialog (Server server, bool isNew, bool allowConnect)
 		{
 			this.isNew = isNew;
+			this.allowConnect = allowConnect && !isNew;
 			this.Server = server;
 			this.Title = "Add Server";
 			this.MinimumSize = new Size (300, 0);
@@ -43,23 +45,28 @@ namespace JabbR.Eto.Interface.Dialogs
 			
 			layout.EndBeginVertical ();
 
-			layout.AddRow (Connect (), Disconnect (), null, cancelButton = this.CancelButton (), this.OkButton ("Save", SaveData));
+			layout.AddRow (Connect (), Disconnect (), null, cancelButton = this.CancelButton (), this.OkButton ("Save", () => SaveData()));
 			
 			layout.EndVertical ();
 			
 			SetVisibility ();
 		}
+		
 
-		bool SaveData ()
+		bool SaveData (bool allowCancel = true)
 		{
 			UpdateBindings ();
-			return true;
+			if (Server.CheckAuthentication(this, allowCancel, true) && Server.PreSaveSettings (this)) {
+				return true;
+			}
+			else
+				return false;
 		}
 		
 		void SetVisibility()
 		{
-			connectButton.Visible = !isNew && !Server.IsConnected;
-			disconnectButton.Visible = !isNew && Server.IsConnected;
+			connectButton.Visible = allowConnect && !Server.IsConnected;
+			disconnectButton.Visible = allowConnect && Server.IsConnected;
 		}
 		
 		Control AutoConnectButton ()
@@ -82,9 +89,10 @@ namespace JabbR.Eto.Interface.Dialogs
 				Text = "Connect"
 			};
 			control.Click += (sender, e) => {
-				Server.Connect ();
-				var parent = control.ParentWindow as Dialog;
-				parent.Close (DialogResult.Ok);
+				if (SaveData (false)) {
+					Server.Connect ();
+					this.Close (DialogResult.Ok);
+				}
 			};
 			return control;
 		}
@@ -96,8 +104,7 @@ namespace JabbR.Eto.Interface.Dialogs
 			};
 			control.Click += (sender, e) => {
 				Server.Disconnect ();
-				var parent = control.ParentWindow as Dialog;
-				parent.Close (DialogResult.Ok);
+				this.Close (DialogResult.Ok);
 			};
 			return control;
 		}

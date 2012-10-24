@@ -35,6 +35,7 @@ namespace JabbR.Eto.Interface.JabbR
 		{
 			this.ServerAddress = serverAddress;
 			this.AppName = appName;
+			this.DisplayMode = DialogDisplayMode.Attached;
 			
 			this.ClientSize = defaultSize;
 			this.Resizable = true;
@@ -71,8 +72,7 @@ namespace JabbR.Eto.Interface.JabbR
 						getUserTask.ContinueWith (task => {
 							Application.Instance.AsyncInvoke (delegate {
 								this.UserID = task.Result;
-								this.DialogResult = DialogResult.Ok;
-								this.Close ();
+								this.Close (DialogResult.Ok);
 							});
 						}, TaskContinuationOptions.OnlyOnRanToCompletion);
 						

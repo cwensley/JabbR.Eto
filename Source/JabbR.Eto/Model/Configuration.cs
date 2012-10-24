@@ -16,9 +16,12 @@ namespace JabbR.Eto.Model
 	public class Configuration : IXmlReadable
 	{
 		List<Server> servers = new List<Server>();
+		List<Highlight> highlights = new List<Highlight>();
 		
 		public IEnumerable<Server> Servers { get { return servers; } }
 		
+		public List<Highlight> Highlights { get { return highlights; } }
+
 		public BadgeDisplayMode BadgeDisplay { get; set; }
 		
 		public event EventHandler<ServerEventArgs> ServerAdded;
@@ -103,12 +106,14 @@ namespace JabbR.Eto.Model
 		public void ReadXml (System.Xml.XmlElement element)
 		{
 			element.ReadChildListXml(servers, Server.CreateFromXml, "server", "servers");
+			element.ReadChildListXml(highlights, Highlight.CreateFromXml, "highlight", "highlights");
 			this.BadgeDisplay = element.GetEnumAttribute<BadgeDisplayMode> ("badgeDisplay") ?? BadgeDisplayMode.Highlighted;
 		}
 
 		public void WriteXml (System.Xml.XmlElement element)
 		{
 			element.WriteChildListXml(servers, "server", "servers");
+			element.WriteChildListXml(highlights, "highlight", "highlights");
 			if (this.BadgeDisplay != BadgeDisplayMode.Highlighted)
 				element.SetAttribute ("badgeDisplay", this.BadgeDisplay);
 		}

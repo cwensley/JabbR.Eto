@@ -23,7 +23,7 @@ namespace JabbR.Eto.Interface
 			
 			splitter = new Splitter{
 				Panel1 = Channels ,
-				Position = 200
+				Position = 160
 			};
 			
 			this.AddDockedControl (splitter);
@@ -63,7 +63,7 @@ namespace JabbR.Eto.Interface
 		
 		public void ReadXml (System.Xml.XmlElement element)
 		{
-			splitter.Position = element.GetIntAttribute ("split") ?? 200;
+			splitter.Position = element.GetIntAttribute ("split") ?? 160;
 		}
 
 		public void WriteXml (System.Xml.XmlElement element)
