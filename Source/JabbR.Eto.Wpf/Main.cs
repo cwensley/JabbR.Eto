@@ -17,20 +17,26 @@ namespace JabbR.Eto.Wpf
 		{
 			Generator.Detect.AddAssembly (typeof (MainClass).Assembly);
 
-			Style.Add<ApplicationHandler> ("application", handler => {
-				/**/
-				handler.Control.Resources.MergedDictionaries.Add (new sw.ResourceDictionary { Source = new Uri ("pack://application:,,,/MahApps.Metro;component/Styles/Colours.xaml", UriKind.RelativeOrAbsolute) });
-				handler.Control.Resources.MergedDictionaries.Add (new sw.ResourceDictionary { Source = new Uri ("pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml", UriKind.RelativeOrAbsolute) });
-				handler.Control.Resources.MergedDictionaries.Add (new sw.ResourceDictionary { Source = new Uri ("pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml", UriKind.RelativeOrAbsolute) });
-				handler.Control.Resources.MergedDictionaries.Add (new sw.ResourceDictionary { Source = new Uri ("pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml", UriKind.RelativeOrAbsolute) });
-				handler.Control.Resources.MergedDictionaries.Add (new sw.ResourceDictionary { Source = new Uri ("pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml", UriKind.RelativeOrAbsolute) });
-				handler.Control.Resources.MergedDictionaries.Add (new sw.ResourceDictionary { Source = new Uri ("pack://application:,,,/JabbReto;component/Controls.Menu.xaml", UriKind.RelativeOrAbsolute) });
-				/**/
+			Style.Add<Controls.CustomForm> (null, handler => {
+				AddResources (handler.Control);
+			});
+			Style.Add<Controls.CustomDialog> (null, handler => {
+				AddResources (handler.Control);
 			});
 
 			var app = new JabbRApplication();
 			//app.Initialized += CheckForNewVersion;
 			app.Run (args);
+		}
+
+		static void AddResources (System.Windows.Window window)
+		{
+			window.Resources.MergedDictionaries.Add (new sw.ResourceDictionary { Source = new Uri ("pack://application:,,,/MahApps.Metro;component/Styles/Colours.xaml", UriKind.RelativeOrAbsolute) });
+			window.Resources.MergedDictionaries.Add (new sw.ResourceDictionary { Source = new Uri ("pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml", UriKind.RelativeOrAbsolute) });
+			window.Resources.MergedDictionaries.Add (new sw.ResourceDictionary { Source = new Uri ("pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml", UriKind.RelativeOrAbsolute) });
+			window.Resources.MergedDictionaries.Add (new sw.ResourceDictionary { Source = new Uri ("pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml", UriKind.RelativeOrAbsolute) });
+			window.Resources.MergedDictionaries.Add (new sw.ResourceDictionary { Source = new Uri ("pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml", UriKind.RelativeOrAbsolute) });
+			window.Resources.MergedDictionaries.Add (new sw.ResourceDictionary { Source = new Uri ("pack://application:,,,/JabbReto;component/Controls.Menu.xaml", UriKind.RelativeOrAbsolute) });
 		}
 
 		static void CheckForNewVersion (object sender, EventArgs e)
