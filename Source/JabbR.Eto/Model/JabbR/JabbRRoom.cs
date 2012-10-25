@@ -80,12 +80,11 @@ namespace JabbR.Eto.Model.JabbR
 			var task = new TaskCompletionSource<IEnumerable<ChannelMessage>> ();
 			if (recentMessages != null) {
 				recentMessages.Task.ContinueWith (messages => {
-					if (messages.IsCompleted) {
+					if (!messages.IsFaulted)
 						task.SetResult (messages.Result);
-						recentMessages = null;
-					}
 					else 
 						task.SetException (messages.Exception);
+					recentMessages = null;
 				});
 			}
 			else {

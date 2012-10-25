@@ -161,8 +161,6 @@ namespace JabbR.Eto.Interface
 
 		public void AddMessage (ChannelMessage message)
 		{
-			if (LastHistoryMessageId == null)
-				LastHistoryMessageId = message.Id;
 			SendCommand ("addMessage", message);
 		}
 		
