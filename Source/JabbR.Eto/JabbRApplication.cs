@@ -93,7 +93,6 @@ namespace JabbR.Eto
 		
 		public override void OnTerminating (System.ComponentModel.CancelEventArgs e)
 		{
-			base.OnTerminating (e);
 			if (!disconnecting)
 			{
 				disconnecting = true;
@@ -106,9 +105,7 @@ namespace JabbR.Eto
 				});
 				e.Cancel = true;
 			}
-			else
-				e.Cancel = !disconnected;
-			
+			base.OnTerminating (e);
 		}
 		
 		public void SaveConfiguration()

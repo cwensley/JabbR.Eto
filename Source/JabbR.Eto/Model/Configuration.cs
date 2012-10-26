@@ -47,6 +47,8 @@ namespace JabbR.Eto.Model
 
 		class DisconnectHelper
 		{
+			bool finishedCalled;
+
 			public int DisconnectCount { get; set; }
 
 			public Action Finished { get; set; }
@@ -60,8 +62,14 @@ namespace JabbR.Eto.Model
 
 			public void FinishDisconnect ()
 			{
-				if (DisconnectCount == 0 && Finished != null)
-					Finished ();
+				lock (this)
+				{
+					if (DisconnectCount == 0 && Finished != null && !finishedCalled)
+					{
+						finishedCalled = true;
+						Finished ();
+					}
+				}
 			}
 
 			public void Disconnected (object sender, EventArgs e)
@@ -69,8 +77,14 @@ namespace JabbR.Eto.Model
 				var server = sender as Server;
 				server.Disconnected -= Disconnected;
 				DisconnectCount--;
-				if (DisconnectCount == 0)
-					Finished ();
+				lock (this)
+				{
+					if (DisconnectCount == 0 && !finishedCalled)
+					{
+						finishedCalled = true;
+						Finished ();
+					}
+				}
 			}
 		}
 		
