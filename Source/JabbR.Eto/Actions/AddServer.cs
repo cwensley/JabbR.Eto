@@ -21,7 +21,7 @@ namespace JabbR.Eto.Actions
 		protected override void OnActivated (EventArgs e)
 		{
 			base.OnActivated (e);
-			var server = new JabbRServer { Name = "JabbR.net", Address = "http://jabbr.net", JanrainAppName = "jabbr" };
+			var server = new JabbRServer { Name = "JabbR.net", Address = "https://jabbr.net", JanrainAppName = "jabbr" };
 			using (var dialog = new ServerDialog(server, true, true)) {
 				dialog.DisplayMode = DialogDisplayMode.Attached;
 				var ret = dialog.ShowDialog (Application.Instance.MainForm);
