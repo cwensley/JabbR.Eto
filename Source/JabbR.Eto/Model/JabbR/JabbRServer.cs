@@ -162,8 +162,7 @@ namespace JabbR.Eto.Model.JabbR
 
 		public JabbRChat GetChat (string userName)
 		{
-			var id = "chat_" + userName;
-			return Channels.OfType<JabbRChat> ().FirstOrDefault (r => r.Id == id);
+			return Channels.OfType<JabbRChat> ().FirstOrDefault (r => r.Name == userName);
 		}
 		
 		void HookupEvents ()
@@ -272,6 +271,24 @@ namespace JabbR.Eto.Model.JabbR
 			};
 			Client.UsernameChanged += (oldUserName, user, room) => {
 				Debug.WriteLine ("UsernameChanged, OldUserName: {0}, NewUserName: {1}, Room: {2}", oldUserName, user.Name, room);
+				if (oldUserName == CurrentUser.Name) {
+					// current user, so update all chat channels with new name as well
+					CurrentUser.Name = user.Name;
+					foreach (var chat in Channels.OfType<JabbRChat> ()) {
+						chat.TriggerUsernameChanged (oldUserName, user, true);
+					}
+				}
+				else {
+					var chat = GetChat (oldUserName);
+					if (chat != null) {
+						chat.TriggerUsernameChanged (oldUserName, user, false);
+					}
+				}
+				
+				var channel = GetRoom (room);
+				if (channel != null) {
+					channel.TriggerUsernameChanged (oldUserName, user);
+				}
 			};
 			Client.UsersInactive += (users) => {
 				Debug.WriteLine ("UsersInactive, Users: {0}", string.Join (", ", users.Select (r => r.Name)));
@@ -327,18 +344,18 @@ namespace JabbR.Eto.Model.JabbR
 				OnCloseChannel (new ChannelEventArgs (chat));
 			}
 			else
-				Client.LeaveRoom (channel.Id);
+				Client.LeaveRoom (channel.Name);
 		}
 		
 		public override void StartChat (User user)
 		{
 			JabbRChat chat;
-			InternalStartChat(user, true, null, out chat);
+			InternalStartChat(new JabbRUser(user), true, null, out chat);
 		}
 		
 		bool InternalStartChat (User user, bool shouldFocus, string initialMessage, out JabbRChat chat)
 		{
-			if (user.Id == this.CurrentUser.Id) {
+			if (user.Name == this.CurrentUser.Name) {
 				chat = null;
 				return false;
 			}
@@ -382,6 +399,11 @@ namespace JabbR.Eto.Model.JabbR
 				return ret == DialogResult.Ok;
 			}
 			return false;
+		}
+
+		public void TriggerChannelInfoChanged (ChannelEventArgs e)
+		{
+			OnChannelInfoChanged (e);
 		}
 		
 		public override bool CheckAuthentication (Control parent, bool allowCancel, bool isEditing)

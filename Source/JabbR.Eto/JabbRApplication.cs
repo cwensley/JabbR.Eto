@@ -89,7 +89,6 @@ namespace JabbR.Eto
 		}
 
 		bool disconnecting;
-		bool disconnected;
 		
 		public override void OnTerminating (System.ComponentModel.CancelEventArgs e)
 		{
@@ -99,7 +98,6 @@ namespace JabbR.Eto
 				SaveConfiguration ();
 				Configuration.DisconnectAll (() => {
 					Application.Instance.AsyncInvoke (delegate {
-						disconnected = true;
 						this.Quit ();
 					});
 				});

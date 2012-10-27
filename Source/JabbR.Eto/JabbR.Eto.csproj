@@ -73,6 +73,7 @@
     <Compile Include="Actions\ServerDisconnect.cs" />
     <Compile Include="Interface\Dialogs\AboutDialog.cs" />
     <Compile Include="Interface\Dialogs\ServerDialog.cs" />
+    <Compile Include="Model\UsernameChangedEventArgs.cs" />
     <Compile Include="Model\UsersEventArgs.cs" />
     <Compile Include="Interface\JabbR\JabbRAuthDialog.cs" />
     <Compile Include="Interface\JabbR\HttpServer.cs" />
@@ -125,7 +126,5 @@
     <EmbeddedResource Include="Resources\room.png" />
     <EmbeddedResource Include="Resources\chat.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interface\Controls\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

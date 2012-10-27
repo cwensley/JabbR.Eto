@@ -19,6 +19,17 @@ namespace JabbR.Eto.Model.JabbR
 			this.IsAfk = user.IsAfk;
 			this.Active = user.Active;
 		}
+	
+		public JabbRUser (User user)
+		{
+			var jabbr = user as JabbRUser;
+			if (jabbr != null)
+				this.InnerUser = jabbr.InnerUser;
+			this.Id = user.Id;
+			this.Name = user.Name;
+			this.IsAfk = user.IsAfk;
+			this.Active = user.Active;
+		}
 	}
 }
 

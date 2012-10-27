@@ -11,7 +11,7 @@ namespace JabbR.Eto.Model.JabbR
 {
 	public class JabbRRoom : JabbRChannel
 	{
-		List<User> users = new List<User> ();
+		Dictionary<string, User> users = new Dictionary<string, User> ();
 		List<string> owners = new List<string> ();
 		TaskCompletionSource<IEnumerable<ChannelMessage>> recentMessages;
 		ChannelMessage firstMessage;
@@ -22,7 +22,7 @@ namespace JabbR.Eto.Model.JabbR
 		
 		public override Image Image { get { return image; } }
 		
-		public override IEnumerable<User> Users { get { return users; } }
+		public override IEnumerable<User> Users { get { return users.Values; } }
 		
 		public override IEnumerable<string> Owners { get { return owners; } }
 		
@@ -56,7 +56,8 @@ namespace JabbR.Eto.Model.JabbR
 					
 					lock (users) {
 						this.users.Clear ();
-						this.users.AddRange (from r in task.Result.Users select new JabbRUser (r));
+						foreach (var user in from r in task.Result.Users select new JabbRUser (r))
+							this.users.Add (user.Id, user);
 					}
 					lock (owners) {
 						this.owners.Clear ();
@@ -73,6 +74,32 @@ namespace JabbR.Eto.Model.JabbR
 					getChannelInfo.SetResult (this);
 				}
 			});
+		}
+		
+		User GetUser (string id)
+		{
+			User user;
+			lock (users) {
+				return users.TryGetValue (id, out user) ? user : null;
+			}
+		}
+		
+		IEnumerable<User> GetUsers (IEnumerable<jab.Models.User> jabusers)
+		{
+			foreach (var jabuser in jabusers) {
+				var user = GetUser (jabuser.Name);
+				if (user != null) {
+					user.Active = jabuser.Active;
+					user.IsAfk = jabuser.IsAfk;
+					yield return user;
+				}
+			}
+		}
+		
+		public override void TriggerActivityChanged (IEnumerable<jab.Models.User> users)
+		{
+			var theusers = GetUsers (users);
+			OnUsersActivityChanged (new UsersEventArgs (theusers, DateTimeOffset.Now));
 		}
 		
 		public override Task<IEnumerable<ChannelMessage>> GetHistory (string fromId)
@@ -136,17 +163,20 @@ namespace JabbR.Eto.Model.JabbR
 		
 		internal void TriggerUserLeft (UserEventArgs e)
 		{
+			lock (users) {
+				if (users.ContainsKey(e.User.Name))
+					users.Remove (e.User.Name);
+			}
 			OnUserLeft (e);
-			lock (users)
-				users.RemoveAll (r => r.Name == e.User.Name);
 		}
 		
 		internal void TriggerUserJoined (UserEventArgs e)
 		{
 			OnUserJoined (e);
 			lock (users) {
-				if (!users.Any (r => r.Name == e.User.Name)) {
-					users.Add (e.User);
+				var user = GetUser (e.User.Name);
+				if (user == null) {
+					users.Add (e.User.Id, e.User);
 				}
 			}
 		}
@@ -190,6 +220,23 @@ namespace JabbR.Eto.Model.JabbR
 					OnOwnerRemoved (new UserEventArgs (new JabbRUser (user), DateTimeOffset.Now));
 			}
 		}
+
+		internal void TriggerUsernameChanged (string oldUserName, jab.Models.User jabuser)
+		{
+			var user = GetUser (oldUserName);
+			if (user != null) {
+				lock (users) {
+					if (users.ContainsKey(oldUserName)) {
+						users.Remove (oldUserName);
+						user.Name = jabuser.Name;
+						user.Id = jabuser.Name;
+						users.Add (user.Id, user);
+					}
+				}
+				OnUsernameChanged(new UsernameChangedEventArgs(oldUserName, user, DateTimeOffset.Now));
+			}
+		}
+
 		
 		static object typinglock = new object ();
 		static string lastTypingRoom;

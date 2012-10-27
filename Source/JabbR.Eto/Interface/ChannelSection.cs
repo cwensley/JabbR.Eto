@@ -41,6 +41,15 @@ namespace JabbR.Eto.Interface
 			this.Channel.MessageContent += HandleMessageContent;
 			this.Channel.TopicChanged += HandleTopicChanged;
 			this.Channel.MeMessageReceived += HandleMeMessageReceived;
+			this.Channel.UsernameChanged += HandleUsernameChanged;
+		}
+
+		void HandleUsernameChanged (object sender, UsernameChangedEventArgs e)
+		{
+			Application.Instance.AsyncInvoke (delegate {
+				this.UserList.UsernameChanged (e.OldUsername, e.User);
+			});
+			AddNotification (new NotificationMessage (DateTimeOffset.Now, "{0}'s nick has changed to {1}.", e.OldUsername, e.User.Name));
 		}
 
 		void HandleMeMessageReceived (object sender, MeMessageEventArgs e)
@@ -148,13 +157,24 @@ namespace JabbR.Eto.Interface
 							if (getHistory != null) {
 								getHistory.ContinueWith(r => {
 									Application.Instance.AsyncInvoke (delegate {
-										StartLive ();
-										AddHistory (r.Result, true);
-										AddNotification (new NotificationMessage (DateTimeOffset.Now, string.Format ("You just entered {0}", Channel.Name)));
-										SetMarker ();
-										ReplayDelayedCommands ();
-
-										FinishLoad ();
+										try {
+											Console.WriteLine ("Starting live");
+											StartLive ();
+											Console.WriteLine ("Adding History");
+											AddHistory (r.Result, true);
+											AddNotification (new NotificationMessage (DateTimeOffset.Now, string.Format ("You just entered {0}", Channel.Name)));
+											Console.WriteLine ("Set Marker");
+											SetMarker ();
+											Console.WriteLine ("Replay delayed");
+											ReplayDelayedCommands ();
+	
+											Console.WriteLine ("Finished Load");
+											FinishLoad ();
+										}
+										catch (Exception ex) {
+											Debug.WriteLine ("Getting Initial History {0}", ex);
+											throw;
+										}
 									});
 								}, TaskContinuationOptions.OnlyOnRanToCompletion);
 								getHistory.ContinueWith (r => {
@@ -221,7 +241,7 @@ namespace JabbR.Eto.Interface
 				FinishLoad ();
 				
 		}
-		
+
 		public void MeMessage (MeMessage message)
 		{
 			SendCommand("addMeMessage", message);

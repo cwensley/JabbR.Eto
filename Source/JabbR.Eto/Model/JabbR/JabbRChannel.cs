@@ -37,11 +37,7 @@ namespace JabbR.Eto.Model.JabbR
 			OnMessageReceived (new MessageEventArgs (message));
 		}
 		
-		public virtual void TriggerActivityChanged (IEnumerable<jab.Models.User> users)
-		{
-			var theusers = from r in users select new JabbRUser (r);
-			OnUsersActivityChanged (new UsersEventArgs (theusers, DateTimeOffset.Now));
-		}
+		public abstract void TriggerActivityChanged (IEnumerable<jab.Models.User> users);
 		
 		public virtual void TriggerMessageContent (string messageId, string content)
 		{

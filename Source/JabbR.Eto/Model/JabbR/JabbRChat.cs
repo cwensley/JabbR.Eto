@@ -70,6 +70,27 @@ namespace JabbR.Eto.Model.JabbR
 		{
 		}
 
+		public override void TriggerActivityChanged (IEnumerable<jab.Models.User> users)
+		{
+			
+		}
+
+		internal void TriggerUsernameChanged (string oldUserName, jab.Models.User jabuser, bool isCurrentUser)
+		{
+			if (this.Name == oldUserName) {
+				user.Name = jabuser.Name;
+				user.Id = jabuser.Name;
+				this.Name = user.Name;
+				OnUsernameChanged (new UsernameChangedEventArgs (oldUserName, user, DateTimeOffset.Now));
+				OnNameChanged (EventArgs.Empty);
+				var server = Server as JabbRServer;
+				server.TriggerChannelInfoChanged (new ChannelEventArgs (this));
+			}
+			else if (isCurrentUser) {
+				OnUsernameChanged (new UsernameChangedEventArgs (oldUserName, Server.CurrentUser, DateTimeOffset.Now));
+			}
+		}
+
 		public override int CompareTo (object obj)
 		{
 			if (obj is JabbRRoom) return 1;

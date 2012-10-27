@@ -51,7 +51,7 @@ namespace JabbR.Eto.Interface
 		
 		TreeItem CreateItem (User user)
 		{
-			return new TreeItem { Text = user.Name, Key = user.Name, Tag = user };
+			return new TreeItem { Text = user.Name, Key = user.Id, Tag = user };
 		}
 
 		public void OwnerAdded (User user)
@@ -79,14 +79,19 @@ namespace JabbR.Eto.Interface
 		
 		void AddUser (User user)
 		{
-			var isOwner = Channel.Owners.Contains (user.Name);
+			var isOwner = Channel.Owners.Contains (user.Id);
 			TreeItem item = isOwner ? owners : user.Active ? online : away;
 			item.Children.Add (CreateItem (user));
 		}
-		
+
 		bool RemoveUser (User user)
 		{
-			return RemoveItem (items, user.Name);
+			return RemoveUser (user.Id);
+		}
+		
+		bool RemoveUser (string userId)
+		{
+			return RemoveItem (items, userId);
 		}
 
 		public void UsersActivityChanged (IEnumerable<User> users)
@@ -136,6 +141,14 @@ namespace JabbR.Eto.Interface
 			away.Children.Clear ();
 			foreach (var user in users)
 				AddUser (user);
+			Update ();
+		}
+
+		public void UsernameChanged (string oldUserId, User user)
+		{
+			if (RemoveUser (oldUserId)) {
+				AddUser (user);
+			}
 			Update ();
 		}
 	}

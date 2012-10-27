@@ -119,6 +119,21 @@ namespace JabbR.Eto.Model
 				TopicChanged (this, e);
 		}
 		
+		public event EventHandler<UsernameChangedEventArgs> UsernameChanged;
+
+		protected virtual void OnUsernameChanged (UsernameChangedEventArgs e)
+		{
+			if (UsernameChanged != null)
+				UsernameChanged (this, e);
+		}
+
+		public event EventHandler<EventArgs> NameChanged;
+
+		protected virtual void OnNameChanged (EventArgs e)
+		{
+			if (NameChanged != null)
+				NameChanged (this, e);
+		}
 		
 		public Channel (Server server)
 		{
