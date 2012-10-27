@@ -158,17 +158,17 @@ namespace JabbR.Eto.Interface
 								getHistory.ContinueWith(r => {
 									Application.Instance.AsyncInvoke (delegate {
 										try {
-											Console.WriteLine ("Starting live");
+											Debug.WriteLine ("Starting live");
 											StartLive ();
-											Console.WriteLine ("Adding History");
+											Debug.WriteLine ("Adding History");
 											AddHistory (r.Result, true);
 											AddNotification (new NotificationMessage (DateTimeOffset.Now, string.Format ("You just entered {0}", Channel.Name)));
-											Console.WriteLine ("Set Marker");
+											Debug.WriteLine ("Set Marker");
 											SetMarker ();
-											Console.WriteLine ("Replay delayed");
+											Debug.WriteLine ("Replay delayed");
 											ReplayDelayedCommands ();
 	
-											Console.WriteLine ("Finished Load");
+											Debug.WriteLine ("Finished Load");
 											FinishLoad ();
 										}
 										catch (Exception ex) {

@@ -201,9 +201,12 @@ namespace JabbR.Eto.Interface
 			var script = string.Format ("JabbREto.{0}({1});", command, string.Join (", ", vals));
 			Application.Instance.Invoke (delegate {
 				if (!loaded) {
-					if (delayedCommands == null)
-						delayedCommands = new List<DelayedCommand> ();
-					delayedCommands.Add (new DelayedCommand { Command = command, Parameters = parameters });
+					lock (sync) {
+						Debug.WriteLine ("*** Adding delayed command : {0}", command);
+						if (delayedCommands == null)
+							delayedCommands = new List<DelayedCommand> ();
+						delayedCommands.Add (new DelayedCommand { Command = command, Parameters = parameters });
+					}
 					return;
 				}
 				History.ExecuteScript (script);
