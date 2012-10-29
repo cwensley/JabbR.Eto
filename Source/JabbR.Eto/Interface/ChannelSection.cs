@@ -141,6 +141,16 @@ namespace JabbR.Eto.Interface
 			
 			container.AddDockedControl (split);
 		}
+		
+		void LoadError (Exception ex, string message)
+		{
+			Debug.WriteLine ("{0} {1}", message, ex);
+			StartLive ();
+			AddNotification(new NotificationMessage("{0} {1}", message, ex != null ? ex.GetBaseException ().Message : null));
+			SetMarker ();
+			ReplayDelayedCommands ();
+			FinishLoad ();
+		}
 
 		protected override void HandleDocumentLoaded (object sender, WebViewLoadedEventArgs e)
 		{
@@ -149,6 +159,10 @@ namespace JabbR.Eto.Interface
 				var getChannelInfo = this.Channel.GetChannelInfo ();
 				if (getChannelInfo != null) {
 					getChannelInfo.ContinueWith(t => {
+						if (t.IsFaulted) {
+							LoadError (t.Exception, "Error getting channel info");
+							return;
+						}
 						var channel = t.Result;
 						Application.Instance.AsyncInvoke (delegate {
 							SetTopic (channel.Topic);
@@ -156,38 +170,25 @@ namespace JabbR.Eto.Interface
 							var getHistory = channel.GetHistory (LastHistoryMessageId);
 							if (getHistory != null) {
 								getHistory.ContinueWith(r => {
+									if (r.IsFaulted) {
+										LoadError (r.Exception, "Error getting history");
+										return;
+									}
 									Application.Instance.AsyncInvoke (delegate {
-										try {
-											Debug.WriteLine ("Starting live");
-											StartLive ();
-											Debug.WriteLine ("Adding History");
-											AddHistory (r.Result, true);
-											AddNotification (new NotificationMessage (DateTimeOffset.Now, string.Format ("You just entered {0}", Channel.Name)));
-											Debug.WriteLine ("Set Marker");
-											SetMarker ();
-											Debug.WriteLine ("Replay delayed");
-											ReplayDelayedCommands ();
-	
-											Debug.WriteLine ("Finished Load");
-											FinishLoad ();
-										}
-										catch (Exception ex) {
-											Debug.WriteLine ("Getting Initial History {0}", ex);
-											throw;
-										}
+										StartLive ();
+										AddHistory (r.Result, true);
+										AddNotification (new NotificationMessage (DateTimeOffset.Now, string.Format ("You just entered {0}", Channel.Name)));
+										SetMarker ();
+										ReplayDelayedCommands ();
+
+										FinishLoad ();
 									});
-								}, TaskContinuationOptions.OnlyOnRanToCompletion);
-								getHistory.ContinueWith (r => {
-									Debug.WriteLine ("Error getting history {0}", r.Exception);
-								}, TaskContinuationOptions.OnlyOnFaulted);
+								});
 							}
 							else
 								FinishLoad ();
 						});
-					}, TaskContinuationOptions.OnlyOnRanToCompletion);
-					getChannelInfo.ContinueWith (t => {
-						Debug.WriteLine ("Error getting channel info {0}", t.Exception);	
-					}, TaskContinuationOptions.OnlyOnFaulted);
+					});
 				}
 				else
 					FinishLoad ();

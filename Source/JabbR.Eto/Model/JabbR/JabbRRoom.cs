@@ -46,7 +46,7 @@ namespace JabbR.Eto.Model.JabbR
 			recentMessages = new TaskCompletionSource<IEnumerable<ChannelMessage>>();
 			getChannelInfo = new TaskCompletionSource<Channel>();
 			Server.Client.GetRoomInfo (this.Id).ContinueWith (task => {
-				if (task.Exception != null) {
+				if (task.IsFaulted) {
 					getChannelInfo.SetException (task.Exception);
 					recentMessages.SetException (task.Exception);
 				}
@@ -63,11 +63,13 @@ namespace JabbR.Eto.Model.JabbR
 						this.owners.Clear ();
 						this.owners.AddRange (task.Result.Owners);
 					}
-					var messages = (from m in task.Result.RecentMessages select CreateMessage(m));
+					IEnumerable<ChannelMessage> messages = (from m in task.Result.RecentMessages select CreateMessage(m)).ToArray ();
 					historyLoaded = true;
 					if (firstMessage != null) {
 						// filter up to the first already received message
 						messages = messages.TakeWhile (r => r.When < firstMessage.When || (r.When == firstMessage.When && r.Content != firstMessage.Content));
+						// must call .ToArray() otherwise firstMessage will be null when this is iterated
+						messages = messages.ToArray ();
 						firstMessage = null;
 					}
 					recentMessages.SetResult (messages);
