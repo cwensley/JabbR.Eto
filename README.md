@@ -5,8 +5,8 @@ JabbR.Eto
 Download
 --------
 
-* [Windows Click-Once Installer](http://download.picoe.ca/JabbReto/windows/setup.exe)
-* [OS X Native App Bundle](http://download.picoe.ca/JabbReto/mac/JabbReto.Mac-1.0.zip)
+* [Windows Installer](http://download.picoe.ca/JabbReto/windows/setup.exe)
+* [OS X Mac App Store](https://itunes.apple.com/us/app/jabbreto/id564990712?mt=12)
 
 Description
 -----------
@@ -18,6 +18,8 @@ This makes liberal use of the following libraries:
 * [JabbR.Client](https://github.com/davidfowl/JabbR.Client) - .NET API for creating JabbR clients 
 * [SignalR](https://github.com/SignalR/SignalR) - Async library for .NET to help build real-time, multi-user interactive web applications
 * [Json.NET](http://json.codeplex.com/) - Json.NET is a popular high-performance JSON framework for .NET
+* [MahApps.Metro](https://github.com/MahApps/MahApps.Metro) - For Metro WPF styling
+* [CefSharp](https://github.com/chillitom/CefSharp) - Embedded chromium for WPF version
 
 Screenshots
 -----------
@@ -49,7 +51,7 @@ OS X:
 
 Windows:
 
-1. Install [Visual C# 2010 Express](http://www.microsoft.com/visualstudio/en-us/products/2010-editions/visual-csharp-express)
+1. Install [Visual 2012 Express for Windows Desktop](http://www.microsoft.com/visualstudio/eng/products/visual-studio-express-for-windows-desktop)
 2. Install git client of choice
 3. In console (or via gui): git clone --recursive  git://github.com/cwensley/JabbR.Eto.git
 4. Open Source/JabbR.Eto.Wpf.sln in Visual Studio
