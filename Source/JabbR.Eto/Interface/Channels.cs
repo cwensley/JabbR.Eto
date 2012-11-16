@@ -290,9 +290,14 @@ namespace JabbR.Eto.Interface
 			return section;
 		}
 		
+		IEnumerable<Server> EnumerateServers ()
+		{
+			return Config.Servers.OrderBy (r => r.Name);
+		}
+		
 		IEnumerable<Channel> EnumerateChannels ()
 		{
-			foreach (var item in Config.Servers) {
+			foreach (var item in EnumerateServers ()) {
 				foreach (var channel in item.Channels) {
 					yield return channel;
 				}

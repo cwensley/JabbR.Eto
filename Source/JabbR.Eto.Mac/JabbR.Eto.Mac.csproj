@@ -30,6 +30,9 @@
     <CodeSigningKey>Mac Developer</CodeSigningKey>
     <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
     <CodeSignEntitlements>Entitlements.plist</CodeSignEntitlements>
+    <I18n />
+    <UseSGen>False</UseSGen>
+    <MonoBundlingExtraArgs>--linkskip=mscorlib --linkskip=System --linkskip=System.Configuration</MonoBundlingExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>none</DebugType>
@@ -41,16 +44,14 @@
     <PlatformTarget>x86</PlatformTarget>
     <EnablePackageSigning>True</EnablePackageSigning>
     <ConsolePause>False</ConsolePause>
-    <EnableCodeSigning>True</EnableCodeSigning>
-    <CreatePackage>True</CreatePackage>
+    <EnableCodeSigning>False</EnableCodeSigning>
+    <CreatePackage>False</CreatePackage>
     <CodeSigningKey>3rd Party Mac Developer Application</CodeSigningKey>
     <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
     <CodeSignEntitlements>Entitlements.plist</CodeSignEntitlements>
-    <CustomCommands>
-      <CustomCommands>
-        <Command type="AfterBuild" command="codesign -v --force --sign &quot;3rd Party Mac Developer Application: Curtis Wensley&quot; &quot;${TargetDir}/JabbReto.app/Contents/MonoBundle/libMonoPosixHelper.dylib&quot;" />
-      </CustomCommands>
-    </CustomCommands>
+    <LinkMode>SdkOnly</LinkMode>
+    <UseSGen>False</UseSGen>
+    <I18n />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release Developer|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -58,7 +59,7 @@
     <OutputPath>bin\ReleaseDeveloper</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
+    <PackageSigningKey>Developer ID Installer</PackageSigningKey>
     <IncludeMonoRuntime>True</IncludeMonoRuntime>
     <CodeSignEntitlements>Entitlements.plist</CodeSignEntitlements>
     <CustomCommands>
@@ -68,10 +69,14 @@
     </CustomCommands>
     <EnablePackageSigning>True</EnablePackageSigning>
     <CreatePackage>False</CreatePackage>
-    <CodeSigningKey>Mac Developer</CodeSigningKey>
+    <CodeSigningKey>Developer ID Application</CodeSigningKey>
     <EnableCodeSigning>True</EnableCodeSigning>
     <ConsolePause>False</ConsolePause>
     <PlatformTarget>x86</PlatformTarget>
+    <UseSGen>True</UseSGen>
+    <I18n />
+    <MonoBundlingExtraArgs>--linkskip=mscorlib --linkskip=System --linkskip=System.Configuration</MonoBundlingExtraArgs>
+    <LinkMode>SdkOnly</LinkMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release AppStore|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -84,15 +89,19 @@
     <CodeSignEntitlements>Entitlements.plist</CodeSignEntitlements>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="${ProjectDir}/codesign.sh &quot;${TargetDir}&quot; &quot;3rd Party Mac Developer Application&quot; &quot;3rd Party Mac Developer Installer&quot;" />
+        <Command type="AfterBuild" command="echo ${ProjectDir}/codesign.sh &quot;${TargetDir}&quot; &quot;3rd Party Mac Developer Application: Curtis Wensley&quot; &quot;3rd Party Mac Developer Installer&quot;" />
       </CustomCommands>
     </CustomCommands>
     <EnablePackageSigning>True</EnablePackageSigning>
-    <CreatePackage>False</CreatePackage>
+    <CreatePackage>True</CreatePackage>
     <CodeSigningKey>3rd Party Mac Developer Application</CodeSigningKey>
     <EnableCodeSigning>True</EnableCodeSigning>
     <ConsolePause>False</ConsolePause>
     <PlatformTarget>x86</PlatformTarget>
+    <I18n />
+    <UseSGen>True</UseSGen>
+    <MonoBundlingExtraArgs>--linkskip=JabbReto --linkskip=JabbR.Eto --linkskip=Newtonsoft.Json --linkskip=SignalR.Client --linkskip=Eto --linkskip=Eto.Platform.Mac --linkskip=mscorlib --linkskip=System --linkskip=System.Configuration</MonoBundlingExtraArgs>
+    <LinkMode>Full</LinkMode>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -116,6 +125,7 @@
   <ItemGroup>
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
+    <None Include="codesign.sh" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
