@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A4A1D183-FD80-4DBD-806F-883DDADD4967}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>JabbR.Client</RootNamespace>
+    <AssemblyName>JabbR.Client</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\JabbR.Client\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>JabbR.Client\JabbR.Client\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>JabbR.Client\JabbR.Client\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="Microsoft.AspNet.SignalR.Client.csproj">
+      <Project>{A4A1D183-FD80-4DBD-806F-883DDADD4967}</Project>
+      <Name>Microsoft.AspNet.SignalR.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="Newtonsoft.Json.csproj">
+      <Project>{A4A1D183-FD80-4DBD-806F-883DDADD4967}</Project>
+      <Name>Newtonsoft.Json</Name>
+    </ProjectReference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="JabbR.Client\JabbR.Client\ClientEvents.cs">
+      <Link>ClientEvents.cs</Link>
+    </Compile>
+    <Compile Include="JabbR.Client\JabbR.Client\JabbRClient.cs">
+      <Link>JabbRClient.cs</Link>
+    </Compile>
+    <Compile Include="JabbR.Client\JabbR.Client\Models\LogOnInfo.cs">
+      <Link>Models\LogOnInfo.cs</Link>
+    </Compile>
+    <Compile Include="JabbR.Client\JabbR.Client\Models\Message.cs">
+      <Link>Models\Message.cs</Link>
+    </Compile>
+    <Compile Include="JabbR.Client\JabbR.Client\Models\Room.cs">
+      <Link>Models\Room.cs</Link>
+    </Compile>
+    <Compile Include="JabbR.Client\JabbR.Client\Models\User.cs">
+      <Link>Models\User.cs</Link>
+    </Compile>
+    <Compile Include="JabbR.Client\JabbR.Client\Models\UserStatus.cs">
+      <Link>Models\UserStatus.cs</Link>
+    </Compile>
+    <Compile Include="JabbR.Client\JabbR.Client\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="JabbR.Client\JabbR.Client\TaskAsyncHelper.cs">
+      <Link>TaskAsyncHelper.cs</Link>
+    </Compile>
+    <Compile Include="JabbR.Client\JabbR.Client\Models\ClientMessage.cs">
+      <Link>Models\ClientMessage.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="JabbR.Client\JabbR.Client\packages.config">
+      <Link>packages.config</Link>
+    </None>
+    <None Include="JabbR.Client\JabbR.Client\Properties\JabbR.Client.nuspec">
+      <Link>Properties\JabbR.Client.nuspec</Link>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

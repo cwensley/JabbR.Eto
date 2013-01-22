@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using JabbR.Eto.Interface.JabbR;
 using Eto;
 using System.Security;
-using SignalR.Client.Transports;
 using System.Security.Cryptography;
 using System.Text;
 using System.Net;
@@ -15,7 +14,8 @@ using System.IO;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
-using SignalR.Client;
+using Microsoft.AspNet.SignalR.Client.Transports;
+using Microsoft.AspNet.SignalR.Client;
 using JabbR.Eto.Interface.Dialogs;
 
 namespace JabbR.Eto.Model.JabbR
@@ -100,6 +100,7 @@ namespace JabbR.Eto.Model.JabbR
 					return;
 				}
 				var logOnInfo = connectTask.Result;
+				//this.OnGlobalMessageReceived (new NotificationEventArgs(new NotificationMessage (string.Format ("Using transport: {0}", Client.Connection.Transport.Name))));
 				
 				Client.GetUserInfo ().ContinueWith (userTask => {
 					if (userTask.Exception != null) {

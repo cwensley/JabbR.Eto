@@ -9,6 +9,7 @@ using Eto.Platform.Mac.Forms;
 using System.Diagnostics;
 using MonoMac.Security;
 using MonoMac.WebKit;
+using JabbR.Eto.Mac.Controls;
 
 namespace JabbR.Eto.Mac
 {
@@ -19,7 +20,8 @@ namespace JabbR.Eto.Mac
 #if DEBUG
 			Debug.Listeners.Add (new ConsoleTraceListener());
 #endif
-			Generator.Detect.AddAssembly(typeof(MainClass).Assembly);
+			var generator = Generator.Detect;
+			generator.Add <IJabbRApplication> (() => new JabbRApplicationHandler ());
 
 			Style.Add<TreeViewHandler>("channelList", h => {
 				h.Control.Delegate = new CustomTreeViewDelegate { Handler = h, AllowGroupSelection = true };

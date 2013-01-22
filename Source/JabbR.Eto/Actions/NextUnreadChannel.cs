@@ -16,7 +16,7 @@ namespace JabbR.Eto.Actions
 			this.Channels = channels;
 			this.ID = ActionID;
 			this.MenuText = "Next Unread Channel";
-			if (channels.Generator.ID == Generators.Mac)
+			if (channels.Generator.IsMac ())
 				this.Accelerator = Application.Instance.CommonModifier | Key.Down;
 			else
 				this.Accelerator = Key.Alt | Key.Down;

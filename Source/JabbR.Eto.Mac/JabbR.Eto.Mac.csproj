@@ -6,7 +6,7 @@
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BFCA748E-A677-472C-8351-F5EBA368BCB5}</ProjectGuid>
-    <ProjectTypeGuids>{948B3504-5B70-4649-8FE4-BDE1FB46EC69};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectTypeGuids>{42C0BBD9-55CE-4FC1-8D90-A7348ABAFB23};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Exe</OutputType>
     <RootNamespace>JabbR.Eto.Mac</RootNamespace>
     <AssemblyName>JabbReto</AssemblyName>
@@ -76,7 +76,6 @@
     <UseSGen>True</UseSGen>
     <I18n />
     <MonoBundlingExtraArgs>--linkskip=mscorlib --linkskip=System --linkskip=System.Configuration</MonoBundlingExtraArgs>
-    <LinkMode>SdkOnly</LinkMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release AppStore|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -101,7 +100,7 @@
     <I18n />
     <UseSGen>True</UseSGen>
     <MonoBundlingExtraArgs>--linkskip=JabbReto --linkskip=JabbR.Eto --linkskip=Newtonsoft.Json --linkskip=SignalR.Client --linkskip=Eto --linkskip=Eto.Platform.Mac --linkskip=mscorlib --linkskip=System --linkskip=System.Configuration</MonoBundlingExtraArgs>
-    <LinkMode>Full</LinkMode>
+    <LinkMode>SdkOnly</LinkMode>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -109,13 +108,13 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
-    <Reference Include="MonoMac">
-      <HintPath>..\..\Libraries\Eto.Forms\Libraries\MonoMac\MonoMac.dll</HintPath>
-    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="XamMac, Version=0.0.0.0, Culture=neutral">
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -138,21 +137,21 @@
       <Project>{16289D2F-044C-49EF-83E9-9391AFF8FD2B}</Project>
       <Name>Eto</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\Eto.Forms\Source\Eto.Platform.Mac\Eto.Platform.Mac.csproj">
-      <Project>{9DD10DFF-5AB3-4E66-B798-CA17911A61E4}</Project>
-      <Name>Eto.Platform.Mac</Name>
+    <ProjectReference Include="..\..\Libraries\Eto.Forms\Source\Eto.Platform.Mac\Eto.Platform.XamMac.csproj">
+      <Project>{15490F6C-C579-4A86-AD16-8D9B5B41EB87}</Project>
+      <Name>Eto.Platform.XamMac</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\JabbR.Client.Mono.csproj">
-      <Project>{A4A1D183-FD80-4DBD-806F-883DDADD4967}</Project>
-      <Name>JabbR.Client.Mono</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\Newtonsoft.Json.Mono.csproj">
-      <Project>{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}</Project>
-      <Name>Newtonsoft.Json.Mono</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\SignalR.Client.Mono.csproj">
+    <ProjectReference Include="..\..\Libraries\Microsoft.AspNet.SignalR.Client.csproj">
       <Project>{EB46B9C6-EE37-48F9-835E-E49580E40E0A}</Project>
-      <Name>SignalR.Client.Mono</Name>
+      <Name>Microsoft.AspNet.SignalR.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Newtonsoft.Json.csproj">
+      <Project>{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}</Project>
+      <Name>Newtonsoft.Json</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\JabbR.Client.csproj">
+      <Project>{A4A1D183-FD80-4DBD-806F-883DDADD4967}</Project>
+      <Name>JabbR.Client</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

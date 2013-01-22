@@ -196,5 +196,11 @@ namespace JabbR.Eto.Wpf.Controls
 			}
 			return false;
 		}
+
+		public bool BrowserContextMenuEnabled
+		{
+			get;
+			set;
+		}
 	}
 }

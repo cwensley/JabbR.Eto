@@ -25,7 +25,7 @@ namespace JabbR.Eto.Interface.Dialogs
 
 			var layout = new DynamicLayout (page);
 
-			var desc = string.Format("Show {0} Badge", (Generator.ID == Generators.Mac) ? "Dock" : "TaskBar");
+			var desc = string.Format("Show {0} Badge", (Generator.IsMac ()) ? "Dock" : "TaskBar");
 
 			layout.BeginVertical (yscale: true);
 			layout.AddRow (new Label { Text = desc }, BadgeSelector ());

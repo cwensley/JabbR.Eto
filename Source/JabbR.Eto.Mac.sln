@@ -9,11 +9,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eto.Platform.Mac", "..\Libr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JabbR.Eto", "JabbR.Eto\JabbR.Eto.csproj", "{1CC5D427-7C46-44BB-ABE6-DA6F30828ED8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Newtonsoft.Json.Mono", "..\Libraries\Newtonsoft.Json.Mono.csproj", "{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eto.Platform.XamMac", "..\Libraries\Eto.Forms\Source\Eto.Platform.Mac\Eto.Platform.XamMac.csproj", "{15490F6C-C579-4A86-AD16-8D9B5B41EB87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalR.Client.Mono", "..\Libraries\SignalR.Client.Mono.csproj", "{EB46B9C6-EE37-48F9-835E-E49580E40E0A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.AspNet.SignalR.Client", "..\Libraries\Microsoft.AspNet.SignalR.Client.csproj", "{EB46B9C6-EE37-48F9-835E-E49580E40E0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JabbR.Client.Mono", "..\Libraries\JabbR.Client.Mono.csproj", "{A4A1D183-FD80-4DBD-806F-883DDADD4967}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Newtonsoft.Json", "..\Libraries\Newtonsoft.Json.csproj", "{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JabbR.Client", "..\Libraries\JabbR.Client.csproj", "{A4A1D183-FD80-4DBD-806F-883DDADD4967}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +25,14 @@ Global
 		Release AppStore|Any CPU = Release AppStore|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{15490F6C-C579-4A86-AD16-8D9B5B41EB87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15490F6C-C579-4A86-AD16-8D9B5B41EB87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15490F6C-C579-4A86-AD16-8D9B5B41EB87}.Release AppStore|Any CPU.ActiveCfg = Release|Any CPU
+		{15490F6C-C579-4A86-AD16-8D9B5B41EB87}.Release AppStore|Any CPU.Build.0 = Release|Any CPU
+		{15490F6C-C579-4A86-AD16-8D9B5B41EB87}.Release Developer|Any CPU.ActiveCfg = Release|Any CPU
+		{15490F6C-C579-4A86-AD16-8D9B5B41EB87}.Release Developer|Any CPU.Build.0 = Release|Any CPU
+		{15490F6C-C579-4A86-AD16-8D9B5B41EB87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15490F6C-C579-4A86-AD16-8D9B5B41EB87}.Release|Any CPU.Build.0 = Release|Any CPU
 		{16289D2F-044C-49EF-83E9-9391AFF8FD2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{16289D2F-044C-49EF-83E9-9391AFF8FD2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16289D2F-044C-49EF-83E9-9391AFF8FD2B}.Release AppStore|Any CPU.ActiveCfg = Release|Any CPU

@@ -7,6 +7,7 @@ using JabbR.Eto.Client.Controls;
 using Eto.Drawing;
 using System.Deployment.Application;
 using System.Threading.Tasks;
+using Eto.Platform.Wpf.Forms.Controls;
 
 namespace JabbR.Eto.Wpf
 {
@@ -15,13 +16,21 @@ namespace JabbR.Eto.Wpf
 		[STAThread]
 		public static void Main (string[] args)
 		{
-			Generator.Detect.AddAssembly (typeof (MainClass).Assembly);
+			var generator = Generator.Detect;
+			generator.AddAssembly (typeof (MainClass).Assembly);
+			generator.Add <IWebView> (typeof(Controls.CefSharpWebViewHandler));
 
 			Style.Add<Controls.CustomForm> (null, handler => {
 				AddResources (handler.Control);
 			});
 			Style.Add<Controls.CustomDialog> (null, handler => {
 				AddResources (handler.Control);
+			});
+			Style.Add<TreeViewHandler> ("channelList", handler => {
+				handler.Control.BorderThickness = new sw.Thickness (0);
+			});
+			Style.Add<TreeViewHandler> ("userList", handler => {
+				handler.Control.BorderThickness = new sw.Thickness (0);
 			});
 
 			var app = new JabbRApplication();

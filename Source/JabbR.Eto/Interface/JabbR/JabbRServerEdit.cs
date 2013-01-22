@@ -4,7 +4,7 @@ using JabbR.Eto.Model;
 using JabbR.Eto.Model.JabbR;
 using Eto;
 using Eto.Drawing;
-using SignalR.Client;
+using Microsoft.AspNet.SignalR.Client;
 
 namespace JabbR.Eto.Interface.JabbR
 {

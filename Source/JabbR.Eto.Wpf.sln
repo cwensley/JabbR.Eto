@@ -9,10 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JabbR.Eto", "JabbR.Eto\Jabb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JabbR.Eto.Wpf", "JabbR.Eto.Wpf\JabbR.Eto.Wpf.csproj", "{FE74236A-EB06-4280-BB28-3509DAF06A3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Newtonsoft.Json.Mono", "..\Libraries\Newtonsoft.Json.Mono.csproj", "{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalR.Client.Mono", "..\Libraries\SignalR.Client.Mono.csproj", "{EB46B9C6-EE37-48F9-835E-E49580E40E0A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JabbR.Client.Mono", "..\Libraries\JabbR.Client.Mono.csproj", "{A4A1D183-FD80-4DBD-806F-883DDADD4967}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MahApps.Metro", "..\Libraries\MahApps.Metro\MahApps.Metro\MahApps.Metro.csproj", "{5B1710D2-5DC8-4754-91B2-19165DE49B3D}"
@@ -39,14 +35,6 @@ Global
 		{FE74236A-EB06-4280-BB28-3509DAF06A3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE74236A-EB06-4280-BB28-3509DAF06A3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE74236A-EB06-4280-BB28-3509DAF06A3F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EB46B9C6-EE37-48F9-835E-E49580E40E0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EB46B9C6-EE37-48F9-835E-E49580E40E0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EB46B9C6-EE37-48F9-835E-E49580E40E0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EB46B9C6-EE37-48F9-835E-E49580E40E0A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A4A1D183-FD80-4DBD-806F-883DDADD4967}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A4A1D183-FD80-4DBD-806F-883DDADD4967}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4A1D183-FD80-4DBD-806F-883DDADD4967}.Release|Any CPU.ActiveCfg = Release|Any CPU
