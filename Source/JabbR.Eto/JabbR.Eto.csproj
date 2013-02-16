@@ -103,10 +103,6 @@
       <Project>{16289D2F-044C-49EF-83E9-9391AFF8FD2B}</Project>
       <Name>Eto</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\JabbR.Client.csproj">
-      <Project>{A4A1D183-FD80-4DBD-806F-883DDADD4967}</Project>
-      <Name>JabbR.Client</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Libraries\Newtonsoft.Json.csproj">
       <Project>{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}</Project>
       <Name>Newtonsoft.Json</Name>
@@ -114,6 +110,10 @@
     <ProjectReference Include="..\..\Libraries\Microsoft.AspNet.SignalR.Client.csproj">
       <Project>{EB46B9C6-EE37-48F9-835E-E49580E40E0A}</Project>
       <Name>Microsoft.AspNet.SignalR.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\JabbR.Client.csproj">
+      <Project>{A4A1D183-FD80-4DBD-806F-883DDADD4967}</Project>
+      <Name>JabbR.Client</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

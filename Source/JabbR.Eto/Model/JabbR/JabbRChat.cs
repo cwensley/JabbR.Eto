@@ -13,8 +13,8 @@ namespace JabbR.Eto.Model.JabbR
 	{
 		User user;
 		string initialMessage;
-		
-		static Image image = Bitmap.FromResource (typeof(JabbRChat).Assembly, "JabbR.Eto.Resources.chat.png");
+
+		static Image image = Bitmap.FromResource ("JabbR.Eto.Resources.chat.png", typeof (JabbRChat).Assembly);
 		
 		public override Image Image { get { return image; } }
 		

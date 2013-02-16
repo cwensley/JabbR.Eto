@@ -8,6 +8,7 @@ using JabbR.Eto.Model;
 using System.Net;
 using System.Diagnostics;
 using System.Linq;
+using System.Xml;
 
 namespace JabbR.Eto
 {
@@ -23,6 +24,7 @@ namespace JabbR.Eto
 	public class JabbRApplication : Application, IXmlReadable
 	{
 		IJabbRApplication handler;
+		XmlElement interfaceElement;
 
 		public Configuration Configuration { get; private set; }
 
@@ -51,23 +53,31 @@ namespace JabbR.Eto
 				//return Path.Combine (path, "JabbR.Eto.settings");
 			}
 		}
-		
-		public override void OnInitialized (EventArgs e)
+
+		void LoadSettings ()
 		{
-			base.OnInitialized (e);
-			var form = new MainForm(Configuration);
-			this.MainForm = form;
-			
 			if (File.Exists (SettingsFileName)) {
 				//JsonConvert.PopulateObject (File.ReadAllText(SettingsFileName), form);
 				try {
 					this.LoadXml (SettingsFileName);
-				}
-				catch (Exception ex) {
+				} catch (Exception ex) {
 					// don't worry about not loading
 					Debug.WriteLine ("Error loading settings: {0}", ex);
 				}
 			}
+		}
+		
+		public override void OnInitialized (EventArgs e)
+		{
+			base.OnInitialized (e);
+			LoadSettings ();
+			var form = new MainForm (Configuration);
+			this.MainForm = form;
+			if (interfaceElement != null) {
+				form.ReadXml (interfaceElement);
+				interfaceElement = null;
+			}
+			
 			form.Initialize();
 			this.BadgeLabel = null;
 			this.MainForm.Show ();
@@ -130,13 +140,14 @@ namespace JabbR.Eto
 		#region IXmlReadable implementation
 		public void ReadXml (System.Xml.XmlElement element)
 		{
-			element.ReadChildXml("interface", this.MainForm as IXmlReadable);
+			if (this.MainForm != null) element.ReadChildXml ("interface", this.MainForm as IXmlReadable);
+			else interfaceElement = element.SelectSingleNode ("interface") as XmlElement;
 			element.ReadChildXml ("config", Configuration);
 		}
 
 		public void WriteXml (System.Xml.XmlElement element)
 		{
-			element.WriteChildXml("interface", this.MainForm as IXmlReadable);
+			element.WriteChildXml ("interface", this.MainForm as IXmlReadable);
 			element.WriteChildXml ("config", Configuration);
 		}
 		#endregion

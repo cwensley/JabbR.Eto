@@ -7,7 +7,8 @@ namespace JabbR.Eto.Gtk
 	{
 		public static void Main (string[] args)
 		{
-			Generator.Detect.AddAssembly (typeof(MainClass).Assembly);
+			var generator = Generator.Detect;
+			generator.Add <IJabbRApplication> (() => new JabbRApplicationHandler ());
 			
 			var app = new JabbRApplication();
 			app.Run (args);

@@ -29,11 +29,20 @@ namespace JabbR.Eto.Interface.Dialogs
 
 			layout.BeginVertical (yscale: true);
 			layout.AddRow (new Label { Text = desc }, BadgeSelector ());
+			if (Generator.ID == Generators.Wpf)
+				layout.AddRow (new Panel (), UseMetroTheme ());
 			layout.AddRow ();
 			layout.EndBeginVertical ();
 			layout.AddRow (null, this.CancelButton (), this.OkButton (clicked: SaveData));
 			layout.EndVertical ();
 
+		}
+
+		Control UseMetroTheme ()
+		{
+			var control = new CheckBox { Text = "Use Metro Theme" };
+			control.Bind (r => r.Checked, config, r => r.UseMetroTheme, DualBindingMode.OneWay);
+			return control;
 		}
 
 		bool SaveData ()
@@ -44,12 +53,14 @@ namespace JabbR.Eto.Interface.Dialogs
 
 		Control BadgeSelector ()
 		{
-			var control = new ComboBox ();
+			var control = new EnumComboBox<BadgeDisplayMode> ();
 
+			/*
 			control.Items.Add ("All Messages", BadgeDisplayMode.All.ToString());
 			control.Items.Add ("Higlighted Messages only", BadgeDisplayMode.Highlighted.ToString());
 			control.Items.Add ("None", BadgeDisplayMode.None.ToString ());
-			control.Bind ("SelectedKey", config, "BadgeDisplay", DualBindingMode.OneWay);
+			 */
+			control.Bind (r => r.SelectedValue, config, r => r.BadgeDisplay, DualBindingMode.OneWay);
 			return control;
 		}
 	}

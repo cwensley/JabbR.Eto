@@ -84,16 +84,16 @@ namespace JabbR.Eto.Model.JabbR
 
 			ServicePointManager.FindServicePoint(new Uri(Address)).ConnectionLimit = 100;
 			
-			Client = new jab.JabbRClient (Address);//, new ServerSentEventsTransport());//new LongPollingTransport ());
-			HookupEvents ();
+			Client = new jab.JabbRClient (new Uri(Address));//, new ServerSentEventsTransport());//new LongPollingTransport ());
 			 
 			if (UseSocialLogin) {
-				connect = Client.Connect (UserId);
+				throw new NotSupportedException ();
 			} else {
 				connect = Client.Connect (UserName, Password);
 			}
 				
 			connect.ContinueWith (connectTask => {
+				HookupEvents ();
 				if (connectTask.IsFaulted) {
 					Debug.WriteLine ("Error: {0}", connectTask.Exception);
 					OnConnectError (new ConnectionErrorEventArgs(this, connectTask.Exception));

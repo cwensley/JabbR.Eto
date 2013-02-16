@@ -23,6 +23,8 @@ namespace JabbR.Eto.Model
 		public List<Highlight> Highlights { get { return highlights; } }
 
 		public BadgeDisplayMode BadgeDisplay { get; set; }
+
+		public bool UseMetroTheme { get; set; }
 		
 		public event EventHandler<ServerEventArgs> ServerAdded;
 
@@ -122,6 +124,7 @@ namespace JabbR.Eto.Model
 			element.ReadChildListXml(servers, Server.CreateFromXml, "server", "servers");
 			element.ReadChildListXml(highlights, Highlight.CreateFromXml, "highlight", "highlights");
 			this.BadgeDisplay = element.GetEnumAttribute<BadgeDisplayMode> ("badgeDisplay") ?? BadgeDisplayMode.Highlighted;
+			this.UseMetroTheme = element.GetBoolAttribute ("useMetroTheme") ?? false;
 		}
 
 		public void WriteXml (System.Xml.XmlElement element)
@@ -130,6 +133,8 @@ namespace JabbR.Eto.Model
 			element.WriteChildListXml(highlights, "highlight", "highlights");
 			if (this.BadgeDisplay != BadgeDisplayMode.Highlighted)
 				element.SetAttribute ("badgeDisplay", this.BadgeDisplay);
+			if (this.UseMetroTheme)
+				element.SetAttribute ("useMetroTheme", this.UseMetroTheme);
 		}
 		
 		#endregion

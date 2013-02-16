@@ -6,6 +6,8 @@ using jab = JabbR.Client;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Eto.Drawing;
+using System.Net;
+using System.Text.RegularExpressions;
 
 namespace JabbR.Eto.Model.JabbR
 {
@@ -17,8 +19,8 @@ namespace JabbR.Eto.Model.JabbR
 		ChannelMessage firstMessage;
 		bool historyLoaded;
 		TaskCompletionSource<Channel> getChannelInfo = new TaskCompletionSource<Channel> ();
-		
-		static Image image = Bitmap.FromResource (typeof(JabbRRoom).Assembly, "JabbR.Eto.Resources.room.png");
+
+		static Image image = Bitmap.FromResource ("JabbR.Eto.Resources.room.png", typeof (JabbRRoom).Assembly);
 		
 		public override Image Image { get { return image; } }
 		
@@ -183,9 +185,30 @@ namespace JabbR.Eto.Model.JabbR
 			}
 		}
 		
-		public static ChannelMessage CreateMessage(jab.Models.Message m)
+		static string MakePaste (string content)
 		{
-			return new ChannelMessage (m.Id, m.When, m.User.Name, m.Content);
+			return string.Format (@"<h3 class=""collapsible_title"">Paste (click to show/hide)</h3><div class=""collapsible_box""><pre class=""multiline"">{0}</pre></div>", content);
+		}
+		
+		static string ParseContent (string content)
+		{
+			content = WebUtility.HtmlEncode (content);
+			if (content.IndexOf ('\n') > 0) {
+				content = MakePaste (content);
+			}
+			else {
+				content = Regex.Replace (content, "(https?://[^ \"]+)", "<a href=\"$1\">$1</a>");
+				content = Regex.Replace (content, "(^|[ ])#([^ ]+)", "<a href=\"#/rooms/$2\">#$2</a>");
+			}
+			return content;
+		}
+		
+		public static ChannelMessage CreateMessage (jab.Models.Message m)
+		{
+			var content = m.Content;
+			if (!m.HtmlEncoded)
+				content = ParseContent (content);
+			return new ChannelMessage (m.Id, m.When, m.User.Name, content);
 		}
 		
 		public override Task<Channel> GetChannelInfo ()

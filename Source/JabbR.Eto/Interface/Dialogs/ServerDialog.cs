@@ -90,8 +90,14 @@ namespace JabbR.Eto.Interface.Dialogs
 			};
 			control.Click += (sender, e) => {
 				if (SaveData (false)) {
-					Server.Connect ();
-					this.Close (DialogResult.Ok);
+					try {
+						Server.Connect ();
+						this.Close (DialogResult.Ok);
+					} catch (Exception ex) {
+						var msg = string.Format("Error connecting to server {0}", ex.GetBaseException().Message);
+						MessageBox.Show (this, msg, MessageBoxType.Error);
+					}
+
 				}
 			};
 			return control;
@@ -103,7 +109,13 @@ namespace JabbR.Eto.Interface.Dialogs
 				Text = "Disconnect"
 			};
 			control.Click += (sender, e) => {
-				Server.Disconnect ();
+				try {
+					Server.Disconnect ();
+					this.Close (DialogResult.Ok);
+				} catch (Exception ex) {
+					var msg = string.Format ("Error disconnecting from server {0}", ex.GetBaseException ().Message);
+					MessageBox.Show (this, msg, MessageBoxType.Error);
+				}
 				this.Close (DialogResult.Ok);
 			};
 			return control;

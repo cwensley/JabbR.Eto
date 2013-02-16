@@ -11,7 +11,10 @@ namespace JabbR.Eto.Wpf.Controls
 	{
 		public override sw.Window CreateControl ()
 		{
-			return new MahApps.Metro.Controls.MetroWindow ();
+			if (JabbRApplication.Instance.Configuration.UseMetroTheme)
+				return new MahApps.Metro.Controls.MetroWindow ();
+			else
+				return new sw.Window ();
 		}
 
 		protected override void UpdateClientSize (global::Eto.Drawing.Size size)
