@@ -16,7 +16,7 @@ namespace JabbR.Eto.Actions
 			this.Channels = channels;
 			this.ID = ActionID;
 			this.MenuText = "Previous Channel";
-			if (channels.Generator.IsMac ())
+			if (channels.Generator.IsMac)
 				this.Accelerator = Application.Instance.CommonModifier | Key.Shift | Key.Up;
 			else
 				this.Accelerator = Key.Alt | Key.Shift | Key.Up;

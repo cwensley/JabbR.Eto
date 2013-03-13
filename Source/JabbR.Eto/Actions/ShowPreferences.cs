@@ -20,7 +20,7 @@ namespace JabbR.Eto.Actions
 			this.ID = ActionID;
 			this.config = config;
 
-			if (Generator.Current.IsMac ())
+			if (Generator.Current.IsMac)
 			{
 				this.MenuText = "Preferences...";
 				this.Accelerator = Application.Instance.CommonModifier | Key.Comma;

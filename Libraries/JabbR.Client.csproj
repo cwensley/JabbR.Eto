@@ -12,10 +12,8 @@
     <AssemblyName>JabbR.Client</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetDir Condition="$(NuGetDir) == '' Or $(NuGetDir) == '*Undefined*'">$([MSBuild]::GetDirectoryNameOfFileAbove("$(MSBuildThisFileDirectory)", "JabbR.Client.sln"))</NuGetDir>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
-    <TargetFrameworkProfile />
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\</SolutionDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -55,8 +53,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="JabbR.Client\JabbR.Client\ClientEvents.cs" />
-    <Compile Include="JabbR.Client\JabbR.Client\HttpCookieJabbRTransport.cs" />
-    <Compile Include="JabbR.Client\JabbR.Client\IJabbRTransport.cs" />
+    <Compile Include="JabbR.Client\JabbR.Client\DefaultAuthenticationProvider.cs" />
+    <Compile Include="JabbR.Client\JabbR.Client\HttpHelper.cs" />
+    <Compile Include="JabbR.Client\JabbR.Client\IJabbRClient.cs" />
+    <Compile Include="JabbR.Client\JabbR.Client\IAuthenticationProvider.cs" />
     <Compile Include="JabbR.Client\JabbR.Client\JabbRClient.cs" />
     <Compile Include="JabbR.Client\JabbR.Client\Models\LogOnInfo.cs" />
     <Compile Include="JabbR.Client\JabbR.Client\Models\Message.cs" />
@@ -64,6 +64,7 @@
     <Compile Include="JabbR.Client\JabbR.Client\Models\User.cs" />
     <Compile Include="JabbR.Client\JabbR.Client\Models\UserStatus.cs" />
     <Compile Include="JabbR.Client\JabbR.Client\Properties\AssemblyInfo.cs" />
+    <Compile Include="JabbR.Client\JabbR.Client\StreamExtensions.cs" />
     <Compile Include="JabbR.Client\JabbR.Client\TaskAsyncHelper.cs" />
     <Compile Include="JabbR.Client\JabbR.Client\Models\ClientMessage.cs" />
   </ItemGroup>

@@ -4,6 +4,7 @@ using JabbR.Eto.Model;
 using Eto.Drawing;
 using Eto;
 using System.Linq;
+using System.Diagnostics;
 
 namespace JabbR.Eto.Interface.Dialogs
 {
@@ -90,14 +91,9 @@ namespace JabbR.Eto.Interface.Dialogs
 			};
 			control.Click += (sender, e) => {
 				if (SaveData (false)) {
-					try {
-						Server.Connect ();
-						this.Close (DialogResult.Ok);
-					} catch (Exception ex) {
-						var msg = string.Format("Error connecting to server {0}", ex.GetBaseException().Message);
-						MessageBox.Show (this, msg, MessageBoxType.Error);
-					}
-
+					Server.Connect ();
+					Debug.WriteLine ("Closing Dialog!");
+					this.Close (DialogResult.Ok);
 				}
 			};
 			return control;

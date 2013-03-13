@@ -79,7 +79,7 @@ namespace JabbR.Eto
 			server.Actions.AddSeparator ();
 			server.Actions.Add (Actions.ChannelList.ActionID);
 			
-			if (Generator.IsMac ()) {
+			if (Generator.IsMac) {
 				var application = args.Menu.FindAddSubMenu (Application.Instance.Name, 100);
 				application.Actions.Add (Actions.About.ActionID, 100);
 #if DEBUG

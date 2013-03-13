@@ -93,7 +93,7 @@ namespace JabbR.Eto.Interface.JabbR
 				var location = this.Location;
 				var rect = new Rectangle(location, this.ClientSize);
 				rect.Inflate ((newSize.Width - rect.Width) / 2, (newSize.Height - rect.Height) / 2);
-				if (Generator.IsMac ())
+				if (Generator.IsMac)
 					rect.Y = location.Y;
 				this.Location = rect.Location;
 				this.ClientSize = rect.Size;

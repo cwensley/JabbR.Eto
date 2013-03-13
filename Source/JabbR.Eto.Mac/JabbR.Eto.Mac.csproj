@@ -12,6 +12,7 @@
     <AssemblyName>JabbReto</AssemblyName>
     <ReleaseVersion>1.0</ReleaseVersion>
     <SynchReleaseVersion>False</SynchReleaseVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>True</DebugSymbols>
@@ -112,7 +113,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="XamMac, Version=0.0.0.0, Culture=neutral">
+    <Reference Include="XamMac, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065">
       <Private>False</Private>
     </Reference>
   </ItemGroup>

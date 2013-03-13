@@ -9,6 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>JabbR.Eto</RootNamespace>
     <AssemblyName>JabbR.Eto</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -95,7 +96,6 @@
     <Compile Include="Model\Highlight.cs" />
     <Compile Include="Interface\Controls\PreferencesDialog.cs" />
     <Compile Include="Model\NotAuthenticatedException.cs" />
-    <Compile Include="GeneralExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

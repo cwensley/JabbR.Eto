@@ -28,7 +28,7 @@ namespace JabbR.Eto.Interface
 			items.Add (owners = new TreeItem { Text = "Room Owners", Expanded = true });
 			items.Add (online = new TreeItem { Text = "Online", Expanded = true });
 			items.Add (away = new TreeItem { Text = "Away", Expanded = true });
-			if (Generator.IsMac ()) {
+			if (Generator.IsMac) {
 				foreach (var item in items.OfType<TreeItem>()) {
 					item.Text = item.Text.ToUpperInvariant();
 				}

@@ -17,13 +17,12 @@ using System.Diagnostics;
 using Microsoft.AspNet.SignalR.Client.Transports;
 using Microsoft.AspNet.SignalR.Client;
 using JabbR.Eto.Interface.Dialogs;
+using JabbR.Client.Models;
 
 namespace JabbR.Eto.Model.JabbR
 {
 	public class JabbRServer : Server
 	{
-		Task<jab.Models.LogOnInfo> connect;
-		
 		public const string JabbRTypeId = "jabbr";
 		
 		public jab.JabbRClient Client { get; private set; }
@@ -64,7 +63,7 @@ namespace JabbR.Eto.Model.JabbR
 			}
 		}
 		
-		public override void Connect ()
+		public async override Task Connect ()
 		{
 			OnConnecting (EventArgs.Empty);
 
@@ -82,40 +81,32 @@ namespace JabbR.Eto.Model.JabbR
 				return;
 			}
 
-			ServicePointManager.FindServicePoint(new Uri(Address)).ConnectionLimit = 100;
+			//ServicePointManager.FindServicePoint (new Uri (Address)).ConnectionLimit = 100;
 			
-			Client = new jab.JabbRClient (new Uri(Address));//, new ServerSentEventsTransport());//new LongPollingTransport ());
+			Client = new jab.JabbRClient (Address);//, new ServerSentEventsTransport());//new LongPollingTransport ());
 			 
 			if (UseSocialLogin) {
 				throw new NotSupportedException ();
-			} else {
-				connect = Client.Connect (UserName, Password);
 			}
-				
-			connect.ContinueWith (connectTask => {
+
+			try {
+				var logOnInfo = await Client.Connect (UserName, Password);
 				HookupEvents ();
-				if (connectTask.IsFaulted) {
-					Debug.WriteLine ("Error: {0}", connectTask.Exception);
-					OnConnectError (new ConnectionErrorEventArgs(this, connectTask.Exception));
-					return;
-				}
-				var logOnInfo = connectTask.Result;
 				//this.OnGlobalMessageReceived (new NotificationEventArgs(new NotificationMessage (string.Format ("Using transport: {0}", Client.Connection.Transport.Name))));
-				
-				Client.GetUserInfo ().ContinueWith (userTask => {
-					if (userTask.Exception != null) {
-						OnConnectError (new ConnectionErrorEventArgs(this, connectTask.Exception));
-						Client.Disconnect ();
-						return;
-					}
-					this.CurrentUser = new JabbRUser (userTask.Result);
-					
+
+				try {
+					this.CurrentUser = new JabbRUser (await Client.GetUserInfo ());
 					InitializeChannels (logOnInfo.Rooms.Select (r => new JabbRRoom (this, r)));
-					connect = null;
 					OnConnected (EventArgs.Empty);
-					
-				});
-			});
+				} catch (Exception ex) {
+					Debug.WriteLine ("Error Getting User Info: {0}", ex);
+					Client.Disconnect ();
+					throw;
+				}
+			} catch (Exception ex) {
+				Debug.WriteLine ("Error: {0}", ex);
+				OnConnectError (new ConnectionErrorEventArgs (this, ex));
+			}
 		}
 		
 		public override Task<IEnumerable<ChannelInfo>> GetChannelList ()
@@ -150,10 +141,10 @@ namespace JabbR.Eto.Model.JabbR
 			return channelListTask ?? GetChannelList ();
 		}
 		
-		public override void Disconnect ()
+		public override async Task Disconnect ()
 		{
 			if (Client != null)
-				Client.Disconnect ();
+				await Task.Factory.StartNew (() => Client.Disconnect ());
 		}
 		
 		public JabbRRoom GetRoom (string roomName)

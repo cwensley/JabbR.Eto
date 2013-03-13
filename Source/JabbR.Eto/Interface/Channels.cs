@@ -67,7 +67,7 @@ namespace JabbR.Eto.Interface
 		public override void OnLoad (EventArgs e)
 		{
 			base.OnLoad (e);
-			this.ParentWindow.Shown += (sender, ee) => {
+			this.ParentWindow.GotFocus += (sender, ee) => {
 				var selected = SelectedChannel;
 				if (selected != null) {
 					selected.ResetUnreadCount ();
@@ -75,7 +75,7 @@ namespace JabbR.Eto.Interface
 					Update ();
 				}
 			};
-			this.ParentWindow.Hidden += (sender, ee) => {
+			this.ParentWindow.LostFocus += (sender, ee) => {
 				var section = GetCurrentSection ();
 				if (section != null)
 					section.SetMarker ();

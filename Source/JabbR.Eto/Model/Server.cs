@@ -182,9 +182,9 @@ namespace JabbR.Eto.Model
 
 		public abstract bool CheckAuthentication (Control parent, bool allowCancel, bool isEditing);
 		
-		public abstract void Connect ();
+		public abstract Task Connect ();
 		
-		public abstract void Disconnect ();
+		public abstract Task Disconnect ();
 
 		public abstract void SendMessage (string command);
 
