@@ -15,6 +15,15 @@ namespace JabbR.Eto.Interface
 				return true;
 			}
 		}
+
+        public override string TitleLabel
+        {
+            get
+            {
+                return this.Server.Name;
+            }
+        }
+
 		
 		public ServerSection (Server server)
 		{

@@ -28,6 +28,14 @@ namespace JabbR.Eto.Interface
 		public override bool SupportsAutoComplete { get { return true; } }
 		
 		public override bool AllowNotificationCollapsing { get { return true; } }
+
+        public override string TitleLabel
+        {
+            get
+            {
+                return "#" + this.Channel.Name;
+            }
+        }
 		
 		public ChannelSection (Channel channel)
 		{

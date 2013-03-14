@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using JabbR.Eto.Interface;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 
 namespace JabbR.Eto
 {
@@ -35,15 +36,19 @@ namespace JabbR.Eto
 			HandleEvent (ShownEvent);
 		}
 		
-		public void SetUnreadCount (int count)
+		public void SetUnreadCount (string titleLabel, int count)
 		{
+            var sb = new StringBuilder ();
 			if (count > 0) {
-				Title = string.Format ("{0} ({1})", DEFAULT_TITLE, count);
+				sb.AppendFormat ("{0} ({1})", DEFAULT_TITLE, count);
 				Application.Instance.BadgeLabel = count.ToString ();
 			} else {
-				Title = DEFAULT_TITLE;
+                sb.Append (DEFAULT_TITLE);
 				Application.Instance.BadgeLabel = null;
 			}
+            if (!string.IsNullOrEmpty(titleLabel))
+                sb.AppendFormat(" - {0}", titleLabel);
+            this.Title = sb.ToString ();
 		}
 		
 		void CreateActions ()

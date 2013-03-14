@@ -42,12 +42,11 @@ namespace JabbR.Eto.Interface
 			if (ChannelChanged != null)
 				ChannelChanged (this, e);
 			var selected = SelectedChannel;
-			if (selected != null) {
+			if (selected != null)
 				selected.ResetUnreadCount ();
-				SetUnreadCount();
-			}
-		}
-		
+            SetUnreadCount();
+        }
+        
 		public Channels (Configuration config)
 		{
 			this.Config = config;
@@ -202,8 +201,10 @@ namespace JabbR.Eto.Interface
 			var count = this.EnumerateChannels().Sum (r => r.UnreadCount);
 			
 			var form = this.ParentWindow as MainForm;
-			if (form != null)
-				form.SetUnreadCount(count);
+			if (form != null) {
+                var section = this.GetCurrentSection();
+				form.SetUnreadCount(section != null ? section.TitleLabel : null, count);
+            }
 		}
 		
 		void HandleConnected (object sender, EventArgs e)

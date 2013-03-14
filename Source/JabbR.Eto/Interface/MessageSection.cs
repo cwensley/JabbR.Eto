@@ -27,6 +27,8 @@ namespace JabbR.Eto.Interface
 		protected WebView History { get; private set; }
 
 		protected TextBox TextEntry { get; private set; }
+
+        public abstract string TitleLabel { get; }
 		
 		public virtual bool SupportsAutoComplete {
 			get { return false; }
