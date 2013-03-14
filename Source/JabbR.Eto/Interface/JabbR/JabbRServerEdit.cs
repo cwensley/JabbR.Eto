@@ -119,7 +119,7 @@ namespace JabbR.Eto.Interface.JabbR
 		
 		Control UseSocialLogin ()
 		{
-			var control = useSocialLogin = new CheckBox { Text = "Use Social Login" };
+			var control = useSocialLogin = new CheckBox { Text = "Use Social Login", Visible = false };
 			control.Bind ("Checked", "UseSocialLogin", DualBindingMode.OneWay);
 			control.CheckedChanged += delegate {
 				SetVisibility ();

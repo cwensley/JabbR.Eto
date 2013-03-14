@@ -422,7 +422,7 @@ namespace JabbR.Eto.Model.JabbR
 		public override void ReadXml (System.Xml.XmlElement element)
 		{
 			base.ReadXml (element);
-			this.UseSocialLogin = element.GetBoolAttribute ("useSocialLogin") ?? false;
+            this.UseSocialLogin = false; //element.GetBoolAttribute ("useSocialLogin") ?? false;
 			this.Address = element.GetStringAttribute ("address");
 			if (this.UseSocialLogin) {
 				this.JanrainAppName = element.GetStringAttribute ("janrainAppName") ?? "jabbr";
