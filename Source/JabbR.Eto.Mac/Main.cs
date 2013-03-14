@@ -23,6 +23,8 @@ namespace JabbR.Eto.Mac
 			var generator = Generator.Detect;
 			generator.Add <IJabbRApplication> (() => new JabbRApplicationHandler ());
 
+            NSApplication.CheckForIllegalCrossThreadCalls = false;
+
 			Style.Add<TreeViewHandler>("channelList", h => {
 				h.Control.Delegate = new CustomTreeViewDelegate { Handler = h, AllowGroupSelection = true };
 				h.Control.SelectionHighlightStyle = NSTableViewSelectionHighlightStyle.SourceList;

@@ -11,8 +11,8 @@ namespace JabbR.Eto.Interface.Dialogs
 		{
 			this.MinimumSize = new Size (250, 250);
 			
-			var smallFont = new Font(SystemFont.Default, 8);
-			var largeFont = new Font(SystemFont.Bold, 12);
+			var smallFont = new Font(SystemFont.Default, 10);
+			var largeFont = new Font(SystemFont.Bold, 14);
 
 			var version = GetType ().Assembly.GetName ().Version;
 			var versionString = string.Format ("Version {0}.{1} ({2}.{3})", version.Major, version.Minor, version.Build, version.Revision);
@@ -28,7 +28,7 @@ namespace JabbR.Eto.Interface.Dialogs
 
 			layout.AddCentered(new Label { Text = "Copyright © 2012 Curtis Wensley", Font = smallFont }, new Padding(2));
 
-			if (Generator.ID != "mac") {
+			if (!Generator.IsMac) {
 				layout.AddCentered (CloseButton());
 			}
 		}
