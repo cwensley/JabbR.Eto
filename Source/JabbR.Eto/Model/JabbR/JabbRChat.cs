@@ -48,19 +48,19 @@ namespace JabbR.Eto.Model.JabbR
 			return null;
 		}
 		
-		public override void SendMessage (string command)
+		public async override void SendMessage (string command)
 		{
-			/*
-			if (!command.TrimStart ().StartsWith ("/")) {
-				OnMessageReceived (new MessageEventArgs (new ChannelMessage (Guid.NewGuid ().ToString (), DateTimeOffset.Now, Server.CurrentUser.Name, command)));
-			}
-			*/
+			if (command.StartsWith ("/")) {
+                // chat channel does not support commands, so send to lobby
+                Server.SendMessage(command);
+				return;
+            }
 			
 			Server.Client.SendPrivateMessage(user.Name, command).ContinueWith (task => {
 				Application.Instance.Invoke (() => {
 					MessageBox.Show (
 						Application.Instance.MainForm,
-						string.Format ("Error sending message: {0}", task.Exception)
+						string.Format ("Error sending message: {0}", ex)
 					);
 				});
 			}, TaskContinuationOptions.OnlyOnFaulted);
