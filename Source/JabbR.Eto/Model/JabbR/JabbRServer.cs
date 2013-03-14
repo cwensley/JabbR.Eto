@@ -143,6 +143,7 @@ namespace JabbR.Eto.Model.JabbR
 		
 		public override async Task Disconnect ()
 		{
+			OnDisconnecting(EventArgs.Empty);
 			if (Client != null)
 				await Task.Factory.StartNew (() => Client.Disconnect ());
 		}

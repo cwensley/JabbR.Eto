@@ -60,6 +60,7 @@ namespace JabbR.Eto.Model
 
 		protected virtual void OnDisconnecting (EventArgs e)
 		{
+			OnGlobalMessageReceived (new NotificationEventArgs (new NotificationMessage (DateTimeOffset.Now, "Disconnecting...")));
 			if (Disconnecting != null)
 				Disconnecting (this, e);
 		}
@@ -68,7 +69,6 @@ namespace JabbR.Eto.Model
 		
 		protected virtual void OnDisconnected (EventArgs e)
 		{
-			OnDisconnecting (e);
 			channels.Clear ();
 			this.IsConnected = false;
 			this.IsConnecting = false;
