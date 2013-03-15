@@ -126,7 +126,7 @@ namespace JabbR.Eto.Interface
 		
 		void HandleConnectError (object sender, ConnectionErrorEventArgs e)
 		{
-			var serverSection = GetServerSection (e.Server);
+			GetServerSection (e.Server);
 			if (e.Exception is NotAuthenticatedException) {
 				if (e.Server.Authenticate (this)) {
 					JabbRApplication.Instance.SaveConfiguration ();

@@ -23,7 +23,7 @@ namespace JabbR.Eto
 	
 	public class JabbRApplication : Application, IXmlReadable
 	{
-		IJabbRApplication handler;
+		new IJabbRApplication Handler { get { return (IJabbRApplication)base.Handler; } }
 		XmlElement interfaceElement;
 
 		public Configuration Configuration { get; private set; }
@@ -42,7 +42,6 @@ namespace JabbR.Eto
 			this.Name = "JabbReto";
 			this.Configuration = new JabbR.Eto.Model.Configuration();
 			HandleEvent (TerminatingEvent);
-			handler = (IJabbRApplication)Handler;
 		}
 
 		string SettingsFileName
@@ -123,17 +122,17 @@ namespace JabbR.Eto
 		
 		public string EncryptString (string serverName, string accountName, string password)
 		{
-			return handler.EncryptString(serverName, accountName, password);
+			return Handler.EncryptString(serverName, accountName, password);
 		}
 		
 		public string DecryptString (string serverName, string accountName, string value)
 		{
-			return handler.DecryptString(serverName, accountName, value);
+			return Handler.DecryptString(serverName, accountName, value);
 		}
 		
 		public void SendNotification (string text)
 		{
-			handler.SendNotification (text);
+			Handler.SendNotification (text);
 		}
 		
 

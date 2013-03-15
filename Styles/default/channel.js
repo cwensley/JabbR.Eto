@@ -185,6 +185,8 @@ var pub = {
 				var height = topic.outerHeight();
 				$('#container').css('padding-top', height + 'px');
 			}
+			//pub.scrollToBottom(true);
+			
 		});
 
 		v.messages.on('click', '.collapsible_title', function(event) {

@@ -3,6 +3,7 @@ using Eto.Platform.Mac.Forms;
 using MonoMac.Security;
 using System.Text;
 using MonoMac.Foundation;
+using MonoMac.AppKit;
 
 
 namespace JabbR.Eto.Mac.Controls
@@ -17,6 +18,7 @@ namespace JabbR.Eto.Mac.Controls
 		{
 			var notify = NSNotificationCenter.DefaultCenter;
 			notify.PostNotificationName(text, null);
+			NSApplication.SharedApplication.RequestUserAttention(NSRequestUserAttentionType.InformationalRequest);
 		}
 		
 		public string EncryptString (string serverName, string accountName, string password)

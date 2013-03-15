@@ -18,24 +18,29 @@ namespace JabbR.Eto.Interface.Dialogs
 			this.config = config;
 			this.MinimumSize = new Size (200, 300);
 			this.Title = "JabbReto Preferences";
+			this.Resizable = true;
+
+			var layout = new DynamicLayout (this);
+
+			layout.Add(Tabs(), yscale: true);
+			layout.AddSeparateRow (null, this.CancelButton (), this.OkButton (clicked: SaveData));
+		}
+
+		Control Tabs ()
+		{
 			var tabs = new TabControl ();
 			var page = new TabPage { Text = "General" };
 			tabs.TabPages.Add (page);
-			this.AddDockedControl (tabs);
 
 			var layout = new DynamicLayout (page);
-
+			
 			var desc = string.Format("Show {0} Badge", (Generator.IsMac) ? "Dock" : "TaskBar");
-
-			layout.BeginVertical (yscale: true);
+			
 			layout.AddRow (new Label { Text = desc }, BadgeSelector ());
 			if (Generator.ID == Generators.Wpf)
 				layout.AddRow (new Panel (), UseMetroTheme ());
 			layout.AddRow ();
-			layout.EndBeginVertical ();
-			layout.AddRow (null, this.CancelButton (), this.OkButton (clicked: SaveData));
-			layout.EndVertical ();
-
+			return tabs;
 		}
 
 		Control UseMetroTheme ()

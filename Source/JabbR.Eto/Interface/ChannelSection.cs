@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using JabbR.Eto.Model;
 using System.Diagnostics;
+using System.Threading;
 
 namespace JabbR.Eto.Interface
 {
@@ -268,32 +269,24 @@ namespace JabbR.Eto.Interface
 			
 			Channel.SendMessage(command);
 		}
-		protected override Task<IEnumerable<string>> GetAutoCompleteNames (string search)
+		protected async override Task<IEnumerable<string>> GetAutoCompleteNames (string search)
 		{
-			if (Channel.Server.IsConnected) {
-				var task = base.GetAutoCompleteNames (search);
-				if (task == null) {
-					var taskSource = new TaskCompletionSource<IEnumerable<string>> ();
-					task = taskSource.Task;
-					if (search.StartsWith ("#")) {
-						search = search.TrimStart ('#');
-						var getChannels = Channel.Server.GetCachedChannels ();
-						getChannels.ContinueWith (t => {
-							taskSource.TrySetResult (t.Result.Where (r => r.Name.StartsWith (search, StringComparison.CurrentCultureIgnoreCase)).Select (r => r.Name));
-						}, TaskContinuationOptions.OnlyOnRanToCompletion);
-						getChannels.ContinueWith (t => {
-							taskSource.TrySetException (t.Exception);
-						}, TaskContinuationOptions.OnlyOnFaulted);
-					} else {
-						search = search.TrimStart ('@');
-						taskSource.TrySetResult (Channel.Users.Where (r => r.Name.StartsWith (search, StringComparison.CurrentCultureIgnoreCase)).Select (r => r.Name));
-					}
+			if (Channel.Server.IsConnected)
+			{
+				if (search.StartsWith("#"))
+				{
+					search = search.TrimStart('#');
+					var channels = await Channel.Server.GetCachedChannels();
+					return channels.Where(r => r.Name.StartsWith(search, StringComparison.CurrentCultureIgnoreCase)).Select(r => r.Name);
+				} else
+				{
+					search = search.TrimStart('@');
+					return Channel.Users.Where(r => r.Name.StartsWith(search, StringComparison.CurrentCultureIgnoreCase)).Select(r => r.Name);
 				}
-				return task;
 			}
-			return null;
+			return Enumerable.Empty<string>();
 		}
-		
+
 		public override string TranslateAutoCompleteText (string selection, string search)
 		{
 			if (search.StartsWith("#"))

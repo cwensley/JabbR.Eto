@@ -232,15 +232,16 @@ namespace JabbR.Eto.Interface
 			var control = new TextBox {
 				PlaceholderText = "Send Message..."
 			};
-			control.KeyDown += (sender, e) => {
+			control.KeyDown += async (sender, e) => {
 				if (e.KeyData == Key.Enter) {
-					ProcessCommand (control.Text);
-					control.Text = string.Empty;
 					e.Handled = true;
+					var text = control.Text;
+					control.Text = string.Empty;
+					ProcessCommand (text);
 				}
 				if (SupportsAutoComplete && e.KeyData == Key.Tab) {
-					ProcessAutoComplete (control.Text);
 					e.Handled = true;	
+					await ProcessAutoComplete (control.Text);
 				}
 			};
 			control.TextChanged += (sender, e) => {
@@ -274,60 +275,62 @@ namespace JabbR.Eto.Interface
 			autoCompleting = false;
 		}
 		
-		public virtual bool ProcessAutoComplete (string text)
+		public async virtual Task<bool> ProcessAutoComplete (string text)
 		{
 			if (autoCompleting)
 				return true;
 			autoCompleting = true;
-			var index = autoCompleteIndex ?? text.LastIndexOf (' ');
-			if (index > text.Length) {
-				ResetAutoComplete ();
+			var index = autoCompleteIndex ?? text.LastIndexOf(' ');
+			if (index > text.Length)
+			{
+				ResetAutoComplete();
 				return true;
 			}
-			var prefix = (index >= 0 ? text.Substring (index + 1) : text);
-			if (prefix.Length > 0) {
-				var existingText = index >= 0 ? text.Substring (0, index + 1) : string.Empty;
+			var prefix = (index >= 0 ? text.Substring(index + 1) : text);
+			if (prefix.Length > 0)
+			{
+				var existingText = index >= 0 ? text.Substring(0, index + 1) : string.Empty;
 				
 				var searchPrefix = existingPrefix ?? prefix;
-				var task = GetAutoCompleteNames (searchPrefix);
-				if (task == null) {
-					ResetAutoComplete ();
+				var results = await GetAutoCompleteNames(searchPrefix);
+				if (results == null)
+				{
+					ResetAutoComplete();
 					return true;
 				}
-				
-				task.ContinueWith (t => {
+				try
+				{
 					if (!autoCompleting)
-						return;
-						
-					var allMatches = t.Result.OrderBy (r => r);
-						
+						return false;
+					
+					var allMatches = results.OrderBy(r => r);
+					
 					var matches = allMatches as IEnumerable<string>;
-					if (!string.IsNullOrEmpty (lastAutoComplete)) {
-						matches = matches.Where (r => {
-							return r.CompareTo (lastAutoComplete) > 0;
+					if (!string.IsNullOrEmpty(lastAutoComplete))
+					{
+						matches = matches.Where(r => {
+							return r.CompareTo(lastAutoComplete) > 0;
 						});
 					}
-					
-					var user = matches.FirstOrDefault ();
+				
+					var user = matches.FirstOrDefault();
 					if (user == null)
-						user = allMatches.FirstOrDefault ();
-					if (user != null) {
-						Application.Instance.AsyncInvoke (delegate {
-							TextEntry.Text = existingText + TranslateAutoCompleteText (user, searchPrefix);
-						});
+						user = allMatches.FirstOrDefault();
+					if (user != null)
+					{
+						TextEntry.Text = existingText + TranslateAutoCompleteText(user, searchPrefix);
 						lastAutoComplete = user;
-						if (existingPrefix == null) {
+						if (existingPrefix == null)
+						{
 							existingPrefix = prefix;
 							autoCompleteIndex = index;
 						}
 					}
 					autoCompleting = false;
-					
-				}, TaskContinuationOptions.OnlyOnRanToCompletion);
-				
-				task.ContinueWith (t => {
-					ResetAutoComplete ();
-				}, TaskContinuationOptions.OnlyOnFaulted);
+				} catch
+				{
+					ResetAutoComplete();
+				}
 				return true;
 			}
 			return false;

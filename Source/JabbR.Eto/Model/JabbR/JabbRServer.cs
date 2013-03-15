@@ -19,6 +19,7 @@ using Microsoft.AspNet.SignalR.Client;
 using JabbR.Eto.Interface.Dialogs;
 using JabbR.Client.Models;
 using Microsoft.AspNet.SignalR.Client.Http;
+using System.Threading;
 
 namespace JabbR.Eto.Model.JabbR
 {
@@ -155,22 +156,27 @@ namespace JabbR.Eto.Model.JabbR
 		public async override Task<IEnumerable<ChannelInfo>> GetChannelList()
 		{
 			var rooms = await Client.GetRooms();
-            
-			return rooms.Select(r => {
-				return new ChannelInfo(this) {
-					Name = r.Name,
-					Topic = r.Topic,
-					Private = r.Private,
-					UserCount = r.Count
-				};
-			});
+			return rooms.Select(r => new ChannelInfo(this) {
+				Name = r.Name,
+				Topic = r.Topic,
+				Private = r.Private,
+				UserCount = r.Count
+				}
+			);
 		}
 		
-		Task<IEnumerable<ChannelInfo>> channelListTask;
+		IEnumerable<ChannelInfo> cachedChannels;
+		DateTime? cachedChannelTime;
 
-		public override Task<IEnumerable<ChannelInfo>> GetCachedChannels()
+		public async override Task<IEnumerable<ChannelInfo>> GetCachedChannels()
 		{
-			return channelListTask ?? GetChannelList();
+			if (cachedChannels == null || cachedChannelTime < DateTime.Now)
+			{
+				cachedChannels = await GetChannelList ();
+				cachedChannels = cachedChannels.ToArray();
+				cachedChannelTime = DateTime.Now.Add(new TimeSpan(0, 1, 0)); // re-cache every minute
+			}
+			return cachedChannels;
 		}
 		
 		public override Task Disconnect()
@@ -275,6 +281,7 @@ namespace JabbR.Eto.Model.JabbR
 				if (channel == null)
 				{
 					channel = new JabbRRoom(this, room);
+					channel.LoadRoomInfo();
 					newlyJoined = true;
 				}
 				OnOpenChannel(new OpenChannelEventArgs(channel, true, newlyJoined));
