@@ -47,37 +47,44 @@ namespace JabbR.Eto.Model.JabbR
 			
 			recentMessages = new TaskCompletionSource<IEnumerable<ChannelMessage>>();
 			getChannelInfo = new TaskCompletionSource<Channel>();
-			Server.Client.GetRoomInfo (this.Id).ContinueWith (task => {
-				if (task.IsFaulted) {
-					getChannelInfo.SetException (task.Exception);
-					recentMessages.SetException (task.Exception);
+		}
+
+		public async Task LoadRoomInfo ()
+		{
+			try
+			{
+				var roomInfo = await Server.Client.GetRoomInfo(this.Id);
+				this.Topic = roomInfo.Topic;
+				this.Private = roomInfo.Private;
+			
+				lock (users)
+				{
+					this.users.Clear();
+					foreach (var user in from r in roomInfo.Users select new JabbRUser (r))
+						this.users.Add(user.Id, user);
 				}
-				else {
-					this.Topic = task.Result.Topic;
-					this.Private = task.Result.Private;
-					
-					lock (users) {
-						this.users.Clear ();
-						foreach (var user in from r in task.Result.Users select new JabbRUser (r))
-							this.users.Add (user.Id, user);
-					}
-					lock (owners) {
-						this.owners.Clear ();
-						this.owners.AddRange (task.Result.Owners);
-					}
-					IEnumerable<ChannelMessage> messages = (from m in task.Result.RecentMessages select CreateMessage(m)).ToArray ();
-					historyLoaded = true;
-					if (firstMessage != null) {
-						// filter up to the first already received message
-						messages = messages.TakeWhile (r => r.When < firstMessage.When || (r.When == firstMessage.When && r.Content != firstMessage.Content));
-						// must call .ToArray() otherwise firstMessage will be null when this is iterated
-						messages = messages.ToArray ();
-						firstMessage = null;
-					}
-					recentMessages.SetResult (messages);
-					getChannelInfo.SetResult (this);
+				lock (owners)
+				{
+					this.owners.Clear();
+					this.owners.AddRange(roomInfo.Owners);
 				}
-			});
+				IEnumerable<ChannelMessage> messages = (from m in roomInfo.RecentMessages select CreateMessage(m)).ToArray();
+				historyLoaded = true;
+				if (firstMessage != null)
+				{
+					// filter up to the first already received message
+					messages = messages.TakeWhile(r => r.When < firstMessage.When || (r.When == firstMessage.When && r.Content != firstMessage.Content));
+					// must call .ToArray() otherwise firstMessage will be null when this is iterated
+					messages = messages.ToArray();
+					firstMessage = null;
+				}
+				recentMessages.SetResult(messages);
+				getChannelInfo.SetResult(this);
+			} catch (Exception ex)
+			{
+				getChannelInfo.SetException(ex);
+				recentMessages.SetException(ex);
+			}
 		}
 		
 		User GetUser (string id)
@@ -106,32 +113,21 @@ namespace JabbR.Eto.Model.JabbR
 			OnUsersActivityChanged (new UsersEventArgs (theusers, DateTimeOffset.Now));
 		}
 		
-		public override Task<IEnumerable<ChannelMessage>> GetHistory (string fromId)
+		public async override Task<IEnumerable<ChannelMessage>> GetHistory (string fromId)
 		{
-			var task = new TaskCompletionSource<IEnumerable<ChannelMessage>> ();
 			if (recentMessages != null) {
-				recentMessages.Task.ContinueWith (messages => {
-					if (!messages.IsFaulted)
-						task.SetResult (messages.Result);
-					else 
-						task.SetException (messages.Exception);
-					recentMessages = null;
-				});
+				Server.MakeRoomLoadNext(this);
+				var messages = await recentMessages.Task;
+				recentMessages = null;
+				return messages;
 			}
 			else {
-				var previous = Server.Client.GetPreviousMessages (fromId);
-				previous.ContinueWith (t => {
-					if (t.IsCompleted)
-						task.TrySetResult (from m in t.Result select CreateMessage(m));
-					else
-						task.TrySetException (t.Exception);
-				});
+				var prev = await Server.Client.GetPreviousMessages (fromId);
+				return from m in prev select CreateMessage(m);
 			}
-			
-			return task.Task;
 		}
 		
-		public override void SendMessage (string command)
+		public async override void SendMessage (string command)
 		{
 			var message = new global::JabbR.Client.Models.ClientMessage{
 				Id = Guid.NewGuid ().ToString (),
@@ -141,14 +137,17 @@ namespace JabbR.Eto.Model.JabbR
 			if (!command.TrimStart ().StartsWith ("/")) {
 				OnMessageReceived (new MessageEventArgs (new ChannelMessage (message.Id, DateTimeOffset.Now, Server.CurrentUser.Name, command)));
 			}
-			Server.Client.Send (message).ContinueWith (task => {
-				Application.Instance.Invoke (() => {
-					MessageBox.Show (
+			try {
+				await Server.Client.Send(message);
+			}
+			catch (Exception ex) {
+				Application.Instance.Invoke(() => {
+					MessageBox.Show(
 						Application.Instance.MainForm,
-						string.Format ("Error sending message: {0}", task.Exception)
+						string.Format("Error sending message: {0}", ex)
 					);
 				});
-			}, TaskContinuationOptions.OnlyOnFaulted);
+			}
 		}
 		
 		public override void TriggerMessage (ChannelMessage message)
@@ -213,6 +212,7 @@ namespace JabbR.Eto.Model.JabbR
 		
 		public override Task<Channel> GetChannelInfo ()
 		{
+			Server.MakeRoomLoadNext(this);
 			return getChannelInfo.Task;
 		}
 
