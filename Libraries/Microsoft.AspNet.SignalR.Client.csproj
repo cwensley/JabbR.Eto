@@ -35,7 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="Newtonsoft.Json.csproj">
-      <Project>{EB46B9C6-EE37-48F9-835E-E49580E40E0A}</Project>
+      <Project>{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}</Project>
       <Name>Newtonsoft.Json</Name>
     </ProjectReference>
     <Reference Include="System" />
@@ -43,20 +43,6 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\..\Common\CommonAssemblyInfo.cs">
-    </Compile>
-    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\..\Common\CommonVersionInfo.cs">
-    </Compile>
-    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\..\Microsoft.AspNet.SignalR.Core\Infrastructure\CancellationTokenExtensions.cs">
-    </Compile>
-    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\..\Microsoft.AspNet.SignalR.Core\Infrastructure\DisposableAction.cs">
-    </Compile>
-    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\..\Microsoft.AspNet.SignalR.Core\Infrastructure\Disposer.cs">
-    </Compile>
-    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\..\Microsoft.AspNet.SignalR.Core\Infrastructure\ExceptionsExtensions.cs">
-    </Compile>
-    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\..\Microsoft.AspNet.SignalR.Core\TaskAsyncHelper.cs">
-    </Compile>
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Connection.cs" />
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\ConnectionExtensions.cs" />
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\HeartBeatMonitor.cs" />
@@ -78,9 +64,6 @@
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Infrastructure\ThreadSafeInvoker.cs" />
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Infrastructure\UrlEncoder.cs" />
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Transports\ServerSentEvents\ChunkBuffer.cs" />
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Http\DefaultHttpClient.cs" />
@@ -106,13 +89,13 @@
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Transports\ServerSentEvents\EventType.cs" />
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Transports\ServerSentEvents\SseEvent.cs" />
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Transports\TransportHelper.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+    <Compile Include="SignalR\src\Common\CommonAssemblyInfo.cs" />
+    <Compile Include="SignalR\src\Common\CommonVersionInfo.cs" />
+    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Core\Infrastructure\CancellationTokenExtensions.cs" />
+    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Core\Infrastructure\DisposableAction.cs" />
+    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Core\Infrastructure\Disposer.cs" />
+    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Core\Infrastructure\ExceptionsExtensions.cs" />
+    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Core\TaskAsyncHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SignalR\src\Microsoft.AspNet.SignalR.Client\packages.config" />
@@ -126,4 +109,9 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <EmbeddedResource Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Resources.resx">
+      <LogicalName>Microsoft.AspNet.SignalR.Client.Resources.resources</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

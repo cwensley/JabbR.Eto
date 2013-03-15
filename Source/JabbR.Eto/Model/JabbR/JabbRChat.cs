@@ -48,7 +48,7 @@ namespace JabbR.Eto.Model.JabbR
 			return null;
 		}
 		
-		public async override void SendMessage (string command)
+		public override void SendMessage (string command)
 		{
 			if (command.StartsWith ("/")) {
                 // chat channel does not support commands, so send to lobby
@@ -60,7 +60,7 @@ namespace JabbR.Eto.Model.JabbR
 				Application.Instance.Invoke (() => {
 					MessageBox.Show (
 						Application.Instance.MainForm,
-						string.Format ("Error sending message: {0}", ex)
+						string.Format ("Error sending message: {0}", task.Exception)
 					);
 				});
 			}, TaskContinuationOptions.OnlyOnFaulted);
