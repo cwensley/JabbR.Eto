@@ -119,15 +119,30 @@ namespace JabbR.Eto
 		
 		public void ReadXml (XmlElement element)
 		{
-			this.ClientSize = element.ReadChildSizeXml ("clientSize") ?? new Size (800, 600);
+            var bounds = element.ReadChildRectangleXml("bounds");
+            if (bounds != null)
+                this.Bounds = bounds.Value;
+            else {
+                var clientSize = element.ReadChildSizeXml ("clientSize");
+				if (clientSize != null)
+                    this.ClientSize = clientSize.Value;
+            }
+            bool maximized = element.GetBoolAttribute("maximized") ?? false;
+            if (maximized) {
+                this.Maximize ();
+            }
+
 			element.ReadChildXml ("top", top);
 		}
 
 		public void WriteXml (XmlElement element)
 		{
-			element.WriteChildSizeXml ("clientSize", this.ClientSize);
+            element.WriteChildRectangleXml ("bounds", this.RestoreBounds ?? this.Bounds);
+            if (this.WindowState == WindowState.Maximized) {
+                element.SetAttribute("maximized", true);
+            }
+            
 			element.WriteChildXml ("top", top);
-			
 		}
 		
 		#endregion
