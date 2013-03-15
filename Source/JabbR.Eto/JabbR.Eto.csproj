@@ -10,7 +10,6 @@
     <RootNamespace>JabbR.Eto</RootNamespace>
     <AssemblyName>JabbR.Eto</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -119,16 +118,12 @@
       <Name>JabbR.Client</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Resources\server.png" />
     <EmbeddedResource Include="Resources\JabbReto.ico" />
-    <EmbeddedResource Include="Interface\JabbR\AuthHtml.html">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\JabbR\AuthHtml.html" />
     <EmbeddedResource Include="Interface\JabbR\GetUserID.html" />
     <EmbeddedResource Include="Resources\room.png" />
     <EmbeddedResource Include="Resources\chat.png" />
   </ItemGroup>
-  <ItemGroup />
 </Project>
