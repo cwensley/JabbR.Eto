@@ -36,7 +36,7 @@ namespace JabbR.Eto.Wpf
 			});
 
 			var app = new JabbRApplication();
-			//app.Initialized += CheckForNewVersion;
+			app.Initialized += CheckForNewVersion;
 			app.Run (args);
 		}
 
@@ -57,21 +57,17 @@ namespace JabbR.Eto.Wpf
 			if (ApplicationDeployment.IsNetworkDeployed)
 			{
 				var ad = ApplicationDeployment.CurrentDeployment;
+				ad.CheckForUpdateCompleted += ad_CheckForUpdateCompleted;
+				ad.CheckForUpdateAsync ();
+			}
+		}
 
-				Task.Factory.StartNew (() => {
-					try
-					{
-						var info = ad.CheckForDetailedUpdate ();
-
-						if (info.UpdateAvailable)
-						{
-							var app = sender as Application;
-							MessageBox.Show (app.MainForm, string.Format ("An update to version {0} is available (you have {1}). Restart the app to install!", info.AvailableVersion, ad.CurrentVersion));
-						}
-					}
-					catch (Exception)
-					{
-					}
+		static void ad_CheckForUpdateCompleted (object sender, CheckForUpdateCompletedEventArgs e)
+		{
+			if (e.UpdateAvailable) {
+				Application.Instance.AsyncInvoke (() => {
+					var ad = ApplicationDeployment.CurrentDeployment;
+					MessageBox.Show (Application.Instance.MainForm, string.Format ("An update to version {0} is available (you have {1}). Restart the app to install!", e.AvailableVersion, ad.CurrentVersion));
 				});
 			}
 		}
