@@ -197,7 +197,7 @@ namespace JabbR.Eto.Model.JabbR
 			}
 			else {
 				content = Regex.Replace (content, "(https?://[^ \"]+)", "<a href=\"$1\">$1</a>");
-				content = Regex.Replace (content, "(^|[ ])#([^ ]+)", "<a href=\"#/rooms/$2\">#$2</a>");
+				content = Regex.Replace (content, "(?:^|[ ])#([^ ]+)", "<a href=\"#/rooms/$1\">#$1</a>");
 			}
 			return content;
 		}
