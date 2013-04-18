@@ -9,12 +9,10 @@ namespace JabbR.Eto.Actions
 	{
 		public const string ActionID = "ServerConnect";
 		Channels channels;
-		Configuration config;
-		
-		public ServerConnect (Channels channels, Configuration config)
+
+		public ServerConnect (Channels channels)
 		{
 			this.channels = channels;
-			this.config = config;
 			this.ID = ActionID;
 			this.MenuText = "Connect";
 		}

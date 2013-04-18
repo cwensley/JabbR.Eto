@@ -10,6 +10,7 @@ using System.Diagnostics;
 using MonoMac.Security;
 using MonoMac.WebKit;
 using JabbR.Eto.Mac.Controls;
+using System.IO;
 
 namespace JabbR.Eto.Mac
 {
@@ -23,7 +24,7 @@ namespace JabbR.Eto.Mac
 			var generator = Generator.Detect;
 			generator.Add <IJabbRApplication> (() => new JabbRApplicationHandler ());
 
-            NSApplication.CheckForIllegalCrossThreadCalls = false;
+			NSApplication.CheckForIllegalCrossThreadCalls = false;
 
 			Style.Add<TreeViewHandler>("channelList", h => {
 				h.Control.Delegate = new CustomTreeViewDelegate { Handler = h, AllowGroupSelection = true };

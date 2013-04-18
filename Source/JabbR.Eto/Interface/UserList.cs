@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JabbR.Eto.Model;
 using Eto;
+using Eto.Drawing;
 
 namespace JabbR.Eto.Interface
 {
@@ -51,7 +52,7 @@ namespace JabbR.Eto.Interface
 		
 		TreeItem CreateItem (User user)
 		{
-			return new TreeItem { Text = user.Name, Key = user.Id, Tag = user };
+			return new TreeItem { Text = user.Name, Key = user.Id, Tag = user, Image = Channel.Server.GetUserIcon(user) };
 		}
 
 		public void OwnerAdded (User user)
@@ -118,6 +119,30 @@ namespace JabbR.Eto.Interface
 					return true;
 			}
 			return false;
+		}
+
+		ITreeItem FindUserItem (User user)
+		{
+			var item = owners.Children.FirstOrDefault(r => r.Key == user.Id);
+			if (item != null)
+				return item;
+			item = online.Children.FirstOrDefault(r => r.Key == user.Id);
+			if (item != null)
+				return item;
+			item = away.Children.FirstOrDefault(r => r.Key == user.Id);
+			if (item != null)
+				return item;
+			return null;
+		}
+
+		public void UserIconChanged (User user, Image image)
+		{
+			var item = FindUserItem(user) as TreeItem;
+			if (item != null) {
+				item.Image = image;
+				//tree.RefreshData ();
+				tree.RefreshItem(item);
+			}
 		}
 
 		public void UserLeft (User user)

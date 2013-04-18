@@ -1,6 +1,3 @@
-[submodule "Libraries/JabbR.Client"]
-	path = Libraries/JabbR.Client
-	url = git://github.com/davidfowl/JabbR.Client.git
 [submodule "Libraries/Eto.Forms"]
 	path = Libraries/Eto.Forms
 	url = git://github.com/picoe/Eto.git
@@ -13,3 +10,6 @@
 [submodule "Libraries/MahApps.Metro"]
 	path = Libraries/MahApps.Metro
 	url = https://github.com/MahApps/MahApps.Metro.git
+[submodule "Libraries/JabbR"]
+	path = Libraries/JabbR
+	url = https://github.com/JabbR/JabbR.git

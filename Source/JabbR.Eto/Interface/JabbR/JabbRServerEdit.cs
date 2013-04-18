@@ -19,11 +19,9 @@ namespace JabbR.Eto.Interface.JabbR
 		TextBox janrainAppName;
 		TextBox serverAddress;
 		Button authButton;
-		bool isNew;
-		
-		public JabbRServerEdit (JabbRServer server, DynamicLayout layout, bool isNew)
+
+		public JabbRServerEdit (JabbRServer server, DynamicLayout layout)
 		{
-			this.isNew = isNew;
 			this.server = server;
 			layout.AddRow (new Label { Text = "Address" }, EditAddress ());
 			layout.EndBeginVertical ();
@@ -65,12 +63,29 @@ namespace JabbR.Eto.Interface.JabbR
 			var layout = new DynamicLayout (loginSection = new GroupBox{ Text = "Login"});
 			
 			layout.Add (null);
-			layout.AddRow (new Label { Text = "UserName" }, EditUserName ());
+			layout.BeginVertical();
+			layout.AddRow (new Label { Text = "User Name" }, EditUserName ());
 			layout.AddRow (new Label { Text = "Password" }, EditPassword ());
+			layout.EndVertical();
+			layout.AddSeparateRow(null, CreateAccountButton(), null);
 			layout.Add (null);
 
 			return layout.Container;
 		}
+
+		Control CreateAccountButton ()
+		{
+			var control = new Label { Text = "Create a New Account", TextColor = Colors.Blue };
+			control.MouseDown += (sender, e) => {
+				var uri = new UriBuilder(this.serverAddress.Text) {
+					Path = "account/register"
+				};
+
+				Application.Instance.Open(uri.ToString());
+			};
+			return control;
+		}
+
 		Control SocialSection ()
 		{
 			var layout = new DynamicLayout (socialSection = new GroupBox{ Text = "Janrain"});
@@ -90,7 +105,7 @@ namespace JabbR.Eto.Interface.JabbR
 		Control JanrainAppName ()
 		{
 			var control = janrainAppName = new TextBox ();
-			control.Bind ("Text", "JanrainAppName", DualBindingMode.OneWay);
+			control.TextBinding.Bind <JabbRServer>(c => c.JanrainAppName, (c,v) => c.JanrainAppName = v, mode:DualBindingMode.OneWay);
 			return control;
 		}
 		
@@ -120,7 +135,7 @@ namespace JabbR.Eto.Interface.JabbR
 		Control UseSocialLogin ()
 		{
 			var control = useSocialLogin = new CheckBox { Text = "Use Social Login", Visible = false };
-			control.Bind ("Checked", "UseSocialLogin", DualBindingMode.OneWay);
+			control.CheckedBinding.Bind <JabbRServer>(c => c.UseSocialLogin, (c,v) => c.UseSocialLogin = v ?? false, mode:DualBindingMode.OneWay);
 			control.CheckedChanged += delegate {
 				SetVisibility ();
 			};
@@ -131,21 +146,21 @@ namespace JabbR.Eto.Interface.JabbR
 		Control EditAddress ()
 		{
 			var control = serverAddress = new TextBox ();
-			control.Bind ("Text", "Address", DualBindingMode.OneWay);
+			control.TextBinding.Bind<JabbRServer>(c => c.Address, (c,v) => c.Address = v, mode:DualBindingMode.OneWay);
 			return control;
 		}
 		
 		Control EditUserName ()
 		{
 			var control = new TextBox ();
-			control.Bind ("Text", "UserName", DualBindingMode.OneWay);
+			control.TextBinding.Bind<JabbRServer>(c => c.UserName, (c,v) => c.UserName = v, mode:DualBindingMode.OneWay);
 			return control;
 		}
 		
 		Control EditPassword ()
 		{
 			var control = new PasswordBox ();
-			control.Bind ("Text", "Password", DualBindingMode.OneWay);
+			control.TextBinding.Bind<JabbRServer>(c => c.Password, (c,v) => c.Password = v, mode:DualBindingMode.OneWay);
 			return control;
 		}
 	}

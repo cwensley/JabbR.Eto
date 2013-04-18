@@ -10,15 +10,16 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>JabbR.Client</RootNamespace>
     <AssemblyName>JabbR.Client</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>True</DebugSymbols>
+    <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>False</Optimize>
-    <OutputPath>JabbR.Client\JabbR.Client\bin\Debug\</OutputPath>
+    <Optimize>false</Optimize>
+    <OutputPath>JabbR\JabbR.Client\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -26,8 +27,8 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
-    <Optimize>True</Optimize>
-    <OutputPath>JabbR.Client\JabbR.Client\bin\Release\</OutputPath>
+    <Optimize>true</Optimize>
+    <OutputPath>JabbR\JabbR.Client\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -51,25 +52,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="JabbR.Client\JabbR.Client\ClientEvents.cs" />
-    <Compile Include="JabbR.Client\JabbR.Client\DefaultAuthenticationProvider.cs" />
-    <Compile Include="JabbR.Client\JabbR.Client\HttpHelper.cs" />
-    <Compile Include="JabbR.Client\JabbR.Client\IJabbRClient.cs" />
-    <Compile Include="JabbR.Client\JabbR.Client\IAuthenticationProvider.cs" />
-    <Compile Include="JabbR.Client\JabbR.Client\JabbRClient.cs" />
-    <Compile Include="JabbR.Client\JabbR.Client\Models\LogOnInfo.cs" />
-    <Compile Include="JabbR.Client\JabbR.Client\Models\Message.cs" />
-    <Compile Include="JabbR.Client\JabbR.Client\Models\Room.cs" />
-    <Compile Include="JabbR.Client\JabbR.Client\Models\User.cs" />
-    <Compile Include="JabbR.Client\JabbR.Client\Models\UserStatus.cs" />
-    <Compile Include="JabbR.Client\JabbR.Client\Properties\AssemblyInfo.cs" />
-    <Compile Include="JabbR.Client\JabbR.Client\StreamExtensions.cs" />
-    <Compile Include="JabbR.Client\JabbR.Client\TaskAsyncHelper.cs" />
-    <Compile Include="JabbR.Client\JabbR.Client\Models\ClientMessage.cs" />
+    <Compile Include="JabbR\JabbR.Client\ClientEvents.cs" />
+    <Compile Include="JabbR\JabbR.Client\DefaultAuthenticationProvider.cs" />
+    <Compile Include="JabbR\JabbR.Client\HttpHelper.cs" />
+    <Compile Include="JabbR\JabbR.Client\IJabbRClient.cs" />
+    <Compile Include="JabbR\JabbR.Client\IAuthenticationProvider.cs" />
+    <Compile Include="JabbR\JabbR.Client\JabbRClient.cs" />
+    <Compile Include="JabbR\JabbR.Client\Models\LogOnInfo.cs" />
+    <Compile Include="JabbR\JabbR.Client\Models\Message.cs" />
+    <Compile Include="JabbR\JabbR.Client\Models\Room.cs" />
+    <Compile Include="JabbR\JabbR.Client\Models\User.cs" />
+    <Compile Include="JabbR\JabbR.Client\Models\UserStatus.cs" />
+    <Compile Include="JabbR\JabbR.Client\Properties\AssemblyInfo.cs" />
+    <Compile Include="JabbR\JabbR.Client\StreamExtensions.cs" />
+    <Compile Include="JabbR\JabbR.Client\TaskAsyncHelper.cs" />
+    <Compile Include="JabbR\JabbR\Models\ClientMessage.cs" />
+    <Compile Include="JabbR\JabbR\Models\ClientNotification.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="JabbR.Client\JabbR.Client\packages.config" />
-    <None Include="JabbR.Client\JabbR.Client\Properties\JabbR.Client.nuspec" />
+    <None Include="JabbR\JabbR.Client\packages.config" />
+    <None Include="JabbR\JabbR.Client\Properties\JabbR.Client.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

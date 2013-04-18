@@ -16,7 +16,6 @@ namespace JabbR.Eto.Interface
 	{
 		bool noHistory;
 		bool retrievingHistory;
-		
 		const string JOIN_ROOM_PREFIX = "?join-room=";
 		const string LOAD_HISTORY_PREFIX = "?load-history";
 		
@@ -30,20 +29,21 @@ namespace JabbR.Eto.Interface
 		
 		public override bool AllowNotificationCollapsing { get { return true; } }
 
-        public override string TitleLabel
-        {
-            get
-            {
-                return "#" + this.Channel.Name;
-            }
-        }
+		public override string TitleLabel
+		{
+			get
+			{
+				return "#" + this.Channel.Name;
+			}
+		}
 		
-		public ChannelSection (Channel channel)
+		public ChannelSection(Channel channel)
 		{
 			this.Channel = channel;
 			this.Channel.MessageReceived += HandleMessageReceived;
 			this.Channel.UserJoined += HandleUserJoined;
 			this.Channel.UserLeft += HandleUserLeft;
+			this.Channel.UserIconChanged += HandleUserIconChanged;
 			this.Channel.OwnerAdded += HandleOwnerAdded;
 			this.Channel.OwnerRemoved += HandleOwnerRemoved;
 			this.Channel.UsersActivityChanged += HandleUsersActivityChanged;
@@ -53,89 +53,104 @@ namespace JabbR.Eto.Interface
 			this.Channel.UsernameChanged += HandleUsernameChanged;
 		}
 
-		void HandleUsernameChanged (object sender, UsernameChangedEventArgs e)
+		void HandleUsernameChanged(object sender, UsernameChangedEventArgs e)
 		{
-			Application.Instance.AsyncInvoke (delegate {
-				this.UserList.UsernameChanged (e.OldUsername, e.User);
+			Application.Instance.AsyncInvoke(delegate
+			{
+				this.UserList.UsernameChanged(e.OldUsername, e.User);
 			});
-			AddNotification (new NotificationMessage (DateTimeOffset.Now, "{0}'s nick has changed to {1}.", e.OldUsername, e.User.Name));
+			AddNotification(new NotificationMessage(DateTimeOffset.Now, "{0}'s nick has changed to {1}.", e.OldUsername, e.User.Name));
 		}
 
-		void HandleMeMessageReceived (object sender, MeMessageEventArgs e)
+		void HandleMeMessageReceived(object sender, MeMessageEventArgs e)
 		{
-			MeMessage (e.Message);
+			MeMessage(e.Message);
 		}
 
-		void HandleTopicChanged (object sender, EventArgs e)
+		void HandleTopicChanged(object sender, EventArgs e)
 		{
-			AddNotification (new NotificationMessage(DateTimeOffset.Now, "Topic was changed to \"{0}\".", Channel.Topic));
-			SetTopic (Channel.Topic);
+			AddNotification(new NotificationMessage(DateTimeOffset.Now, "Topic was changed to \"{0}\".", Channel.Topic));
+			SetTopic(Channel.Topic);
 		}
 
-		void HandleMessageContent (object sender, MessageContentEventArgs e)
+		void HandleMessageContent(object sender, MessageContentEventArgs e)
 		{
-			Application.Instance.AsyncInvoke(delegate {
-				AddMessageContent (e.Content);
-			});
-		}
-
-		void HandleUsersActivityChanged (object sender, UsersEventArgs e)
-		{
-			Application.Instance.AsyncInvoke(delegate {
-				UserList.UsersActivityChanged (e.Users);
+			Application.Instance.AsyncInvoke(delegate
+			{
+				AddMessageContent(e.Content);
 			});
 		}
 
-		void HandleOwnerRemoved (object sender, UserEventArgs e)
+		void HandleUsersActivityChanged(object sender, UsersEventArgs e)
 		{
-			Application.Instance.AsyncInvoke(delegate {
+			Application.Instance.AsyncInvoke(delegate
+			{
+				UserList.UsersActivityChanged(e.Users);
+			});
+		}
+
+		void HandleOwnerRemoved(object sender, UserEventArgs e)
+		{
+			Application.Instance.AsyncInvoke(delegate
+			{
 				UserList.OwnerRemoved(e.User);
 			});
-			AddNotification (new NotificationMessage (
+			AddNotification(new NotificationMessage(
 				DateTimeOffset.Now,
-				string.Format ("{0} was removed as an owner", e.User.Name)
+				string.Format("{0} was removed as an owner", e.User.Name)
 			));
 		}
 
-		void HandleOwnerAdded (object sender, UserEventArgs e)
+		void HandleOwnerAdded(object sender, UserEventArgs e)
 		{
-			Application.Instance.AsyncInvoke(delegate {
+			Application.Instance.AsyncInvoke(delegate
+			{
 				UserList.OwnerAdded(e.User);
 			});
-			AddNotification (new NotificationMessage (
+			AddNotification(new NotificationMessage(
 				DateTimeOffset.Now,
-				string.Format ("{0} was added as an owner", e.User.Name)
+				string.Format("{0} was added as an owner", e.User.Name)
 			));
 		}
 
-		void HandleUserLeft (object sender, UserEventArgs e)
+		void HandleUserIconChanged(object sender, UserImageEventArgs e)
 		{
-			Application.Instance.AsyncInvoke(delegate {
-				UserList.UserLeft (e.User);
+			Application.Instance.AsyncInvoke(delegate
+			{
+				UserList.UserIconChanged(e.User, e.Image);
 			});
-			AddNotification (new NotificationMessage (
-				DateTimeOffset.Now,
-				string.Format ("{0} left {1}", e.User.Name, Channel.Name)
-			));
 		}
 
-		void HandleUserJoined (object sender, UserEventArgs e)
+		void HandleUserLeft(object sender, UserEventArgs e)
 		{
-			Application.Instance.AsyncInvoke(delegate {
-				UserList.UserJoined (e.User);
+			Application.Instance.AsyncInvoke(delegate
+			{
+				UserList.UserLeft(e.User);
 			});
-			AddNotification (new NotificationMessage (
+			AddNotification(new NotificationMessage(
 				DateTimeOffset.Now,
-				string.Format ("{0} just entered {1}", e.User.Name, Channel.Name)
+				string.Format("{0} left {1}", e.User.Name, Channel.Name)
 			));
 		}
 
-		void HandleMessageReceived (object sender, MessageEventArgs e)
+		void HandleUserJoined(object sender, UserEventArgs e)
 		{
-			AddMessage (e.Message);
+			Application.Instance.AsyncInvoke(delegate
+			{
+				UserList.UserJoined(e.User);
+			});
+			AddNotification(new NotificationMessage(
+				DateTimeOffset.Now,
+				string.Format("{0} just entered {1}", e.User.Name, Channel.Name)
+			));
 		}
 
-		protected override void CreateLayout (Container container)
+		void HandleMessageReceived(object sender, MessageEventArgs e)
+		{
+			AddMessage(e.Message);
+		}
+
+		protected override void CreateLayout(Container container)
 		{
 			var split = new Splitter{
 				Size = new Size(200, 200),
@@ -143,133 +158,142 @@ namespace JabbR.Eto.Interface
 				FixedPanel = SplitterFixedPanel.Panel2
 			};
 			
-			split.Panel1 = new Panel ();
-			split.Panel2 = UserList = new UserList (this.Channel);
+			split.Panel1 = new Panel();
+			split.Panel2 = UserList = new UserList(this.Channel);
 			
-			base.CreateLayout (split.Panel1 as Panel);
+			base.CreateLayout(split.Panel1 as Panel);
 			
-			container.AddDockedControl (split);
+			container.AddDockedControl(split);
 		}
 		
-		void LoadError (Exception ex, string message)
+		void LoadError(Exception ex, string message)
 		{
-			Debug.WriteLine ("{0} {1}", message, ex);
-			StartLive ();
-			AddNotification(new NotificationMessage("{0} {1}", message, ex != null ? ex.GetBaseException ().Message : null));
-			SetMarker ();
-			ReplayDelayedCommands ();
-			FinishLoad ();
+			Debug.Print("{0} {1}", message, ex);
+			StartLive();
+			AddNotification(new NotificationMessage("{0} {1}", message, ex != null ? ex.GetBaseException().Message : null));
+			SetMarker();
+			ReplayDelayedCommands();
+			FinishLoad();
 		}
 
-		protected override void HandleDocumentLoaded (object sender, WebViewLoadedEventArgs e)
+		protected override void HandleDocumentLoaded(object sender, WebViewLoadedEventArgs e)
 		{
-			if (this.Channel != null && Server.IsConnected) {
-				BeginLoad ();
-				var getChannelInfo = this.Channel.GetChannelInfo ();
-				if (getChannelInfo != null) {
+			if (this.Channel != null && Server.IsConnected)
+			{
+				BeginLoad();
+				var getChannelInfo = this.Channel.GetChannelInfo();
+				if (getChannelInfo != null)
+				{
 					getChannelInfo.ContinueWith(t => {
-						if (t.IsFaulted) {
-							LoadError (t.Exception, "Error getting channel info");
+						if (t.IsFaulted)
+						{
+							LoadError(t.Exception, "Error getting channel info");
 							return;
 						}
 						var channel = t.Result;
-						Application.Instance.AsyncInvoke (delegate {
-							SetTopic (channel.Topic);
-							UserList.SetUsers (channel.Users);
-							var getHistory = channel.GetHistory (LastHistoryMessageId);
-							if (getHistory != null) {
+						Application.Instance.AsyncInvoke(delegate
+						{
+							SetTopic(channel.Topic);
+							UserList.SetUsers(channel.Users);
+							var getHistory = channel.GetHistory(LastHistoryMessageId);
+							if (getHistory != null)
+							{
 								getHistory.ContinueWith(r => {
-									if (r.IsFaulted) {
-										LoadError (r.Exception, "Error getting history");
+									if (r.IsFaulted)
+									{
+										LoadError(r.Exception, "Error getting history");
 										return;
 									}
-									Application.Instance.AsyncInvoke (delegate {
-										StartLive ();
-										AddHistory (r.Result, true);
-										AddNotification (new NotificationMessage (DateTimeOffset.Now, string.Format ("You just entered {0}", Channel.Name)));
-										SetMarker ();
-										ReplayDelayedCommands ();
+									Application.Instance.AsyncInvoke(delegate
+									{
+										StartLive();
+										AddHistory(r.Result, true);
+										AddNotification(new NotificationMessage(DateTimeOffset.Now, string.Format("You just entered {0}", Channel.Name)));
+										SetMarker();
+										ReplayDelayedCommands();
 
-										FinishLoad ();
+										FinishLoad();
 									});
 								});
-							}
-							else
-								FinishLoad ();
+							} else
+								FinishLoad();
 						});
 					});
-				}
-				else
-					FinishLoad ();
-			}
-			else {
-				StartLive ();
-				ReplayDelayedCommands ();
-				AddNotification (new NotificationMessage(DateTimeOffset.Now, "Disconnected"));
+				} else
+					FinishLoad();
+			} else
+			{
+				StartLive();
+				ReplayDelayedCommands();
+				AddNotification(new NotificationMessage(DateTimeOffset.Now, "Disconnected"));
 			}
 		}
 
-		protected override void HandleAction (WebViewLoadingEventArgs e)
+		protected override void HandleAction(WebViewLoadingEventArgs e)
 		{
-			var historyIndex = e.Uri.LocalPath.IndexOf (LOAD_HISTORY_PREFIX);
-			if (historyIndex >= 0) {
-				LoadHistory ();
+			var historyIndex = e.Uri.LocalPath.IndexOf(LOAD_HISTORY_PREFIX);
+			if (historyIndex >= 0)
+			{
+				LoadHistory();
 				return;
 			}
 
-			var joinRoomIndex = e.Uri.LocalPath.IndexOf (JOIN_ROOM_PREFIX);
-			if (joinRoomIndex >= 0) {
-				Channel.Server.JoinChannel (e.Uri.PathAndQuery.Substring (joinRoomIndex + JOIN_ROOM_PREFIX.Length));
+			var joinRoomIndex = e.Uri.LocalPath.IndexOf(JOIN_ROOM_PREFIX);
+			if (joinRoomIndex >= 0)
+			{
+				Channel.Server.JoinChannel(e.Uri.PathAndQuery.Substring(joinRoomIndex + JOIN_ROOM_PREFIX.Length));
 				return;
 			}
 			
-			base.HandleAction (e);
+			base.HandleAction(e);
 		}
 		
-		protected void LoadHistory ()
+		protected void LoadHistory()
 		{
-			if (!noHistory && !retrievingHistory) {
+			if (!noHistory && !retrievingHistory)
+			{
 				retrievingHistory = true;
-				//Debug.WriteLine ("**LOADING HISTORY");
-				var history = Channel.GetHistory (LastHistoryMessageId);
-				history.ContinueWith (t => {
-					//Debug.WriteLine ("History loaded");
-					if (t.Result != null) {
-						noHistory = !t.Result.Any ();
-						AddHistory (t.Result);
+				//Debug.Print ("**LOADING HISTORY");
+				var history = Channel.GetHistory(LastHistoryMessageId);
+				history.ContinueWith(t => {
+					//Debug.Print ("History loaded");
+					if (t.Result != null)
+					{
+						noHistory = !t.Result.Any();
+						AddHistory(t.Result);
 					}
-					FinishLoad ();
+					FinishLoad();
 					retrievingHistory = false;
 				}, TaskContinuationOptions.OnlyOnRanToCompletion);
 				
-				history.ContinueWith (t => {
-					FinishLoad ();
+				history.ContinueWith(t => {
+					FinishLoad();
 					retrievingHistory = false;
 				}, TaskContinuationOptions.OnlyOnFaulted);
-			}
-			else if (noHistory)
-				FinishLoad ();
+			} else if (noHistory)
+				FinishLoad();
 				
 		}
 
-		public void MeMessage (MeMessage message)
+		public void MeMessage(MeMessage message)
 		{
 			SendCommand("addMeMessage", message);
 		}
 		
-		public override void UserTyping ()
+		public override void UserTyping()
 		{
-			Channel.UserTyping ();
+			Channel.UserTyping();
 		}
 		
-		public override void ProcessCommand (string command)
+		public override void ProcessCommand(string command)
 		{
-			if (string.IsNullOrWhiteSpace (command))
+			if (string.IsNullOrWhiteSpace(command))
 				return;
 			
 			Channel.SendMessage(command);
 		}
-		protected async override Task<IEnumerable<string>> GetAutoCompleteNames (string search)
+
+		protected override async Task<IEnumerable<string>> GetAutoCompleteNames(string search)
 		{
 			if (Channel.Server.IsConnected)
 			{
@@ -287,12 +311,12 @@ namespace JabbR.Eto.Interface
 			return Enumerable.Empty<string>();
 		}
 
-		public override string TranslateAutoCompleteText (string selection, string search)
+		public override string TranslateAutoCompleteText(string selection, string search)
 		{
 			if (search.StartsWith("#"))
-				return '#' + base.TranslateAutoCompleteText (selection, search) + ' ';
+				return '#' + base.TranslateAutoCompleteText(selection, search) + ' ';
 			else
-				return '@' + base.TranslateAutoCompleteText (selection, search) + ' ';
+				return '@' + base.TranslateAutoCompleteText(selection, search) + ' ';
 		}
 	}
 }

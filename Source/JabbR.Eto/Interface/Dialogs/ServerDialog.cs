@@ -5,6 +5,7 @@ using Eto.Drawing;
 using Eto;
 using System.Linq;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace JabbR.Eto.Interface.Dialogs
 {
@@ -13,7 +14,6 @@ namespace JabbR.Eto.Interface.Dialogs
 		Button cancelButton;
 		Button connectButton;
 		Button disconnectButton;
-		bool isNew;
 		bool allowConnect;
 		
 		public Server Server { get; private set; }
@@ -26,7 +26,6 @@ namespace JabbR.Eto.Interface.Dialogs
 		
 		public ServerDialog (Server server, bool isNew, bool allowConnect)
 		{
-			this.isNew = isNew;
 			this.allowConnect = allowConnect && !isNew;
 			this.Server = server;
 			this.Title = "Add Server";
@@ -73,14 +72,14 @@ namespace JabbR.Eto.Interface.Dialogs
 		Control AutoConnectButton ()
 		{
 			var control = new CheckBox { Text = "Connect on Startup" };
-			control.Bind ("Checked", "ConnectOnStartup", DualBindingMode.OneWay);
+			control.CheckedBinding.Bind <Server>(c => c.ConnectOnStartup, (c,v) => c.ConnectOnStartup = v ?? false, mode:DualBindingMode.OneWay);
 			return control;
 		}
 		
 		Control ServerName ()
 		{
 			var control = new TextBox ();
-			control.Bind ("Text", "Name", DualBindingMode.OneWay);
+			control.TextBinding.Bind <Server>(c => c.Name, (c,v) => c.Name = v, mode: DualBindingMode.OneWay);
 			return control;
 		}
 
@@ -91,7 +90,7 @@ namespace JabbR.Eto.Interface.Dialogs
 			};
 			control.Click += (sender, e) => {
 				if (SaveData (false)) {
-					Server.Connect ();
+					Server.Connect();
 					Debug.WriteLine ("Closing Dialog!");
 					this.Close (DialogResult.Ok);
 				}

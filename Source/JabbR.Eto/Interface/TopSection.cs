@@ -48,7 +48,7 @@ namespace JabbR.Eto.Interface
 			if (oldSection != null)
 				oldSection.SetMarker ();
 			
-			var view = Channels.CreateSection ();
+			var view = Channels.GetCurrentSection();
 			splitter.Panel2 = view;
 			if (view != null)
 				view.Focus ();

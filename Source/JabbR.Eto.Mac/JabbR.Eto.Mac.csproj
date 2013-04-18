@@ -10,7 +10,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>JabbR.Eto.Mac</RootNamespace>
     <AssemblyName>JabbReto</AssemblyName>
-    <ReleaseVersion>1.0</ReleaseVersion>
+    <ReleaseVersion>1.1</ReleaseVersion>
     <SynchReleaseVersion>False</SynchReleaseVersion>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
@@ -41,7 +41,7 @@
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <IncludeMonoRuntime>True</IncludeMonoRuntime>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
     <PlatformTarget>x86</PlatformTarget>
     <EnablePackageSigning>True</EnablePackageSigning>
     <ConsolePause>False</ConsolePause>
@@ -50,7 +50,6 @@
     <CodeSigningKey>3rd Party Mac Developer Application</CodeSigningKey>
     <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
     <CodeSignEntitlements>Entitlements.plist</CodeSignEntitlements>
-    <LinkMode>SdkOnly</LinkMode>
     <UseSGen>False</UseSGen>
     <I18n />
   </PropertyGroup>
@@ -76,7 +75,8 @@
     <PlatformTarget>x86</PlatformTarget>
     <UseSGen>True</UseSGen>
     <I18n />
-    <MonoBundlingExtraArgs>--linkskip=mscorlib --linkskip=System --linkskip=System.Configuration</MonoBundlingExtraArgs>
+    <MonoBundlingExtraArgs>--linkskip=System.Runtime.Caching</MonoBundlingExtraArgs>
+    <LinkMode>SdkOnly</LinkMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release AppStore|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -99,9 +99,8 @@
     <ConsolePause>False</ConsolePause>
     <PlatformTarget>x86</PlatformTarget>
     <I18n />
-    <UseSGen>True</UseSGen>
-    <MonoBundlingExtraArgs>--linkskip=JabbReto --linkskip=JabbR.Eto --linkskip=Newtonsoft.Json --linkskip=SignalR.Client --linkskip=Eto --linkskip=Eto.Platform.Mac --linkskip=mscorlib --linkskip=System --linkskip=System.Configuration</MonoBundlingExtraArgs>
-    <LinkMode>SdkOnly</LinkMode>
+    <UseSGen>true</UseSGen>
+    <MonoBundlingExtraArgs>--linkskip=System.Runtime.Caching --linkskip=System --linkskip=JabbR.Eto --linkskip=Microsoft.AspNet.SignalR.Client --linkskip=JabbR.Client</MonoBundlingExtraArgs>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -116,6 +115,7 @@
     <Reference Include="XamMac, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065">
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />

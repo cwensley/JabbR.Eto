@@ -9,12 +9,10 @@ namespace JabbR.Eto.Actions
 	{
 		public const string ActionID = "ServerDisconnect";
 		Channels channels;
-		Configuration config;
-		
-		public ServerDisconnect (Channels channels, Configuration config)
+
+		public ServerDisconnect (Channels channels)
 		{
 			this.channels = channels;
-			this.config = config;
 			this.ID = ActionID;
 			this.MenuText = "Disconnect";
 			

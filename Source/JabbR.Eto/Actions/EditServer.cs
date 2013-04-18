@@ -11,12 +11,10 @@ namespace JabbR.Eto.Actions
 	{
 		public const string ActionID = "EditServer";
 		Channels channels;
-		Configuration config;
-		
-		public EditServer (Channels channels, Configuration config)
+
+		public EditServer (Channels channels)
 		{
 			this.channels = channels;
-			this.config = config;
 			this.ID = ActionID;
 			this.MenuText = "Edit Server...";
 		}

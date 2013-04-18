@@ -60,10 +60,10 @@ namespace JabbR.Eto
 			//top.GetActions(args);
 			
 			args.Actions.Add (new Actions.AddServer { AutoConnect = true });
-			args.Actions.Add (new Actions.EditServer (top.Channels, config));
+			args.Actions.Add (new Actions.EditServer (top.Channels));
 			args.Actions.Add (new Actions.RemoveServer (top.Channels, config));
-			args.Actions.Add (new Actions.ServerConnect (top.Channels, config));
-			args.Actions.Add (new Actions.ServerDisconnect (top.Channels, config));
+			args.Actions.Add (new Actions.ServerConnect (top.Channels));
+			args.Actions.Add (new Actions.ServerDisconnect (top.Channels));
 			args.Actions.Add (new Actions.ChannelList (top.Channels));
 			args.Actions.Add (new Actions.Quit ());
 			args.Actions.Add (new Actions.About ());

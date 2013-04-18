@@ -94,6 +94,10 @@ html, body, #container {
 	word-wrap: break-word;
 }
 
+#messages > li.highlight {
+	background-color: #fff6bd;
+}
+
 #messages > li.marker {
 	border-bottom: 2px solid #9BF;
 }

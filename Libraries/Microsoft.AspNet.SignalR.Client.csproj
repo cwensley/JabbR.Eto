@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>SignalR\src\Microsoft.AspNet.SignalR.Client\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;CLIENT_NET4;NET4</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>SignalR\src\Microsoft.AspNet.SignalR.Client\bin\Debug\Microsoft.AspNet.SignalR.Client.XML</DocumentationFile>
@@ -45,7 +45,9 @@
   <ItemGroup>
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Connection.cs" />
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\ConnectionExtensions.cs" />
+    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\HeaderDictionary.cs" />
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\HeartBeatMonitor.cs" />
+    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Http\IResponseExtensions.cs" />
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Hubs\HubInvocation.cs" />
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\ConnectionState.cs" />
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Hubs\HubConnection.cs" />
@@ -63,8 +65,15 @@
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Infrastructure\ExceptionHelper.cs" />
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Infrastructure\ThreadSafeInvoker.cs" />
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Infrastructure\UrlEncoder.cs" />
+    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\TraceLevels.cs" />
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Transports\AsyncStreamReader.cs" />
+    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Transports\LongPolling\NegotiateInitializer.cs" />
+    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Transports\LongPolling\PollingRequestHandler.cs" />
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Transports\ServerSentEvents\ChunkBuffer.cs" />
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Http\DefaultHttpClient.cs" />
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Http\HttpHelper.cs" />
@@ -98,6 +107,13 @@
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Core\TaskAsyncHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="SignalR\src\Microsoft.AspNet.SignalR.Client\packages.config" />
   </ItemGroup>
   <Import Project="SignalR\src\Microsoft.AspNet.SignalR.Client\..\Common\Microsoft.AspNet.SignalR.targets" />
@@ -109,9 +125,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup>
-    <EmbeddedResource Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Resources.resx">
-      <LogicalName>Microsoft.AspNet.SignalR.Client.Resources.resources</LogicalName>
-    </EmbeddedResource>
-  </ItemGroup>
 </Project>

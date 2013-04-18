@@ -15,7 +15,7 @@ namespace JabbR.Eto.Interface
 	{
 		TreeView channelList;
 		TreeItemCollection servers = new TreeItemCollection();
-		Dictionary<string, Control> sectionCache = new Dictionary<string, Control> ();
+		Dictionary<Tuple<Server,string>, Control> sectionCache = new Dictionary<Tuple<Server,string>, Control> ();
 		
 		public Configuration Config { get; private set; }
 		
@@ -44,7 +44,7 @@ namespace JabbR.Eto.Interface
 			var selected = SelectedChannel;
 			if (selected != null)
 				selected.ResetUnreadCount ();
-            SetUnreadCount();
+			SetUnreadCount();
         }
         
 		public Channels (Configuration config)
@@ -85,7 +85,7 @@ namespace JabbR.Eto.Interface
 		{
 			var server = e.Item as Server;
 			if (server != null) {
-				var action = new Actions.EditServer (this, Config);
+				var action = new Actions.EditServer (this);
 				action.Activate ();
 			}
 		}
@@ -110,7 +110,7 @@ namespace JabbR.Eto.Interface
 			server.OpenChannel += HandleOpenChannel;
 			server.CloseChannel += HandleCloseChannel;
 			server.ChannelInfoChanged += HandleChannelInfoChanged;
-			CreateSection (server);
+			CreateSection (server, server);
 		}
 		
 		void UnRegister (Server server)
@@ -141,26 +141,31 @@ namespace JabbR.Eto.Interface
 		{
 			var server = sender as Server;
 			Application.Instance.Invoke (delegate {
-				foreach (var channel in server.Channels)
-				{
-					RemoveSection (channel);	
+				var selectedChannel = channelList.SelectedItem as Channel;
+				if (selectedChannel.Server == server) {
+					channelList.SelectedItem = server;
 				}
+
+				Update (false);
 			});
 		}
-		
-		
+
 		void HandleDisconnected (object sender, EventArgs e)
 		{
-			Application.Instance.Invoke (delegate {
+			var server = sender as Server;
+			Application.Instance.AsyncInvoke (delegate {
+				if (channelList.SelectedItem == null)
+					channelList.SelectedItem = server;
+				RemoveSections(server);
 				Update (false);
 			});
 		}
 		
 		void HandleCloseChannel (object sender, ChannelEventArgs e)
 		{
-			Application.Instance.AsyncInvoke (delegate {
+			Application.Instance.Invoke (delegate {
 				var isSelected = channelList.SelectedItem == e.Channel;
-				RemoveSection (e.Channel);
+				RemoveSection (e.Channel.Server, e.Channel);
 				
 				Update ();
 				if (isSelected)
@@ -174,7 +179,7 @@ namespace JabbR.Eto.Interface
 		void HandleOpenChannel (object sender, OpenChannelEventArgs e)
 		{
 			Application.Instance.AsyncInvoke (delegate {
-				CreateSection (e.Channel);
+				CreateSection (e.Channel.Server, e.Channel);
 				Update ();
 				
 				if (e.ShouldFocus)
@@ -216,7 +221,7 @@ namespace JabbR.Eto.Interface
 					action.Activate ();
 				} else {
 					foreach (var channel in server.Channels) {
-						CreateSection (channel);
+						CreateSection (channel.Server, channel);
 					}
 				}
 				Update ();
@@ -225,7 +230,7 @@ namespace JabbR.Eto.Interface
 		
 		void HandleServerRemoved (object sender, ServerEventArgs e)
 		{
-			Application.Instance.Invoke (delegate {
+			Application.Instance.AsyncInvoke (delegate {
 				UnRegister (e.Server);
 				servers.Remove (e.Server);
 				Update (true);
@@ -244,48 +249,60 @@ namespace JabbR.Eto.Interface
 			});
 		}
 		
-		public Control CreateSection ()
-		{
-			if (channelList.SelectedItem == null)
-				return null;
-			return CreateSection(channelList.SelectedItem);
-		}
-		
-		void RemoveSection (ITreeItem item)
+		void RemoveSection (Server server, ITreeItem item)
 		{
 			var generator = item as ISectionGenerator;
-			if (generator != null && sectionCache.ContainsKey (item.Key)) {
-				sectionCache.Remove (item.Key);
+			if (generator != null) {
+				var key = new Tuple<Server, string>(server, item.Key);
+				if (sectionCache.ContainsKey (key)) {
+					sectionCache.Remove (key);
+				}
+			}
+		}
+
+		void RemoveSections (Server server)
+		{
+			var items = sectionCache.Where(r => r.Key.Item1 == server).Select(r => r.Key).ToArray();
+			foreach (var item in items) {
+				sectionCache.Remove(item);
 			}
 		}
 		
 		MessageSection GetServerSection (Server server)
 		{
 			if (server == null) return null;
-			return CreateSection (server) as MessageSection;
+			return CreateSection (server, server) as MessageSection;
 		}
 		
 		MessageSection GetChannelSection (Channel channel)
 		{
 			if (channel == null) return null;
-			return CreateSection (channel) as MessageSection;
+			return CreateSection (channel.Server, channel) as MessageSection;
 		}
 		
-		MessageSection GetCurrentSection ()
+		public MessageSection GetCurrentSection ()
 		{
 			var current = channelList.SelectedItem;
-			return CreateSection (current) as MessageSection;
+			if (current == null)
+				return null;
+			var server = current as Server;
+			if (server == null && current is Channel)
+				server = ((Channel)current).Server;
+			return CreateSection (server, current) as MessageSection;
 		}
 		
-		Control CreateSection (ITreeItem item)
+		Control CreateSection (Server server, ITreeItem item)
 		{
 			var generator = item as ISectionGenerator;
 			
 			Control section = null;
-			if (generator != null && !sectionCache.TryGetValue (item.Key, out section)) {
-				section = generator.GenerateSection ();
-				
-				sectionCache.Add (item.Key, section);
+			if (generator != null) {
+				var key = new Tuple<Server, string>(server, item.Key);
+				if (!sectionCache.TryGetValue (key, out section)) {
+					section = generator.GenerateSection ();
+					
+					sectionCache.Add (key, section);
+				}
 			}
 			
 			return section;

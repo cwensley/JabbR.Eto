@@ -30,15 +30,18 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
     <Prefer32Bit>false</Prefer32Bit>
+    <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Runtime.Caching" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions\ShowPreferences.cs" />
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="AsyncExtensions.cs" />
     <Compile Include="Interface\Dialogs\DialogExtensions.cs" />
     <Compile Include="Interface\Dialogs\PreferencesDialog.cs" />
     <Compile Include="JabbRApplication.cs" />
@@ -76,6 +79,7 @@
     <Compile Include="Actions\ServerDisconnect.cs" />
     <Compile Include="Interface\Dialogs\AboutDialog.cs" />
     <Compile Include="Interface\Dialogs\ServerDialog.cs" />
+    <Compile Include="Model\UserImageEventArgs.cs" />
     <Compile Include="Model\UsernameChangedEventArgs.cs" />
     <Compile Include="Model\UsersEventArgs.cs" />
     <Compile Include="Interface\JabbR\JabbRAuthDialog.cs" />
@@ -125,5 +129,16 @@
     <EmbeddedResource Include="Interface\JabbR\GetUserID.html" />
     <EmbeddedResource Include="Resources\room.png" />
     <EmbeddedResource Include="Resources\chat.png" />
+    <EmbeddedResource Include="Resources\user.png" />
   </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <TextStylePolicy FileWidth="120" TabsToSpaces="False" inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/x-csharp" />
+          <CSharpFormattingPolicy IndentSwitchBody="True" AnonymousMethodBraceStyle="NextLine" PropertyBraceStyle="NextLine" PropertyGetBraceStyle="NextLine" PropertySetBraceStyle="NextLine" EventBraceStyle="NextLine" EventAddBraceStyle="NextLine" EventRemoveBraceStyle="NextLine" StatementBraceStyle="NextLine" ElseNewLinePlacement="NewLine" CatchNewLinePlacement="NewLine" FinallyNewLinePlacement="NewLine" ArrayInitializerBraceStyle="NextLine" BeforeMethodDeclarationParentheses="False" BeforeMethodCallParentheses="False" BeforeConstructorDeclarationParentheses="False" BeforeDelegateDeclarationParentheses="False" NewParentheses="False" SpacesBeforeBrackets="False" inheritsSet="Mono" inheritsScope="text/x-csharp" scope="text/x-csharp" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>

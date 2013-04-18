@@ -64,12 +64,12 @@ function remove_line () {
 
 extract_csproj "SignalR/src/Microsoft.AspNet.SignalR.Client" "Microsoft.AspNet.SignalR.Client.csproj"
 replace_reference "Microsoft.AspNet.SignalR.Client.csproj" "Newtonsoft.Json" "Newtonsoft.Json"
-remove_line "Microsoft.AspNet.SignalR.Client.csproj" "s/.*<Import Project=\"\\$\\(SolutionDir\\)\.nuget\\\\NuGet\.targets\" \/>.*\n//g"
+remove_line "Microsoft.AspNet.SignalR.Client.csproj" "s/.*<Import Project=\"\\$\\(SolutionDir\\)[\\\\]?\.nuget\\\\NuGet\.targets\".*\/>.*\n//g"
 
 extract_csproj "Newtonsoft.Json/Src/Newtonsoft.Json" "Newtonsoft.Json.csproj"
 remove_line "Newtonsoft.Json.csproj" "s/.*<TargetFrameworkProfile>Client<\\/TargetFrameworkProfile>.*\n//g"
 
-extract_csproj "JabbR.Client/JabbR.Client" "JabbR.Client.csproj"
+extract_csproj "JabbR/JabbR.Client" "JabbR.Client.csproj"
 replace_reference "JabbR.Client.csproj" "Newtonsoft.Json" "Newtonsoft.Json"
 replace_reference "JabbR.Client.csproj" "Microsoft.AspNet.SignalR.Client" "Microsoft.AspNet.SignalR.Client"
 remove_line "JabbR.Client.csproj" "s/.*<Import Project=\"\\$\\(SolutionDir\\)\\\\\.nuget\\\\nuget\.targets\" \/>.*\n//g"

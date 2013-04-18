@@ -36,6 +36,7 @@ namespace JabbR.Eto.Actions
 				var ret= MessageBox.Show (Application.Instance.MainForm, string.Format ("Are you sure you wish to remove '{0}'?", server.Name), MessageBoxButtons.YesNo);
 				if (ret == DialogResult.Yes) {
 					config.RemoveServer(server);
+					JabbRApplication.Instance.SaveConfiguration ();
 				}
 			}
 		}

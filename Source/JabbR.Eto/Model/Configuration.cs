@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using Eto;
 using System.Collections.ObjectModel;
+using System.Text;
+using System.Text.RegularExpressions;
 
 
 namespace JabbR.Eto.Model
@@ -17,7 +19,7 @@ namespace JabbR.Eto.Model
 	{
 		List<Server> servers = new List<Server>();
 		List<Highlight> highlights = new List<Highlight>();
-		
+
 		public IEnumerable<Server> Servers { get { return servers; } }
 		
 		public List<Highlight> Highlights { get { return highlights; } }
@@ -45,6 +47,19 @@ namespace JabbR.Eto.Model
 		
 		public Configuration ()
 		{
+		}
+
+		public Regex GetHighlightRegex(string userName)
+		{
+			var sb = new StringBuilder ();
+			sb.AppendFormat("(({0})", Regex.Escape(userName));
+			foreach (var highlight in highlights) {
+				sb.Append("|(");
+				sb.Append(highlight.RegEx);
+				sb.Append(")");
+			}
+			sb.Append(")");
+			return new Regex(sb.ToString(), RegexOptions.Compiled | RegexOptions.IgnoreCase);
 		}
 
 		class DisconnectHelper
@@ -92,21 +107,24 @@ namespace JabbR.Eto.Model
 		
 		public void DisconnectAll (Action finished = null)
 		{
-			var helper = new DisconnectHelper { Finished = finished };
+			//var helper = new DisconnectHelper { Finished = finished };
 			foreach (var server in Servers) {
 				if (server.IsConnected)
 				{
-					helper.HookServer (server);
+					//helper.HookServer (server);
 					server.Disconnect ();
 				}
 			}
-			helper.FinishDisconnect ();
+			if (finished != null)
+				finished ();
+			//helper.FinishDisconnect ();
 		}
 
 		public void RemoveServer (Server server)
 		{
 			if (server.IsConnected)
 				server.Disconnect ();
+			server.ClearPasswords();
 			servers.Remove (server);
 			OnServerRemoved (new ServerEventArgs(server));
 		}

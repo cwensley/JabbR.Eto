@@ -61,7 +61,15 @@ namespace JabbR.Eto.Model
 			if (UserJoined != null)
 				UserJoined (this, e);
 		}
-		
+
+		public event EventHandler<UserImageEventArgs> UserIconChanged;
+
+		protected virtual void OnUserIconChanged (UserImageEventArgs e)
+		{
+			if (UserIconChanged != null)
+				UserIconChanged(this, e);
+		}
+
 		public event EventHandler<EventArgs> Closed;
 
 		protected virtual void OnClosed (EventArgs e)
@@ -182,6 +190,11 @@ namespace JabbR.Eto.Model
 				else
 					return this.Name;
 			}
+		}
+
+		internal void TriggerUserIconChanged (UserImageEventArgs e)
+		{
+			OnUserIconChanged(e);
 		}
 		
 		public virtual int CompareTo (object obj)

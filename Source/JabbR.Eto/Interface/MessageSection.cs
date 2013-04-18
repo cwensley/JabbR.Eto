@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using JabbR.Eto.Model;
 using System.Diagnostics;
+using Eto.Threading;
 
 namespace JabbR.Eto.Interface
 {
@@ -28,13 +29,15 @@ namespace JabbR.Eto.Interface
 
 		protected TextBox TextEntry { get; private set; }
 
-        public abstract string TitleLabel { get; }
+		public abstract string TitleLabel { get; }
 		
-		public virtual bool SupportsAutoComplete {
+		public virtual bool SupportsAutoComplete
+		{
 			get { return false; }
 		}
 		
-		public virtual bool AllowNotificationCollapsing {
+		public virtual bool AllowNotificationCollapsing
+		{
 			get { return false; }
 		}
 		
@@ -47,111 +50,122 @@ namespace JabbR.Eto.Interface
 		
 		List<DelayedCommand> delayedCommands;
 		bool loaded;
-		object sync = new object ();
+		object sync = new object();
 		
-		public MessageSection ()
+		public MessageSection()
 		{
-			History = new WebView ();
+			History = new WebView();
 			History.DocumentLoaded += HandleDocumentLoaded;
-			TextEntry = MessageEntry ();
+			TextEntry = MessageEntry();
 		}
 		
-		public override void OnPreLoad (EventArgs e)
+		public override void OnPreLoad(EventArgs e)
 		{
-			base.OnPreLoad (e);
+			base.OnPreLoad(e);
 		}
 		
-		public new void Initialize ()
+		public new void Initialize()
 		{
 			if (initialized)
 				return;
 			initialized = true;
-			CreateLayout (this);
+			CreateLayout(this);
 		}
 		
-		protected virtual void CreateLayout (Container container)
+		protected virtual void CreateLayout(Container container)
 		{
-			var layout = new DynamicLayout (container, Padding.Empty, Size.Empty);
-			layout.Add (History, yscale: true);
-			layout.Add (DockLayout.CreatePanel (TextEntry, new Padding (10)));
+			var layout = new DynamicLayout(container, Padding.Empty, Size.Empty);
+			layout.Add(History, yscale: true);
+			layout.Add(DockLayout.CreatePanel(TextEntry, new Padding(10)));
 		}
 		
 		protected virtual void HandleAction(WebViewLoadingEventArgs e)
 		{
-			FinishLoad ();
+			FinishLoad();
 		}
 
-		void HandleOpenNewWindow (object sender, WebViewNewWindowEventArgs e)
+		void HandleOpenNewWindow(object sender, WebViewNewWindowEventArgs e)
 		{
-			Application.Instance.AsyncInvoke (delegate {
-				Application.Instance.Open (e.Uri.AbsoluteUri);
+			Application.Instance.AsyncInvoke(delegate
+			{
+				Application.Instance.Open(e.Uri.AbsoluteUri);
 			});
 			e.Cancel = true;
 		}
 		
-		void HandleDocumentLoading (object sender, WebViewLoadingEventArgs e)
+		void HandleDocumentLoading(object sender, WebViewLoadingEventArgs e)
 		{
-			if (e.IsMainFrame) {
-				Debug.WriteLine ("Loading {0}", e.Uri);
-				if (e.Uri.IsFile || e.Uri.IsLoopback) {
-					Application.Instance.AsyncInvoke (delegate {
-						HandleAction (e);
+			if (e.IsMainFrame)
+			{
+				Debug.Print("Loading {0}", e.Uri);
+				if (e.Uri.IsFile || e.Uri.IsLoopback)
+				{
+					Application.Instance.AsyncInvoke(delegate
+					{
+						HandleAction(e);
 					});
 					e.Cancel = true;
-				} else {
-					Application.Instance.AsyncInvoke (delegate {
-						Application.Instance.Open (e.Uri.AbsoluteUri);
+				} else
+				{
+					Application.Instance.AsyncInvoke(delegate
+					{
+						Application.Instance.Open(e.Uri.AbsoluteUri);
 					});
 					e.Cancel = true;
 				}
 			}
 		}
 		
-		protected void BeginLoad ()
+		protected void BeginLoad()
 		{
-			SendCommandDirect ("beginLoad");
+			SendCommandDirect("beginLoad");
 		}
 		
-		protected void FinishLoad ()
+		protected void FinishLoad()
 		{
-			SendCommandDirect ("finishLoad");
+			SendCommandDirect("finishLoad");
 		}
 
-		public override void OnLoadComplete (EventArgs e)
+		public override void OnLoadComplete(EventArgs e)
 		{
-			base.OnLoadComplete (e);
+			base.OnLoadComplete(e);
 			
-			var resourcePath = EtoEnvironment.GetFolderPath (EtoSpecialFolder.ApplicationResources);
-			resourcePath = Path.Combine (resourcePath, "Styles", "default");
+			var resourcePath = EtoEnvironment.GetFolderPath(EtoSpecialFolder.ApplicationResources);
+			resourcePath = Path.Combine(resourcePath, "Styles", "default");
 			resourcePath += Path.DirectorySeparatorChar;
 			//History.LoadHtml (File.OpenRead (Path.Combine (resourcePath, "channel.html")), new Uri(resourcePath));
-			History.Url = new Uri (Path.Combine (resourcePath, "channel.html"));
+			History.Url = new Uri(Path.Combine(resourcePath, "channel.html"));
 		}
 
-		protected virtual void HandleDocumentLoaded (object sender, WebViewLoadedEventArgs e)
+		protected virtual void HandleDocumentLoaded(object sender, WebViewLoadedEventArgs e)
 		{
-			Application.Instance.AsyncInvoke (delegate {
-				StartLive ();
-				ReplayDelayedCommands ();
+			Application.Instance.AsyncInvoke(delegate
+			{
+				StartLive();
+				ReplayDelayedCommands();
 			});
 		}
 		
-		protected void StartLive ()
+		protected void StartLive()
 		{
 			loaded = true;
-			if (Generator.ID == Generators.Wpf) {
+			if (Generator.ID == Generators.Wpf)
+			{
 				SendCommandDirect("settings", new { html5video = false });
 			}
 			History.DocumentLoading += HandleDocumentLoading;
 			History.OpenNewWindow += HandleOpenNewWindow;
 		}
 		
-		protected void ReplayDelayedCommands ()
+		protected void ReplayDelayedCommands()
 		{
-			lock (sync) {
-				if (delayedCommands != null) {
-					foreach (var command in delayedCommands) {
-						SendCommandDirect (command.Command, command.Parameters);
+			lock (sync)
+			{
+				if (delayedCommands != null)
+				{
+					foreach (var command in delayedCommands)
+					{
+						SendCommandDirect(command.Command, command.Parameters);
 					}
 					delayedCommands = null;
 				}
@@ -161,113 +175,122 @@ namespace JabbR.Eto.Interface
 			
 		}
 
-		public void AddMessage (ChannelMessage message)
+		public void AddMessage(ChannelMessage message)
 		{
-			SendCommand ("addMessage", message);
+			SendCommand("addMessage", message);
 		}
 		
-		public void AddHistory (IEnumerable<ChannelMessage> messages, bool shouldScroll = false)
+		public void AddHistory(IEnumerable<ChannelMessage> messages, bool shouldScroll = false)
 		{
-			SendCommand ("addHistory", messages, shouldScroll);
-			var last = messages.FirstOrDefault ();
+			SendCommand("addHistory", messages, shouldScroll);
+			var last = messages.FirstOrDefault();
 			if (last != null)
 				LastHistoryMessageId = last.Id;
 		}
 
-		public void SetTopic (string topic)
+		public void SetTopic(string topic)
 		{
-			SendCommand ("setTopic", topic);
+			SendCommand("setTopic", topic);
 		}
 		
-		public void AddNotification (NotificationMessage notification)
+		public void AddNotification(NotificationMessage notification)
 		{
-			SendCommand ("addNotification", notification, AllowNotificationCollapsing);
+			SendCommand("addNotification", notification, AllowNotificationCollapsing);
 		}
 
-		public void AddMessageContent (MessageContent content)
+		public void AddMessageContent(MessageContent content)
 		{
-			SendCommand ("addMessageContent", content);
+			SendCommand("addMessageContent", content);
 		}
 		
-		public void SetMarker ()
+		public void SetMarker()
 		{
-			SendCommand ("setMarker");
+			SendCommand("setMarker");
 		}
 		
-		protected void SendCommand (string command, params object[] parameters)
+		protected void SendCommand(string command, params object[] parameters)
 		{
 			string[] vals = new string[parameters.Length];
-			for (int i = 0; i < parameters.Length; i++) {
-				vals[i] = JsonConvert.SerializeObject (parameters[i]);
+			for (int i = 0; i < parameters.Length; i++)
+			{
+				vals [i] = JsonConvert.SerializeObject(parameters [i]);
 			}
-			var script = string.Format ("JabbREto.{0}({1});", command, string.Join (", ", vals));
-			Application.Instance.AsyncInvoke (delegate {
-				if (!loaded) {
-					lock (sync) {
-						Debug.WriteLine ("*** Adding delayed command : {0}", command);
+			var script = string.Format("JabbREto.{0}({1});", command, string.Join(", ", vals));
+			Application.Instance.AsyncInvoke(delegate
+			{
+				if (!loaded)
+				{
+					lock (sync)
+					{
+						Debug.Print("*** Adding delayed command : {0}", command);
 						if (delayedCommands == null)
-							delayedCommands = new List<DelayedCommand> ();
-						delayedCommands.Add (new DelayedCommand { Command = command, Parameters = parameters });
+							delayedCommands = new List<DelayedCommand>();
+						delayedCommands.Add(new DelayedCommand { Command = command, Parameters = parameters });
 					}
 					return;
 				}
-				History.ExecuteScript (script);
+				History.ExecuteScript(script);
 			});
 		}
 		
-		protected void SendCommandDirect (string command, params object[] parameters)
+		protected void SendCommandDirect(string command, params object[] parameters)
 		{
 			string[] vals = new string[parameters.Length];
-			for (int i = 0; i < parameters.Length; i++) {
-				vals[i] = JsonConvert.SerializeObject (parameters[i]);
+			for (int i = 0; i < parameters.Length; i++)
+			{
+				vals [i] = JsonConvert.SerializeObject(parameters [i]);
 			}
-			var script = string.Format ("JabbREto.{0}({1});", command, string.Join (", ", vals));
-			Application.Instance.Invoke (delegate {
-				History.ExecuteScript (script);
+			var script = string.Format("JabbREto.{0}({1});", command, string.Join(", ", vals));
+			Application.Instance.Invoke(delegate
+			{
+				History.ExecuteScript(script);
 			});
 		}
 
-		TextBox MessageEntry ()
+		TextBox MessageEntry()
 		{
 			var control = new TextBox {
 				PlaceholderText = "Send Message..."
 			};
-			control.KeyDown += async (sender, e) => {
-				if (e.KeyData == Key.Enter) {
+			control.KeyDown += (sender, e) => {
+				if (e.KeyData == Key.Enter)
+				{
 					e.Handled = true;
 					var text = control.Text;
 					control.Text = string.Empty;
-					ProcessCommand (text);
+					ProcessCommand(text);
 				}
-				if (SupportsAutoComplete && e.KeyData == Key.Tab) {
-					e.Handled = true;	
-					await ProcessAutoComplete (control.Text);
+				if (SupportsAutoComplete && e.KeyData == Key.Tab)
+				{
+					e.Handled = true;
+					//Debug.Print("Completing: {0}" , Thread.IsMainThread());
+					ProcessAutoComplete(control.Text);
 				}
 			};
 			control.TextChanged += (sender, e) => {
-				UserTyping ();
-				ResetAutoComplete ();
+				UserTyping();
+				ResetAutoComplete();
 			};
 			return control;
 		}
 		
-		public abstract void ProcessCommand (string command);
+		public abstract void ProcessCommand(string command);
 		
-		public virtual void UserTyping ()
+		public virtual void UserTyping()
 		{
 		}
 		
-		public override void Focus ()
+		public override void Focus()
 		{
-			TextEntry.Focus ();
+			TextEntry.Focus();
 		}
 		
-		protected virtual Task<IEnumerable<string>> GetAutoCompleteNames (string search)
+		protected virtual Task<IEnumerable<string>> GetAutoCompleteNames(string search)
 		{
 			return null;
 		}
 		
-		protected virtual void ResetAutoComplete ()
+		protected virtual void ResetAutoComplete()
 		{
 			existingPrefix = null;
 			lastAutoComplete = null;
@@ -275,16 +298,16 @@ namespace JabbR.Eto.Interface
 			autoCompleting = false;
 		}
 		
-		public async virtual Task<bool> ProcessAutoComplete (string text)
+		public virtual async void ProcessAutoComplete(string text)
 		{
 			if (autoCompleting)
-				return true;
+				return;
 			autoCompleting = true;
 			var index = autoCompleteIndex ?? text.LastIndexOf(' ');
 			if (index > text.Length)
 			{
 				ResetAutoComplete();
-				return true;
+				return;
 			}
 			var prefix = (index >= 0 ? text.Substring(index + 1) : text);
 			if (prefix.Length > 0)
@@ -292,17 +315,17 @@ namespace JabbR.Eto.Interface
 				var existingText = index >= 0 ? text.Substring(0, index + 1) : string.Empty;
 				
 				var searchPrefix = existingPrefix ?? prefix;
+				//Debug.Print("Getting auto complete names: {0}" , Thread.IsMainThread());
 				var results = await GetAutoCompleteNames(searchPrefix);
 				if (results == null)
 				{
 					ResetAutoComplete();
-					return true;
+					return;
 				}
-				try
-				{
-					if (!autoCompleting)
-						return false;
-					
+				if (!autoCompleting)
+					return;
+
+				try {
 					var allMatches = results.OrderBy(r => r);
 					
 					var matches = allMatches as IEnumerable<string>;
@@ -318,25 +341,25 @@ namespace JabbR.Eto.Interface
 						user = allMatches.FirstOrDefault();
 					if (user != null)
 					{
-						TextEntry.Text = existingText + TranslateAutoCompleteText(user, searchPrefix);
-						lastAutoComplete = user;
-						if (existingPrefix == null)
-						{
-							existingPrefix = prefix;
-							autoCompleteIndex = index;
-						}
+						//Debug.Print("Setting Text: {0}" , Thread.IsMainThread());
+						Application.Instance.Invoke(() => {
+							TextEntry.Text = existingText + TranslateAutoCompleteText(user, searchPrefix);
+							lastAutoComplete = user;
+							if (existingPrefix == null)
+							{
+								existingPrefix = prefix;
+								autoCompleteIndex = index;
+							}
+						});
 					}
 					autoCompleting = false;
-				} catch
-				{
+				} catch (Exception ex) {
 					ResetAutoComplete();
 				}
-				return true;
 			}
-			return false;
 		}
 		
-		public virtual string TranslateAutoCompleteText (string selection, string search)
+		public virtual string TranslateAutoCompleteText(string selection, string search)
 		{
 			return selection;
 		}

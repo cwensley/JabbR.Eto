@@ -32,12 +32,22 @@ namespace JabbR.Eto
 		{
 			get { return Application.Instance as JabbRApplication; }
 		}
-		
+
+		static JabbRApplication ()
+		{
+			AppDomain.CurrentDomain.UnhandledException += HandleUnhandledException;
+			//ServicePointManager.DefaultConnectionLimit = 100;
+		}
+
+		static void HandleUnhandledException (object sender, UnhandledExceptionEventArgs e)
+		{
+			if (Generator.HasCurrent)
+				MessageBox.Show(string.Format("An unexpected error has occurred. Please report this to support@picoe.ca\n\nDetails: {0}", e.ExceptionObject));
+		}
+
 		public JabbRApplication ()
 			: base(Generator.Detect, typeof(IJabbRApplication))
 		{
-			ServicePointManager.DefaultConnectionLimit = 100;
-			
 			this.Style = "application";
 			this.Name = "JabbReto";
 			this.Configuration = new JabbR.Eto.Model.Configuration();
@@ -49,7 +59,6 @@ namespace JabbR.Eto
 			get { 
 				var path = EtoEnvironment.GetFolderPath (EtoSpecialFolder.ApplicationSettings);
 				return Path.Combine (path, "settings.xml");
-				//return Path.Combine (path, "JabbR.Eto.settings");
 			}
 		}
 
@@ -81,11 +90,6 @@ namespace JabbR.Eto
 			this.BadgeLabel = null;
 			this.MainForm.Show ();
 			
-			foreach (var server in Configuration.Servers) {
-				if (server.ConnectOnStartup)
-					server.Connect ();
-			}
-			
 			if (!Configuration.Servers.Any ()) {
 				Application.Instance.AsyncInvoke (delegate {
 					var action = new Actions.AddServer {
@@ -94,7 +98,12 @@ namespace JabbR.Eto
 					action.Activate ();
 				});
 			}
-			
+			else {
+				foreach (var server in Configuration.Servers) {
+					if (server.ConnectOnStartup)
+						server.Connect ();
+				}
+			}
 		}
 
 		bool disconnecting;
@@ -117,6 +126,7 @@ namespace JabbR.Eto
 		
 		public void SaveConfiguration()
 		{
+			Debug.Print ("Saving settings to {0}", SettingsFileName);
 			this.SaveXml (SettingsFileName, "jabbreto");
 		}
 		
