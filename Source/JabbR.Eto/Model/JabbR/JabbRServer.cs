@@ -109,7 +109,7 @@ namespace JabbR.Eto.Model.JabbR
 			//ServicePointManager.FindServicePoint (new Uri (Address)).ConnectionLimit = 100;
 			
 			//Client = new jab.JabbRClient(Address); //, null, new LongPollingTransport());
-			Client = new jab.JabbRClient(Address, null, new LongPollingTransport());
+			Client = new jab.JabbRClient(Address); //, null, new LongPollingTransport());
 
 			if (UseSocialLogin)
 			{

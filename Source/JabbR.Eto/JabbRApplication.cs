@@ -36,7 +36,7 @@ namespace JabbR.Eto
 		static JabbRApplication ()
 		{
 			AppDomain.CurrentDomain.UnhandledException += HandleUnhandledException;
-			//ServicePointManager.DefaultConnectionLimit = 100;
+			ServicePointManager.DefaultConnectionLimit = 100; // needed for windows
 		}
 
 		static void HandleUnhandledException (object sender, UnhandledExceptionEventArgs e)

@@ -43,6 +43,20 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\..\Common\CommonAssemblyInfo.cs">
+    </Compile>
+    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\..\Common\CommonVersionInfo.cs">
+    </Compile>
+    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\..\Microsoft.AspNet.SignalR.Core\Infrastructure\CancellationTokenExtensions.cs">
+    </Compile>
+    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\..\Microsoft.AspNet.SignalR.Core\Infrastructure\DisposableAction.cs">
+    </Compile>
+    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\..\Microsoft.AspNet.SignalR.Core\Infrastructure\Disposer.cs">
+    </Compile>
+    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\..\Microsoft.AspNet.SignalR.Core\Infrastructure\ExceptionsExtensions.cs">
+    </Compile>
+    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\..\Microsoft.AspNet.SignalR.Core\TaskAsyncHelper.cs">
+    </Compile>
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Connection.cs" />
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\ConnectionExtensions.cs" />
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\HeaderDictionary.cs" />
@@ -98,13 +112,6 @@
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Transports\ServerSentEvents\EventType.cs" />
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Transports\ServerSentEvents\SseEvent.cs" />
     <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Transports\TransportHelper.cs" />
-    <Compile Include="SignalR\src\Common\CommonAssemblyInfo.cs" />
-    <Compile Include="SignalR\src\Common\CommonVersionInfo.cs" />
-    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Core\Infrastructure\CancellationTokenExtensions.cs" />
-    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Core\Infrastructure\DisposableAction.cs" />
-    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Core\Infrastructure\Disposer.cs" />
-    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Core\Infrastructure\ExceptionsExtensions.cs" />
-    <Compile Include="SignalR\src\Microsoft.AspNet.SignalR.Core\TaskAsyncHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SignalR\src\Microsoft.AspNet.SignalR.Client\Resources.resx">

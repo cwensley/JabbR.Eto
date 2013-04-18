@@ -101,6 +101,7 @@
     <I18n />
     <UseSGen>true</UseSGen>
     <MonoBundlingExtraArgs>--linkskip=System.Runtime.Caching --linkskip=System --linkskip=JabbR.Eto --linkskip=Microsoft.AspNet.SignalR.Client --linkskip=JabbR.Client</MonoBundlingExtraArgs>
+    <LinkMode>SdkOnly</LinkMode>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

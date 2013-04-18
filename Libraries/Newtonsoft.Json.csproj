@@ -11,6 +11,8 @@
     <RootNamespace>Newtonsoft.Json</RootNamespace>
     <AssemblyName>Newtonsoft.Json</AssemblyName>
     <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
     <SccProjectName>
     </SccProjectName>
     <SccLocalPath>
@@ -46,7 +48,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Newtonsoft.Json\Src\Newtonsoft.Json\bin\Debug\Net40\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET40;CODE_ANALYSIS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>Newtonsoft.Json\Src\Newtonsoft.Json\bin\Debug\Net40\Newtonsoft.Json.xml</DocumentationFile>
@@ -59,12 +61,13 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>Newtonsoft.Json\Src\Newtonsoft.Json\bin\Release\Net40\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;NET40;CODE_ANALYSIS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>Newtonsoft.Json\Src\Newtonsoft.Json\bin\Release\Net40\Newtonsoft.Json.xml</DocumentationFile>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>Newtonsoft.Json.ruleset</CodeAnalysisRuleSet>
     <UseVSHostingProcess>true</UseVSHostingProcess>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -72,6 +75,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -101,6 +105,8 @@
     <Compile Include="Newtonsoft.Json\Src\Newtonsoft.Json\Converters\StringEnumConverter.cs" />
     <Compile Include="Newtonsoft.Json\Src\Newtonsoft.Json\ConstructorHandling.cs" />
     <Compile Include="Newtonsoft.Json\Src\Newtonsoft.Json\Converters\VersionConverter.cs" />
+    <Compile Include="Newtonsoft.Json\Src\Newtonsoft.Json\FloatFormatHandling.cs" />
+    <Compile Include="Newtonsoft.Json\Src\Newtonsoft.Json\FloatParseHandling.cs" />
     <Compile Include="Newtonsoft.Json\Src\Newtonsoft.Json\JsonDictionaryAttribute.cs" />
     <Compile Include="Newtonsoft.Json\Src\Newtonsoft.Json\JsonException.cs" />
     <Compile Include="Newtonsoft.Json\Src\Newtonsoft.Json\DateFormatHandling.cs" />
@@ -237,7 +243,6 @@
     <Compile Include="Newtonsoft.Json\Src\Newtonsoft.Json\Properties\AssemblyInfo.cs" />
     <Compile Include="Newtonsoft.Json\Src\Newtonsoft.Json\Utilities\StringBuffer.cs" />
     <Compile Include="Newtonsoft.Json\Src\Newtonsoft.Json\Utilities\CollectionUtils.cs" />
-    <Compile Include="Newtonsoft.Json\Src\Newtonsoft.Json\Utilities\ListWrapper.cs" />
     <Compile Include="Newtonsoft.Json\Src\Newtonsoft.Json\Utilities\MathUtils.cs" />
     <Compile Include="Newtonsoft.Json\Src\Newtonsoft.Json\Utilities\MiscellaneousUtils.cs" />
     <Compile Include="Newtonsoft.Json\Src\Newtonsoft.Json\Utilities\ReflectionUtils.cs" />

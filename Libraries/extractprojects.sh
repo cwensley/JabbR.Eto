@@ -6,11 +6,17 @@ function extract_csproj () {
 	csproj=$2
 	subdir="`echo $csprojdir | sed 's/\\//\\\\\\\\/g'`"
 	subdir="$subdir\\\\"
+	if [[ -z "$3" ]]; then
+		oldcsproj=$csproj
+	else
+		oldcsproj=$csproj
+		csproj=$3
+	fi
 	
 	
 	rm -f "$DIR/$csproj"
 
-	cp "$DIR/$csprojdir/$csproj" "$csproj"
+	cp "$DIR/$csprojdir/$oldcsproj" "$csproj"
 
 	#rep="s/<(Compile|EmbeddedResource|None) Include=\"(.+)\">(?=\s*<Link>)/<\1 Include=\"$subdir\2\">/g"
 	rep="s/<(Compile|EmbeddedResource|None) Include=\"(.+)\">(?!\s*<Link>)/<\1 Include=\"$subdir\2\">/g"
@@ -39,7 +45,7 @@ function replace_reference () {
 	find_reference=$2
 	replace_with=$3
 	
-	uuid=$(sed -n 's/.*<ProjectGuid>\(.*\)<\/ProjectGuid>.*/\1/p' "$csproj")
+	uuid=$(sed -n 's/.*<ProjectGuid>\(.*\)<\/ProjectGuid>.*/\1/p' "$replace_with.csproj")
 	
 	rep="s/<Reference Include=\"$find_reference.*?\">(\s|.)*?<\/Reference>/<ProjectReference Include=\"$replace_with.csproj\">\n      <Project>$uuid<\/Project>\n      <Name>$replace_with<\/Name>\n    <\/ProjectReference>/g"
 	perl -0pi -e "$rep" "$csproj"
@@ -66,7 +72,7 @@ extract_csproj "SignalR/src/Microsoft.AspNet.SignalR.Client" "Microsoft.AspNet.S
 replace_reference "Microsoft.AspNet.SignalR.Client.csproj" "Newtonsoft.Json" "Newtonsoft.Json"
 remove_line "Microsoft.AspNet.SignalR.Client.csproj" "s/.*<Import Project=\"\\$\\(SolutionDir\\)[\\\\]?\.nuget\\\\NuGet\.targets\".*\/>.*\n//g"
 
-extract_csproj "Newtonsoft.Json/Src/Newtonsoft.Json" "Newtonsoft.Json.csproj"
+extract_csproj "Newtonsoft.Json/Src/Newtonsoft.Json" "Newtonsoft.Json.Net40.csproj" "Newtonsoft.Json.csproj"
 remove_line "Newtonsoft.Json.csproj" "s/.*<TargetFrameworkProfile>Client<\\/TargetFrameworkProfile>.*\n//g"
 
 extract_csproj "JabbR/JabbR.Client" "JabbR.Client.csproj"
