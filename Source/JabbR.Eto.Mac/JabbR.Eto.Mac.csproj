@@ -99,9 +99,9 @@
     <ConsolePause>False</ConsolePause>
     <PlatformTarget>x86</PlatformTarget>
     <I18n />
-    <UseSGen>true</UseSGen>
+    <UseSGen>false</UseSGen>
     <MonoBundlingExtraArgs>--linkskip=System.Runtime.Caching --linkskip=System --linkskip=JabbR.Eto --linkskip=Microsoft.AspNet.SignalR.Client --linkskip=JabbR.Client</MonoBundlingExtraArgs>
-    <LinkMode>SdkOnly</LinkMode>
+    <LinkMode>Full</LinkMode>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -146,10 +146,6 @@
     <ProjectReference Include="..\..\Libraries\Microsoft.AspNet.SignalR.Client.csproj">
       <Project>{EB46B9C6-EE37-48F9-835E-E49580E40E0A}</Project>
       <Name>Microsoft.AspNet.SignalR.Client</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\Newtonsoft.Json.csproj">
-      <Project>{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}</Project>
-      <Name>Newtonsoft.Json</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Libraries\JabbR.Client.csproj">
       <Project>{A4A1D183-FD80-4DBD-806F-883DDADD4967}</Project>
@@ -203,4 +199,19 @@
       <Link>Styles\default\styles.tweet.css</Link>
     </BundleResource>
   </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <TextStylePolicy inheritsSet="null" scope="text/x-csharp" />
+          <CSharpFormattingPolicy IndentSwitchBody="True" AnonymousMethodBraceStyle="NextLine" PropertyBraceStyle="NextLine" PropertyGetBraceStyle="NextLine" PropertySetBraceStyle="NextLine" EventBraceStyle="NextLine" EventAddBraceStyle="NextLine" EventRemoveBraceStyle="NextLine" StatementBraceStyle="NextLine" ElseNewLinePlacement="NewLine" CatchNewLinePlacement="NewLine" FinallyNewLinePlacement="NewLine" ArrayInitializerBraceStyle="NextLine" BeforeMethodDeclarationParentheses="False" BeforeMethodCallParentheses="False" BeforeConstructorDeclarationParentheses="False" BeforeDelegateDeclarationParentheses="False" NewParentheses="False" SpacesBeforeBrackets="False" inheritsSet="Mono" inheritsScope="text/x-csharp" scope="text/x-csharp" />
+          <TextStylePolicy inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/plain" />
+          <TextStylePolicy inheritsSet="null" scope="application/x-sh" />
+          <TextStylePolicy inheritsSet="null" scope="text/html" />
+          <TextStylePolicy inheritsSet="null" scope="application/javascript" />
+          <TextStylePolicy inheritsSet="null" scope="text/css" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>

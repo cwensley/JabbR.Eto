@@ -11,8 +11,6 @@
     <RootNamespace>Newtonsoft.Json</RootNamespace>
     <AssemblyName>Newtonsoft.Json</AssemblyName>
     <SignAssembly>false</SignAssembly>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
     <SccProjectName>
     </SccProjectName>
     <SccLocalPath>
@@ -61,7 +59,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>Newtonsoft.Json\Src\Newtonsoft.Json\bin\Release\Net40\</OutputPath>
-    <DefineConstants>TRACE;NET40;CODE_ANALYSIS</DefineConstants>
+    <DefineConstants>TRACE;NET35;CODE_ANALYSIS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>Newtonsoft.Json\Src\Newtonsoft.Json\bin\Release\Net40\Newtonsoft.Json.xml</DocumentationFile>

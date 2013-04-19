@@ -6,14 +6,14 @@ using System.Xml;
 
 namespace JabbR.Eto.Model
 {
-	public sealed class MessageEventArgs : EventArgs
-	{
-		public ChannelMessage Message { get; private set; }
-		
-		public MessageEventArgs (ChannelMessage message)
-		{
-			this.Message = message;
-		}
-	}
-	
+    public sealed class MessageEventArgs : EventArgs
+    {
+        public ChannelMessage Message { get; private set; }
+        
+        public MessageEventArgs(ChannelMessage message)
+        {
+            this.Message = message;
+        }
+    }
+    
 }

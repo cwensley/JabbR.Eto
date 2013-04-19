@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace JabbR.Eto.Model
 {
-	public class UserImageEventArgs : UserEventArgs
-	{
-		public Image Image { get; private set; }
+    public class UserImageEventArgs : UserEventArgs
+    {
+        public Image Image { get; private set; }
 
-		public UserImageEventArgs (User user, DateTimeOffset when, Image image)
-			: base (user, when)
-		{
-			this.Image = image;
-		}
-	}
+        public UserImageEventArgs(User user, DateTimeOffset when, Image image)
+            : base (user, when)
+        {
+            this.Image = image;
+        }
+    }
 }

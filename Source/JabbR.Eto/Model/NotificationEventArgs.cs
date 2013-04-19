@@ -10,15 +10,15 @@ using JabbR.Eto.Interface;
 
 namespace JabbR.Eto.Model
 {
-	public class NotificationEventArgs : EventArgs
-	{
-		public NotificationMessage Message { get; private set; }
-		
-		public NotificationEventArgs (NotificationMessage message)
-		{
-			this.Message = message;
-		}
-	}
+    public class NotificationEventArgs : EventArgs
+    {
+        public NotificationMessage Message { get; private set; }
+        
+        public NotificationEventArgs(NotificationMessage message)
+        {
+            this.Message = message;
+        }
+    }
 
 }
 

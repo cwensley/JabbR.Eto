@@ -3,9 +3,9 @@ using Eto.Forms;
 
 namespace JabbR.Eto.Interface
 {
-	public interface ISectionGenerator
-	{
-		Control GenerateSection ();
-	}
+    public interface ISectionGenerator
+    {
+        Control GenerateSection();
+    }
 }
 

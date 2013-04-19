@@ -5,8 +5,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JabbR.Eto.Mac", "JabbR.Eto.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eto", "..\Libraries\Eto.Forms\Source\Eto\Eto.csproj", "{16289D2F-044C-49EF-83E9-9391AFF8FD2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eto.Platform.Mac", "..\Libraries\Eto.Forms\Source\Eto.Platform.Mac\Eto.Platform.Mac.csproj", "{9DD10DFF-5AB3-4E66-B798-CA17911A61E4}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JabbR.Eto", "JabbR.Eto\JabbR.Eto.csproj", "{1CC5D427-7C46-44BB-ABE6-DA6F30828ED8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eto.Platform.XamMac", "..\Libraries\Eto.Forms\Source\Eto.Platform.Mac\Eto.Platform.XamMac.csproj", "{15490F6C-C579-4A86-AD16-8D9B5B41EB87}"
@@ -49,14 +47,6 @@ Global
 		{1CC5D427-7C46-44BB-ABE6-DA6F30828ED8}.Release Developer|Any CPU.Build.0 = Release|Any CPU
 		{1CC5D427-7C46-44BB-ABE6-DA6F30828ED8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CC5D427-7C46-44BB-ABE6-DA6F30828ED8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9DD10DFF-5AB3-4E66-B798-CA17911A61E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9DD10DFF-5AB3-4E66-B798-CA17911A61E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9DD10DFF-5AB3-4E66-B798-CA17911A61E4}.Release AppStore|Any CPU.ActiveCfg = Release|Any CPU
-		{9DD10DFF-5AB3-4E66-B798-CA17911A61E4}.Release AppStore|Any CPU.Build.0 = Release|Any CPU
-		{9DD10DFF-5AB3-4E66-B798-CA17911A61E4}.Release Developer|Any CPU.ActiveCfg = Release|Any CPU
-		{9DD10DFF-5AB3-4E66-B798-CA17911A61E4}.Release Developer|Any CPU.Build.0 = Release|Any CPU
-		{9DD10DFF-5AB3-4E66-B798-CA17911A61E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9DD10DFF-5AB3-4E66-B798-CA17911A61E4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A4A1D183-FD80-4DBD-806F-883DDADD4967}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A4A1D183-FD80-4DBD-806F-883DDADD4967}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4A1D183-FD80-4DBD-806F-883DDADD4967}.Release AppStore|Any CPU.ActiveCfg = Release|Any CPU
@@ -97,9 +87,7 @@ Global
 		$1.DirectoryNamespaceAssociation = PrefixedHierarchical
 		$1.ResourceNamePolicy = MSBuild
 		$0.TextStylePolicy = $2
-		$2.TabsToSpaces = False
-		$2.inheritsSet = VisualStudio
-		$2.inheritsScope = text/plain
+		$2.inheritsSet = null
 		$2.scope = text/x-csharp
 		$0.CSharpFormattingPolicy = $3
 		$3.IndentSwitchBody = True
@@ -111,19 +99,20 @@ Global
 		$3.EventAddBraceStyle = NextLine
 		$3.EventRemoveBraceStyle = NextLine
 		$3.StatementBraceStyle = NextLine
+		$3.ElseNewLinePlacement = NewLine
+		$3.CatchNewLinePlacement = NewLine
+		$3.FinallyNewLinePlacement = NewLine
 		$3.ArrayInitializerBraceStyle = NextLine
 		$3.BeforeMethodDeclarationParentheses = False
 		$3.BeforeMethodCallParentheses = False
 		$3.BeforeConstructorDeclarationParentheses = False
 		$3.BeforeDelegateDeclarationParentheses = False
 		$3.NewParentheses = False
+		$3.SpacesBeforeBrackets = False
 		$3.inheritsSet = Mono
 		$3.inheritsScope = text/x-csharp
 		$3.scope = text/x-csharp
 		$0.TextStylePolicy = $4
-		$4.FileWidth = 120
-		$4.TabsToSpaces = False
-		$4.RemoveTrailingWhitespace = False
 		$4.inheritsSet = VisualStudio
 		$4.inheritsScope = text/plain
 		$4.scope = text/plain
@@ -133,6 +122,28 @@ Global
 		$0.XmlFormattingPolicy = $6
 		$6.inheritsSet = null
 		$6.scope = application/config+xml
+		$0.TextStylePolicy = $7
+		$7.inheritsSet = null
+		$7.scope = application/x-sh
+		$0.TextStylePolicy = $8
+		$8.inheritsSet = null
+		$8.scope = application/javascript
+		$0.TextStylePolicy = $9
+		$9.inheritsSet = null
+		$9.scope = text/css
+		$0.TextStylePolicy = $10
+		$10.inheritsSet = null
+		$10.scope = text/microsoft-resx
+		$0.XmlFormattingPolicy = $11
+		$11.inheritsSet = null
+		$11.scope = text/microsoft-resx
+		$0.TextStylePolicy = $12
+		$12.inheritsSet = null
+		$12.scope = application/xml
+		$0.XmlFormattingPolicy = $13
+		$13.inheritsSet = Mono
+		$13.inheritsScope = application/xml
+		$13.scope = application/xml
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

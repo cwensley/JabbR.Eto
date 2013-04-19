@@ -9,37 +9,36 @@ using JabbR.Eto.Interface.Dialogs;
 
 namespace JabbR.Eto.Actions
 {
-	public class ShowPreferences : ButtonAction
-	{
-		Configuration config;
+    public class ShowPreferences : ButtonAction
+    {
+        Configuration config;
+        public const string ActionID = "ShowPreferences";
 
-		public const string ActionID = "ShowPreferences";
+        public ShowPreferences(Configuration config)
+        {
+            this.ID = ActionID;
+            this.config = config;
 
-		public ShowPreferences (Configuration config)
-		{
-			this.ID = ActionID;
-			this.config = config;
+            if (Generator.Current.IsMac)
+            {
+                this.MenuText = "Preferences...";
+                this.Accelerator = Application.Instance.CommonModifier | Key.Comma;
+            }
+            else
+            {
+                this.MenuText = "Options...";
+            }
+        }
 
-			if (Generator.Current.IsMac)
-			{
-				this.MenuText = "Preferences...";
-				this.Accelerator = Application.Instance.CommonModifier | Key.Comma;
-			}
-			else
-			{
-				this.MenuText = "Options...";
-			}
-		}
-
-		protected override void OnActivated (EventArgs e)
-		{
-			base.OnActivated (e);
-			
-			var dialog = new Interface.Dialogs.PreferencesDialog (config);
-			if (dialog.ShowDialog (Application.Instance.MainForm) == DialogResult.Ok)
-			{
-				// update things!
-			}
-		}
-	}
+        protected override void OnActivated(EventArgs e)
+        {
+            base.OnActivated(e);
+            
+            var dialog = new Interface.Dialogs.PreferencesDialog(config);
+            if (dialog.ShowDialog(Application.Instance.MainForm) == DialogResult.Ok)
+            {
+                // update things!
+            }
+        }
+    }
 }
