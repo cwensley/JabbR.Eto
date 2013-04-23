@@ -20,7 +20,7 @@ namespace JabbR.Eto.Wpf
 			generator.Add<IDialog> (() => new Controls.CustomDialog ());
 			generator.Add<IForm> (() => new Controls.CustomForm ());
 			generator.Add<IWebView> (() => new Controls.CefSharpWebViewHandler ());
-			generator.Add<IJabbRApplication> (() => new JabbRApplicationHandler ());
+            generator.Add<IJabbRApplication>(() => new JabbRApplicationHandler());
 
 			Style.Add<Controls.CustomForm> (null, handler => {
 				AddResources (handler.Control);
@@ -48,7 +48,6 @@ namespace JabbR.Eto.Wpf
 				window.Resources.MergedDictionaries.Add (new sw.ResourceDictionary { Source = new Uri ("pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml", UriKind.RelativeOrAbsolute) });
 				window.Resources.MergedDictionaries.Add (new sw.ResourceDictionary { Source = new Uri ("pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml", UriKind.RelativeOrAbsolute) });
 				window.Resources.MergedDictionaries.Add (new sw.ResourceDictionary { Source = new Uri ("pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml", UriKind.RelativeOrAbsolute) });
-				window.Resources.MergedDictionaries.Add (new sw.ResourceDictionary { Source = new Uri ("pack://application:,,,/JabbReto;component/Controls.Menu.xaml", UriKind.RelativeOrAbsolute) });
 			}
 		}
 
