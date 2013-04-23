@@ -26,7 +26,7 @@ namespace JabbR.Eto.Interface.Dialogs
             
             layout.AddCentered(new Label { Text = versionString, Font = smallFont }, new Padding(2));
 
-            layout.AddCentered(new Label { Text = "Copyright © 2012 Curtis Wensley", Font = smallFont }, new Padding(2));
+            layout.AddCentered(new Label { Text = "Copyright © 2013 Curtis Wensley", Font = smallFont }, new Padding(2));
 
             if (!Generator.IsMac)
             {
