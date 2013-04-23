@@ -153,7 +153,7 @@ namespace JabbR.Eto.Interface
             Application.Instance.Invoke(delegate
             {
                 var selectedChannel = channelList.SelectedItem as Channel;
-                if (selectedChannel.Server == server)
+                if (selectedChannel != null && selectedChannel.Server == server)
                 {
                     channelList.SelectedItem = server;
                 }
@@ -167,10 +167,10 @@ namespace JabbR.Eto.Interface
             var server = sender as Server;
             Application.Instance.AsyncInvoke(delegate
             {
+                Update(false);
                 if (channelList.SelectedItem == null)
                     channelList.SelectedItem = server;
                 RemoveSections(server);
-                Update(false);
             });
         }
         
@@ -289,7 +289,8 @@ namespace JabbR.Eto.Interface
 
         void RemoveSections(Server server)
         {
-            var items = sectionCache.Where(r => r.Key.Item1 == server).Select(r => r.Key).ToArray();
+            var serverSection = GetServerSection(server);
+            var items = sectionCache.Where(r => r.Key.Item1 == server && r.Value != serverSection).Select(r => r.Key).ToArray();
             foreach (var item in items)
             {
                 sectionCache.Remove(item);
