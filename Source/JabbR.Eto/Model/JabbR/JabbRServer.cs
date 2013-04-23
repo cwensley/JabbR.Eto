@@ -108,9 +108,15 @@ namespace JabbR.Eto.Model.JabbR
             }
 
             //ServicePointManager.FindServicePoint (new Uri (Address)).ConnectionLimit = 100;
-            
-            //Client = new jab.JabbRClient(Address, null, new LongPollingTransport());
-            Client = new jab.JabbRClient(Address);
+
+            // force long polling on mono, until SSE works reliably
+            IClientTransport transport;
+            if (EtoEnvironment.Platform.IsMono)
+                transport = new LongPollingTransport();
+            else
+                transport = new AutoTransport(new DefaultHttpClient());
+
+            Client = new jab.JabbRClient(Address, null, transport);
 
             if (UseSocialLogin)
             {
@@ -130,7 +136,7 @@ namespace JabbR.Eto.Model.JabbR
                 connected = true;
                 HookupEvents();
 
-                //this.OnGlobalMessageReceived (new NotificationEventArgs(new NotificationMessage (string.Format ("Using transport: {0}", Client.Connection.Transport.Name))));
+                this.OnGlobalMessageReceived (new NotificationEventArgs(new NotificationMessage (string.Format ("Using {0} transport", Client.Connection.Transport.Name))));
                 var userInfo = await Client.GetUserInfo();
                 this.CurrentUser = new JabbRUser(this, userInfo);
                 loadingRooms = logOnInfo.Rooms.Select(r => new JabbRRoom(this, r)).ToList();
