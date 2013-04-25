@@ -117,6 +117,12 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.ServiceModel" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Client">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.1.1.0-beta1\lib\net40\Microsoft.AspNet.SignalR.Client.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -127,6 +133,7 @@
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
     <None Include="codesign.sh" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
@@ -143,17 +150,9 @@
       <Project>{15490F6C-C579-4A86-AD16-8D9B5B41EB87}</Project>
       <Name>Eto.Platform.XamMac</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\Microsoft.AspNet.SignalR.Client.csproj">
-      <Project>{EB46B9C6-EE37-48F9-835E-E49580E40E0A}</Project>
-      <Name>Microsoft.AspNet.SignalR.Client</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Libraries\JabbR.Client.csproj">
       <Project>{A4A1D183-FD80-4DBD-806F-883DDADD4967}</Project>
       <Name>JabbR.Client</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\Newtonsoft.Json.csproj">
-      <Project>{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}</Project>
-      <Name>Newtonsoft.Json</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

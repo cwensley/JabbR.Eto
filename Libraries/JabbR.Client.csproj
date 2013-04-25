@@ -35,14 +35,12 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="Microsoft.AspNet.SignalR.Client.csproj">
-      <Project>{EB46B9C6-EE37-48F9-835E-E49580E40E0A}</Project>
-      <Name>Microsoft.AspNet.SignalR.Client</Name>
-    </ProjectReference>
-    <ProjectReference Include="Newtonsoft.Json.csproj">
-      <Project>{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}</Project>
-      <Name>Newtonsoft.Json</Name>
-    </ProjectReference>
+    <Reference Include="Microsoft.AspNet.SignalR.Client">
+      <HintPath>..\Source\packages\Microsoft.AspNet.SignalR.Client.1.1.0-beta1\lib\net40\Microsoft.AspNet.SignalR.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\Source\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -70,8 +68,8 @@
     <Compile Include="JabbR\JabbR\Models\ClientNotification.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="JabbR\JabbR.Client\packages.config" />
     <None Include="JabbR\JabbR.Client\Properties\JabbR.Client.nuspec" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

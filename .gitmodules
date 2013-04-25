@@ -1,15 +1,6 @@
 [submodule "Libraries/Eto.Forms"]
 	path = Libraries/Eto.Forms
 	url = git://github.com/picoe/Eto.git
-[submodule "Libraries/SignalR"]
-	path = Libraries/SignalR
-	url = git://github.com/SignalR/SignalR.git
-[submodule "Libraries/Newtonsoft.Json"]
-	path = Libraries/Newtonsoft.Json
-	url = git://github.com/JamesNK/Newtonsoft.Json.git
-[submodule "Libraries/MahApps.Metro"]
-	path = Libraries/MahApps.Metro
-	url = https://github.com/MahApps/MahApps.Metro.git
 [submodule "Libraries/JabbR"]
 	path = Libraries/JabbR
 	url = https://github.com/JabbR/JabbR.git
