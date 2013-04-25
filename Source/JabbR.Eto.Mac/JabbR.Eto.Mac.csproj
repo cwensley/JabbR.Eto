@@ -13,6 +13,8 @@
     <ReleaseVersion>1.1</ReleaseVersion>
     <SynchReleaseVersion>False</SynchReleaseVersion>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>True</DebugSymbols>
@@ -121,7 +123,7 @@
       <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Client">
-      <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.1.1.0-beta1\lib\net40\Microsoft.AspNet.SignalR.Client.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.0.0-beta1-130424\lib\net40\Microsoft.AspNet.SignalR.Client.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -150,7 +152,7 @@
       <Project>{15490F6C-C579-4A86-AD16-8D9B5B41EB87}</Project>
       <Name>Eto.Platform.XamMac</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\JabbR.Client.csproj">
+    <ProjectReference Include="..\JabbR.Client\JabbR.Client.csproj">
       <Project>{A4A1D183-FD80-4DBD-806F-883DDADD4967}</Project>
       <Name>JabbR.Client</Name>
     </ProjectReference>
@@ -217,4 +219,5 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
 </Project>

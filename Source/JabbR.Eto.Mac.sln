@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JabbR.Eto", "JabbR.Eto\Jabb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eto.Platform.XamMac", "..\Libraries\Eto.Forms\Source\Eto.Platform.Mac\Eto.Platform.XamMac.csproj", "{15490F6C-C579-4A86-AD16-8D9B5B41EB87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JabbR.Client", "..\Libraries\JabbR.Client.csproj", "{A4A1D183-FD80-4DBD-806F-883DDADD4967}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JabbR.Client", "JabbR.Client\JabbR.Client.csproj", "{A4A1D183-FD80-4DBD-806F-883DDADD4967}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

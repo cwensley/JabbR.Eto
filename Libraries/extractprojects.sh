@@ -3,31 +3,35 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 function extract_csproj () {
 	csprojdir=$1
-	csproj=$2
-	subdir="`echo $csprojdir | sed 's/\\//\\\\\\\\/g'`"
+	csproj=$4
+	newdir=$2
+	libdir=$3
+	subdir="`echo $libdir/$csprojdir | sed 's/\\//\\\\\\\\/g'`"
 	subdir="$subdir\\\\"
-	if [[ -z "$3" ]]; then
+	if [[ -z "$5" ]]; then
 		oldcsproj=$csproj
 	else
 		oldcsproj=$csproj
-		csproj=$3
+		csproj=$5
 	fi
+	csproj="$newdir/$csproj"
 	
+	mkdir -p "$newdir"
 	
-	rm -f "$DIR/$csproj"
+	rm -f "$csproj"
 
 	cp "$DIR/$csprojdir/$oldcsproj" "$csproj"
 
-	#rep="s/<(Compile|EmbeddedResource|None) Include=\"(.+)\">(?=\s*<Link>)/<\1 Include=\"$subdir\2\">/g"
-	rep="s/<(Compile|EmbeddedResource|None) Include=\"(.+)\">(?!\s*<Link>)/<\1 Include=\"$subdir\2\">/g"
+	rep="s/<(Compile|EmbeddedResource|None) Include=\"(.+)\">(?=\s*<Link>)/<\1 Include=\"$subdir\2\">/g"
+	#rep="s/<(Compile|EmbeddedResource|None) Include=\"(.+)\">(?!\s*<Link>)/<\1 Include=\"$subdir\2\">/g"
 	perl -0pi -e "$rep" "$csproj"
 	
-	#rep="s/<(Compile|EmbeddedResource|None) Include=\"(.+)\">(?!\s*<Link>)/<\1 Include=\"$subdir\2\">\n      <Link>\2<\/Link>/g"
-	rep="s/<(Compile|EmbeddedResource|None) Include=\"(.+)\">\s*<Link>.+<\/Link>/<\1 Include=\"$subdir\2\">/g"
+	rep="s/<(Compile|EmbeddedResource|None) Include=\"(.+)\">(?!\s*<Link>)/<\1 Include=\"$subdir\2\">\n      <Link>\2<\/Link>/g"
+	#rep="s/<(Compile|EmbeddedResource|None) Include=\"(.+)\">\s*<Link>.+<\/Link>/<\1 Include=\"$subdir\2\">/g"
 	perl -0pi -e "$rep" "$csproj"
 	
-	#rep="s/<(Compile|EmbeddedResource|None) Include=\"(.+)\" \/>/<\1 Include=\"$subdir\2\">\n      <Link>\2<\/Link>\n    <\/\1>/"
-	rep="s/<(Compile|EmbeddedResource|None) Include=\"(.+)\" \/>/<\1 Include=\"$subdir\2\" \/>/"
+	rep="s/<(Compile|EmbeddedResource|None) Include=\"(.+)\" \/>/<\1 Include=\"$subdir\2\">\n      <Link>\2<\/Link>\n    <\/\1>/"
+	#rep="s/<(Compile|EmbeddedResource|None) Include=\"(.+)\" \/>/<\1 Include=\"$subdir\2\" \/>/"
 	perl -pi -e "$rep" "$csproj"
 	
 	rep="s/<(OutputPath|DocumentationFile)>(.+)<\//<\1>$subdir\2<\//"
@@ -67,15 +71,7 @@ function remove_line () {
 	perl -0pi -e "$remove_line" "$file_name"
 }
 
-
-extract_csproj "SignalR/src/Microsoft.AspNet.SignalR.Client" "Microsoft.AspNet.SignalR.Client.csproj"
-replace_reference "Microsoft.AspNet.SignalR.Client.csproj" "Newtonsoft.Json" "Newtonsoft.Json"
-remove_line "Microsoft.AspNet.SignalR.Client.csproj" "s/.*<Import Project=\"\\$\\(SolutionDir\\)[\\\\]?\.nuget\\\\NuGet\.targets\".*\/>.*\n//g"
-
-extract_csproj "Newtonsoft.Json/Src/Newtonsoft.Json" "Newtonsoft.Json.Net40.csproj" "Newtonsoft.Json.csproj"
-remove_line "Newtonsoft.Json.csproj" "s/.*<TargetFrameworkProfile>Client<\\/TargetFrameworkProfile>.*\n//g"
-
-extract_csproj "JabbR/JabbR.Client" "JabbR.Client.csproj"
-replace_reference "JabbR.Client.csproj" "Newtonsoft.Json" "Newtonsoft.Json"
-replace_reference "JabbR.Client.csproj" "Microsoft.AspNet.SignalR.Client" "Microsoft.AspNet.SignalR.Client"
-remove_line "JabbR.Client.csproj" "s/.*<Import Project=\"\\$\\(SolutionDir\\)\\\\\.nuget\\\\nuget\.targets\" \/>.*\n//g"
+extract_csproj "JabbR/JabbR.Client" "../Source/JabbR.Client" "../../Libraries" "JabbR.Client.csproj"
+#replace_reference "JabbR.Client.csproj" "Newtonsoft.Json" "Newtonsoft.Json"
+#replace_reference "JabbR.Client.csproj" "Microsoft.AspNet.SignalR.Client" "Microsoft.AspNet.SignalR.Client"
+#remove_line "JabbR.Client.csproj" "s/.*<Import Project=\"\\$\\(SolutionDir\\)\\\\\.nuget\\\\nuget\.targets\" \/>.*\n//g"
