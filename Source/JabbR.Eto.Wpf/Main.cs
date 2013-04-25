@@ -16,11 +16,13 @@ namespace JabbR.Eto.Wpf
 		[STAThread]
 		public static void Main (string[] args)
 		{
-			var generator = Generator.Detect;
+			var generator = new global::Eto.Platform.Wpf.Generator ();
 			generator.Add<IDialog> (() => new Controls.CustomDialog ());
 			generator.Add<IForm> (() => new Controls.CustomForm ());
-			generator.Add<IWebView> (() => new Controls.CefSharpWebViewHandler ());
+            //generator.Add<IWebView>(() => new Controls.CefSharpWebViewHandler());
+            generator.Add<IWebView>(() => new Controls.CefGlueWebViewHandler());
             generator.Add<IJabbRApplication>(() => new JabbRApplicationHandler());
+            Generator.Initialize(generator);
 
 			Style.Add<Controls.CustomForm> (null, handler => {
 				AddResources (handler.Control);

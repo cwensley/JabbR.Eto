@@ -29,7 +29,7 @@
     <PublisherName>Picoe Software Solutions Inc.</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.html</WebPage>
-    <ApplicationRevision>52</ApplicationRevision>
+    <ApplicationRevision>53</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <ExcludeDeploymentUrl>true</ExcludeDeploymentUrl>
@@ -41,7 +41,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;CEFGLUE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
@@ -57,6 +57,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <Externalconsole>true</Externalconsole>
     <Prefer32Bit>false</Prefer32Bit>
+    <DefineConstants>CEFGLUE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>JabbReto.ico</ApplicationIcon>
@@ -87,12 +88,6 @@
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CefSharp">
-      <HintPath>..\..\Libraries\CefSharp\CefSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="CefSharp.Wpf">
-      <HintPath>..\..\Libraries\CefSharp\CefSharp.Wpf.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Client">
       <HintPath>..\..\Libraries\SignalR\src\Microsoft.AspNet.SignalR.Client\bin\Debug\Microsoft.AspNet.SignalR.Client.dll</HintPath>
     </Reference>
@@ -128,9 +123,16 @@
     </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
+    <Reference Include="Xilium.CefGlue">
+      <HintPath>..\..\Libraries\CefGlue\Xilium.CefGlue.dll</HintPath>
+    </Reference>
+    <Reference Include="Xilium.CefGlue.WPF">
+      <HintPath>..\..\Libraries\CefGlue\Xilium.CefGlue.WPF.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\CefSharpWebViewHandler.cs" />
+    <Compile Include="Controls\CefGlueWebViewHandler.cs" />
     <Compile Include="Controls\CustomDialog.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -161,40 +163,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\Libraries\CefSharp\avcodec-54.dll">
-      <Link>avcodec-54.dll</Link>
+    <Content Include="..\..\Libraries\CefGlue\ffmpegsumo.dll">
+      <Link>ffmpegsumo.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\Libraries\CefSharp\avformat-54.dll">
-      <Link>avformat-54.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\Libraries\CefSharp\avutil-51.dll">
-      <Link>avutil-51.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\Libraries\CefSharp\d3dcompiler_43.dll">
-      <Link>d3dcompiler_43.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\Libraries\CefSharp\d3dx9_43.dll">
-      <Link>d3dx9_43.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\Libraries\CefSharp\icudt.dll">
+    <Content Include="..\..\Libraries\CefGlue\icudt.dll">
       <Link>icudt.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\Libraries\CefSharp\libcef.dll">
+    <Content Include="..\..\Libraries\CefGlue\libcef.dll">
       <Link>libcef.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\Libraries\CefSharp\libEGL.dll">
-      <Link>libEGL.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\Libraries\CefSharp\libGLESv2.dll">
-      <Link>libGLESv2.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\Styles\default\channel.html">
@@ -274,18 +252,14 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Libraries\CefSharp\chrome.pak">
-      <Link>chrome.pak</Link>
+    <Content Include="..\..\Libraries\CefGlue\libcef.lib">
+      <Link>libcef.lib</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Libraries\CefSharp\locales\ca.pak">
-      <Link>locales\ca.pak</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Libraries\CefSharp\locales\en-US.pak">
+    </Content>
+    <Content Include="..\..\Libraries\CefGlue\locales\en-US.pak">
       <Link>locales\en-US.pak</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="App.config" />
     <None Include="Properties\app.manifest" />
   </ItemGroup>

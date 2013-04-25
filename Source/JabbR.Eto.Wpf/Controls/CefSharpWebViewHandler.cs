@@ -1,4 +1,5 @@
 ﻿
+#if CEFSHARP
 //#define ENABLE_DEV_TOOLS
 
 using Eto;
@@ -204,3 +205,5 @@ namespace JabbR.Eto.Wpf.Controls
 		}
 	}
 }
+
+#endif
