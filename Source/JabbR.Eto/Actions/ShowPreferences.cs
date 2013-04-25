@@ -30,14 +30,14 @@ namespace JabbR.Eto.Actions
             }
         }
 
-        protected override void OnActivated(EventArgs e)
+        protected override void OnActivated (EventArgs e)
         {
-            base.OnActivated(e);
-            
-            var dialog = new Interface.Dialogs.PreferencesDialog(config);
-            if (dialog.ShowDialog(Application.Instance.MainForm) == DialogResult.Ok)
+            base.OnActivated (e);
+
+            var dialog = new Interface.Dialogs.PreferencesDialog (config);
+            if (dialog.ShowDialog (Application.Instance.MainForm) == DialogResult.Ok)
             {
-                // update things!
+                JabbRApplication.Instance.SaveConfiguration ();
             }
         }
     }
