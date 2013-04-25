@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{1CC5D427-7C46-44BB-ABE6-DA6F30828ED8}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>JabbR.Eto</RootNamespace>
-    <AssemblyName>JabbR.Eto</AssemblyName>
+    <RootNamespace>JabbR.Desktop</RootNamespace>
+    <AssemblyName>JabbR.Desktop</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
