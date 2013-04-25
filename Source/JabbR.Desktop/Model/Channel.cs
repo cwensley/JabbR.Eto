@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JabbR.Desktop.Interface;
 using Eto;
 using System.Xml;

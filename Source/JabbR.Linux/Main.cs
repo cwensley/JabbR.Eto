@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Eto;
 using System.Security.Cryptography.X509Certificates;
 using System.Net;

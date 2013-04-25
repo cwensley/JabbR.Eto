@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Eto;
 using Eto.Platform.Wpf.Forms;
 using sw = System.Windows;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Eto.Forms;
 
 namespace JabbR.Desktop.Model

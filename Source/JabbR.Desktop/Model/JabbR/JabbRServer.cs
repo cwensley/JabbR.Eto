@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using jab = JabbR.Client;
 using jm = JabbR.Models;
 using System.Linq;

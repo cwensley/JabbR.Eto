@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Eto.Platform.Mac.Forms;
 using MonoMac.Security;
 using System.Text;

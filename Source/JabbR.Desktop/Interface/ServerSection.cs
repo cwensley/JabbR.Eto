@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JabbR.Desktop.Model;
 using System.Threading.Tasks;
 using System.Collections.Generic;
