@@ -2,12 +2,13 @@ using System;
 using Eto.Platform.GtkSharp;
 using System.Text;
 using System.Security.Cryptography;
+using JabbR.Desktop;
 
-namespace JabbR.Eto.Gtk
+namespace JabbR.Linux
 {
     public class JabbRApplicationHandler : ApplicationHandler, IJabbRApplication
     {
-        const string Salt = "JabbR.Eto";
+        const string Salt = "JabbR";
         static byte[] saltBytes = Encoding.UTF8.GetBytes(Salt);
         
         public string EncryptString(string serverName, string accountName, string password)

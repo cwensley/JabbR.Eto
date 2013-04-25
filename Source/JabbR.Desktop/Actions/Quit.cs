@@ -1,7 +1,7 @@
 using System;
 using Eto.Forms;
 
-namespace JabbR.Eto.Actions
+namespace JabbR.Desktop.Actions
 {
     public class Quit : ButtonAction
     {

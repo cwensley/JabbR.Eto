@@ -1,7 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace JabbR.Eto.Model
+namespace JabbR.Desktop.Model
 {
     public class ChannelMessage : Message
     {

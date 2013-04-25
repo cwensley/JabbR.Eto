@@ -1,5 +1,5 @@
 using System;
-using JabbR.Eto.Interface;
+using JabbR.Desktop.Interface;
 using Eto;
 using System.Xml;
 using System.Threading.Tasks;
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using Eto.Forms;
 using Eto.Drawing;
 
-namespace JabbR.Eto.Model
+namespace JabbR.Desktop.Model
 {
     public abstract class Channel : ISectionGenerator, IXmlReadable, ITreeItem, IComparable
     {

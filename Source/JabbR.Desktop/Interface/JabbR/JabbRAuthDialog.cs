@@ -1,7 +1,7 @@
 using System;
 using Eto.Forms;
 using Eto.Drawing;
-using JabbR.Eto.Model.JabbR;
+using JabbR.Desktop.Model.JabbR;
 using System.Globalization;
 using System.Reflection;
 using System.IO;
@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 using JabbR.Client.Models;
 using System.Diagnostics;
 using Eto;
-using JabbR.Eto.Interface.Dialogs;
+using JabbR.Desktop.Interface.Dialogs;
 
-namespace JabbR.Eto.Interface.JabbR
+namespace JabbR.Desktop.Interface.JabbR
 {
     public class JabbRAuthDialog : Dialog
     {
@@ -118,7 +118,7 @@ namespace JabbR.Eto.Interface.JabbR
         
         string AuthHtml(bool forceReauth)
         {
-            var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("JabbR.Eto.Interface.JabbR.AuthHtml.html");
+            var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("JabbR.Desktop.Interface.JabbR.AuthHtml.html");
             var html = new StreamReader(stream).ReadToEnd();
             html = html.Replace("$TOKEN_URL$", LocalhostTokenUrl.ToString());
             html = html.Replace("$APP_NAME$", AppName);
@@ -128,7 +128,7 @@ namespace JabbR.Eto.Interface.JabbR
         
         string GetUserIDHtml()
         {
-            var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("JabbR.Eto.Interface.JabbR.GetUserID.html");
+            var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("JabbR.Desktop.Interface.JabbR.GetUserID.html");
             return new StreamReader(stream).ReadToEnd();
         }
         

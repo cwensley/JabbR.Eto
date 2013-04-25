@@ -1,10 +1,10 @@
 using System;
 using Eto.Forms;
-using JabbR.Eto.Interface.Dialogs;
-using JabbR.Eto.Model.JabbR;
+using JabbR.Desktop.Interface.Dialogs;
+using JabbR.Desktop.Model.JabbR;
 using System.Diagnostics;
 
-namespace JabbR.Eto.Actions
+namespace JabbR.Desktop.Actions
 {
     public class AddServer : ButtonAction
     {

@@ -5,15 +5,15 @@ using Eto.Forms;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using JabbR.Eto.Model.JabbR;
-using JabbR.Eto.Interface;
+using JabbR.Desktop.Model.JabbR;
+using JabbR.Desktop.Interface;
 using Eto.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Runtime.Caching;
 using System.Diagnostics;
 
-namespace JabbR.Eto.Model
+namespace JabbR.Desktop.Model
 {
     public enum ServerState
     {

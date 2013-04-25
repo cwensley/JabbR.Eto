@@ -1,6 +1,6 @@
 using System;
 
-namespace JabbR.Eto.Model
+namespace JabbR.Desktop.Model
 {
     [Serializable]
     public class NotAuthenticatedException : Exception

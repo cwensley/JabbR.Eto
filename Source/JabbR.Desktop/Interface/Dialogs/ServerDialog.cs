@@ -1,13 +1,13 @@
 using System;
 using Eto.Forms;
-using JabbR.Eto.Model;
+using JabbR.Desktop.Model;
 using Eto.Drawing;
 using Eto;
 using System.Linq;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace JabbR.Eto.Interface.Dialogs
+namespace JabbR.Desktop.Interface.Dialogs
 {
     public class ServerDialog : Dialog
     {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Eto.Forms;
 
-namespace JabbR.Eto
+namespace JabbR.Desktop
 {
     public static class AsyncExtensions
     {

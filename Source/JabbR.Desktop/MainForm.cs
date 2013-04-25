@@ -1,26 +1,26 @@
 using System;
 using Eto.Forms;
 using Eto.Drawing;
-using JabbR.Eto.Interface.Dialogs;
+using JabbR.Desktop.Interface.Dialogs;
 using JabbR.Client;
 using Eto;
 using System.Xml;
 using System.IO;
 using System.Collections.Generic;
-using JabbR.Eto.Model;
+using JabbR.Desktop.Model;
 using Newtonsoft.Json;
-using JabbR.Eto.Interface;
+using JabbR.Desktop.Interface;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
-namespace JabbR.Eto
+namespace JabbR.Desktop
 {
     public class MainForm : Form, IXmlReadable
     {
         TopSection top;
         Configuration config;
-        const string DEFAULT_TITLE = "JabbReto";
+        const string DEFAULT_TITLE = "JabbR";
         
         public MainForm(Configuration config)
         {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace JabbR.Eto.Interface.Dialogs
+namespace JabbR.Desktop.Interface.Dialogs
 {
     static class DialogExtensions
     {

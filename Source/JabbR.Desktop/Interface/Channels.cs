@@ -4,12 +4,12 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using JabbR.Eto.Model;
+using JabbR.Desktop.Model;
 using System.Collections.Specialized;
 using System.Threading;
 using Eto.Drawing;
 
-namespace JabbR.Eto.Interface
+namespace JabbR.Desktop.Interface
 {
     public class Channels : Panel
     {

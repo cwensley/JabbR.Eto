@@ -1,10 +1,10 @@
 using System;
 using Eto.Forms;
-using JabbR.Eto.Interface;
+using JabbR.Desktop.Interface;
 using Eto;
 using System.Xml;
 
-namespace JabbR.Eto.Model
+namespace JabbR.Desktop.Model
 {
     public sealed class MessageEventArgs : EventArgs
     {

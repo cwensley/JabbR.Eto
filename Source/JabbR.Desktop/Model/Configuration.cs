@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace JabbR.Eto.Model
+namespace JabbR.Desktop.Model
 {
     public enum BadgeDisplayMode
     {

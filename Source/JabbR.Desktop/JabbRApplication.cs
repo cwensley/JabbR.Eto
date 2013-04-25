@@ -4,13 +4,13 @@ using Eto;
 using System.IO;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using JabbR.Eto.Model;
+using JabbR.Desktop.Model;
 using System.Net;
 using System.Diagnostics;
 using System.Linq;
 using System.Xml;
 
-namespace JabbR.Eto
+namespace JabbR.Desktop
 {
     public interface IJabbRApplication : IApplication
     {
@@ -50,8 +50,8 @@ namespace JabbR.Eto
             : base(Generator.Detect, typeof(IJabbRApplication))
         {
             this.Style = "application";
-            this.Name = "JabbReto";
-            this.Configuration = new JabbR.Eto.Model.Configuration();
+            this.Name = "JabbR";
+            this.Configuration = new JabbR.Desktop.Model.Configuration();
             HandleEvent(TerminatingEvent);
         }
 
@@ -139,7 +139,7 @@ namespace JabbR.Eto
         public void SaveConfiguration()
         {
             Debug.Print("Saving settings to {0}", SettingsFileName);
-            this.SaveXml(SettingsFileName, "jabbreto");
+            this.SaveXml(SettingsFileName, "jabbr");
         }
         
         public string EncryptString(string serverName, string accountName, string password)

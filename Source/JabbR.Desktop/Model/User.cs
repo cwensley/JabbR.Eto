@@ -2,11 +2,11 @@ using System;
 using System.Threading.Tasks;
 using Eto.Drawing;
 
-namespace JabbR.Eto.Model
+namespace JabbR.Desktop.Model
 {
     public abstract class User
     {
-        public static Bitmap DefaultUserIcon = Bitmap.FromResource("JabbR.Eto.Resources.user.png");
+        public static Bitmap DefaultUserIcon = Bitmap.FromResource("JabbR.Desktop.Resources.user.png");
 
         public Server Server  { get; private set; }
 

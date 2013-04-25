@@ -1,12 +1,12 @@
 using System;
 using Eto.Forms;
-using JabbR.Eto.Model;
-using JabbR.Eto.Model.JabbR;
+using JabbR.Desktop.Model;
+using JabbR.Desktop.Model.JabbR;
 using Eto;
 using Eto.Drawing;
 using Microsoft.AspNet.SignalR.Client;
 
-namespace JabbR.Eto.Interface.JabbR
+namespace JabbR.Desktop.Interface.JabbR
 {
     public class JabbRServerEdit
     {

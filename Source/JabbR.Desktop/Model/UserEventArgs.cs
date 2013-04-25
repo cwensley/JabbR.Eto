@@ -1,8 +1,8 @@
 using System;
 using Eto.Forms;
-using JabbR.Eto.Interface;
+using JabbR.Desktop.Interface;
 
-namespace JabbR.Eto.Model
+namespace JabbR.Desktop.Model
 {
     public class UserEventArgs : EventArgs
     {

@@ -8,8 +8,9 @@ using System.Runtime.InteropServices;
 using MonoMac.ObjCRuntime;
 using System.Diagnostics;
 using MonoMac.CoreFoundation;
+using JabbR.Desktop;
 
-namespace JabbR.Eto.Mac.Controls
+namespace JabbR.Mac.Controls
 {
     public class JabbRApplicationHandler : ApplicationHandler, IJabbRApplication
     {
@@ -52,12 +53,12 @@ namespace JabbR.Eto.Mac.Controls
 
         string GetServerName(string serverName)
         {
-            return string.Format("JabbReto: {0}", serverName);
+            return string.Format("JabbR: {0}", serverName);
         }
 
         string GetAccountName(string accountName)
         {
-            return string.Format("JabbReto-{0}", accountName);
+            return string.Format("JabbR-{0}", accountName);
         }
 
         public string EncryptString(string serverName, string accountName, string password)

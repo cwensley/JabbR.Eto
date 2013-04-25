@@ -4,7 +4,7 @@ using Eto.Forms;
 using Eto;
 using Eto.Drawing;
 
-namespace JabbR.Eto.Interface.Controls
+namespace JabbR.Desktop.Interface.Controls
 {
     public abstract class PreferenceItem
     {

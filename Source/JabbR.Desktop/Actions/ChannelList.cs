@@ -1,9 +1,9 @@
 using System;
 using Eto.Forms;
-using JabbR.Eto.Model;
-using JabbR.Eto.Interface;
+using JabbR.Desktop.Model;
+using JabbR.Desktop.Interface;
 
-namespace JabbR.Eto.Actions
+namespace JabbR.Desktop.Actions
 {
     public class ChannelList : ButtonAction
     {

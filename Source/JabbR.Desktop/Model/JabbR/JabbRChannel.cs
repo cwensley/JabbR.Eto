@@ -6,7 +6,7 @@ using jab = JabbR.Client;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace JabbR.Eto.Model.JabbR
+namespace JabbR.Desktop.Model.JabbR
 {
     public abstract class JabbRChannel : Channel
     {

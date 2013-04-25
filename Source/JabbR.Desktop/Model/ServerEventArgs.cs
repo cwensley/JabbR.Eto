@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Eto;
 using System.Collections.ObjectModel;
 
-namespace JabbR.Eto.Model
+namespace JabbR.Desktop.Model
 {
     public class ServerEventArgs : EventArgs
     {

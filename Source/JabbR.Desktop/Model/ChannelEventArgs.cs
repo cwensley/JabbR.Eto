@@ -5,10 +5,10 @@ using Eto.Forms;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using JabbR.Eto.Model.JabbR;
-using JabbR.Eto.Interface;
+using JabbR.Desktop.Model.JabbR;
+using JabbR.Desktop.Interface;
 
-namespace JabbR.Eto.Model
+namespace JabbR.Desktop.Model
 {
     public class ChannelEventArgs : EventArgs
     {

@@ -10,7 +10,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using jm = JabbR.Models;
 
-namespace JabbR.Eto.Model.JabbR
+namespace JabbR.Desktop.Model.JabbR
 {
     public class JabbRRoom : JabbRChannel
     {
@@ -20,7 +20,7 @@ namespace JabbR.Eto.Model.JabbR
         ChannelMessage firstMessage;
         bool historyLoaded;
         TaskCompletionSource<Channel> getChannelInfo = new TaskCompletionSource<Channel>();
-        static Image image = Bitmap.FromResource("JabbR.Eto.Resources.room.png", typeof(JabbRRoom).Assembly);
+        static Image image = Bitmap.FromResource("JabbR.Desktop.Resources.room.png", typeof(JabbRRoom).Assembly);
         
         public override Image Image { get { return image; } }
         

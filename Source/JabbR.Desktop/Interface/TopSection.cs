@@ -3,9 +3,9 @@ using Eto.Forms;
 using JabbR.Client;
 using JabbR.Client.Models;
 using Eto;
-using JabbR.Eto.Model;
+using JabbR.Desktop.Model;
 
-namespace JabbR.Eto.Interface
+namespace JabbR.Desktop.Interface
 {
     public class TopSection : Panel, IXmlReadable
     {

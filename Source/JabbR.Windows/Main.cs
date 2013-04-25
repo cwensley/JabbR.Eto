@@ -3,13 +3,13 @@ using Eto;
 using Eto.Platform.Wpf.Forms;
 using sw = System.Windows;
 using Eto.Forms;
-using JabbR.Eto.Client.Controls;
 using Eto.Drawing;
 using System.Deployment.Application;
 using System.Threading.Tasks;
 using Eto.Platform.Wpf.Forms.Controls;
+using JabbR.Desktop;
 
-namespace JabbR.Eto.Wpf
+namespace JabbR.Windows
 {
 	class MainClass
 	{
@@ -21,7 +21,7 @@ namespace JabbR.Eto.Wpf
 			generator.Add<IForm> (() => new Controls.CustomForm ());
             //generator.Add<IWebView>(() => new Controls.CefSharpWebViewHandler());
             generator.Add<IWebView>(() => new Controls.CefGlueWebViewHandler());
-            generator.Add<IJabbRApplication>(() => new JabbRApplicationHandler());
+            generator.Add<IJabbRApplication>(() => new Controls.JabbRApplicationHandler());
             Generator.Initialize(generator);
 
 			Style.Add<Controls.CustomForm> (null, handler => {

@@ -3,7 +3,7 @@ using Eto.Forms;
 using Eto.Drawing;
 using System.Reflection;
 
-namespace JabbR.Eto.Interface.Dialogs
+namespace JabbR.Desktop.Interface.Dialogs
 {
     public class AboutDialog : Dialog
     {
@@ -20,7 +20,7 @@ namespace JabbR.Eto.Interface.Dialogs
             
             var layout = new DynamicLayout(this);
             
-            layout.AddCentered(new ImageView { Image = Icon.FromResource ("JabbR.Eto.Resources.JabbReto.ico"), Size = new Size(128, 128) }, yscale: true);
+            layout.AddCentered(new ImageView { Image = Icon.FromResource ("JabbR.Desktop.Resources.JabbR.ico"), Size = new Size(128, 128) }, yscale: true);
 
             layout.AddCentered(new Label { Text = Application.Instance.Name, Font = largeFont });
             

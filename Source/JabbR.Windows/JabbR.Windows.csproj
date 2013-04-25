@@ -62,7 +62,7 @@
     <DefineConstants>CEFGLUE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>JabbReto.ico</ApplicationIcon>
+    <ApplicationIcon>JabbR.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>17BB5ED5386DB37E40A817C3651F45108FD0329B</ManifestCertificateThumbprint>
@@ -201,7 +201,7 @@
       <Link>Styles\default\styles.tweet.css</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="JabbReto.ico" />
+    <Content Include="JabbR.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

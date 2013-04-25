@@ -1,7 +1,7 @@
 using System;
 using Eto.Forms;
 
-namespace JabbR.Eto.Interface
+namespace JabbR.Desktop.Interface
 {
     public interface ISectionGenerator
     {

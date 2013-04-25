@@ -1,9 +1,9 @@
 using System;
 using Eto.Forms;
-using JabbR.Eto.Interface;
-using JabbR.Eto.Model;
+using JabbR.Desktop.Interface;
+using JabbR.Desktop.Model;
 
-namespace JabbR.Eto.Actions
+namespace JabbR.Desktop.Actions
 {
     public class RemoveServer : ButtonAction
     {

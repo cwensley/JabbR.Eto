@@ -3,7 +3,7 @@ using MonoMac.AppKit;
 using MonoMac.Foundation;
 using Eto.Platform.Mac.Forms.Controls;
 
-namespace JabbR.Eto.Mac
+namespace JabbR.Mac
 {
     public class CustomTreeViewDelegate : TreeViewHandler.EtoOutlineDelegate
     {

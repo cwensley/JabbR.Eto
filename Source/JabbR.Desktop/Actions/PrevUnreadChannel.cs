@@ -1,9 +1,9 @@
 using System;
 using Eto.Forms;
-using JabbR.Eto.Interface;
+using JabbR.Desktop.Interface;
 using Eto;
 
-namespace JabbR.Eto.Actions
+namespace JabbR.Desktop.Actions
 {
     public class PrevUnreadChannel : ButtonAction
     {

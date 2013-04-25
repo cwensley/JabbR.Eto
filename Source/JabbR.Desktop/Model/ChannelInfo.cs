@@ -1,7 +1,7 @@
 using System;
 using Eto.Forms;
 
-namespace JabbR.Eto.Model
+namespace JabbR.Desktop.Model
 {
     public class ChannelInfo : IGridItem
     {

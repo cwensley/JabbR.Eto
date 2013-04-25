@@ -7,7 +7,7 @@ using System.IO;
 using System.Net.Cache;
 using Eto;
 
-namespace JabbR.Eto.Model.JabbR
+namespace JabbR.Desktop.Model.JabbR
 {
     public class JabbRUser : User
     {

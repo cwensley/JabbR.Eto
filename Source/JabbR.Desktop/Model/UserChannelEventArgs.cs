@@ -2,7 +2,7 @@ using System;
 using Eto;
 using System.Xml;
 
-namespace JabbR.Eto.Model
+namespace JabbR.Desktop.Model
 {
     public class UserChannelEventArgs : EventArgs
     {

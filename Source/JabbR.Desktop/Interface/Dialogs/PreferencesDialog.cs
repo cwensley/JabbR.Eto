@@ -1,13 +1,13 @@
 ﻿using Eto;
 using Eto.Drawing;
 using Eto.Forms;
-using JabbR.Eto.Model;
+using JabbR.Desktop.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace JabbR.Eto.Interface.Dialogs
+namespace JabbR.Desktop.Interface.Dialogs
 {
     public class PreferencesDialog : Dialog
     {
@@ -17,7 +17,7 @@ namespace JabbR.Eto.Interface.Dialogs
         {
             this.config = config;
             this.MinimumSize = new Size(200, 300);
-            this.Title = "JabbReto Preferences";
+            this.Title = "JabbR Preferences";
             this.Resizable = true;
 
             var layout = new DynamicLayout(this);

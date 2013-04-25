@@ -1,11 +1,11 @@
 using System;
 using Eto.Forms;
-using JabbR.Eto.Interface.Dialogs;
-using JabbR.Eto.Interface;
-using JabbR.Eto.Model;
+using JabbR.Desktop.Interface.Dialogs;
+using JabbR.Desktop.Interface;
+using JabbR.Desktop.Model;
 using System.Diagnostics;
 
-namespace JabbR.Eto.Actions
+namespace JabbR.Desktop.Actions
 {
     public class EditServer : ButtonAction
     {

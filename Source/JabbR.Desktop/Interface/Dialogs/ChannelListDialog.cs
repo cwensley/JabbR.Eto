@@ -2,10 +2,10 @@ using System;
 using Eto.Forms;
 using System.Runtime.Remoting;
 using System.Linq;
-using JabbR.Eto.Model;
+using JabbR.Desktop.Model;
 using Eto.Drawing;
 
-namespace JabbR.Eto.Interface.Dialogs
+namespace JabbR.Desktop.Interface.Dialogs
 {
     public class ChannelListDialog : Dialog
     {

@@ -6,11 +6,11 @@ using Eto;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using JabbR.Eto.Model;
+using JabbR.Desktop.Model;
 using System.Diagnostics;
 using System.Threading;
 
-namespace JabbR.Eto.Interface
+namespace JabbR.Desktop.Interface
 {
     public class ChannelSection : MessageSection
     {

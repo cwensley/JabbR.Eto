@@ -1,8 +1,8 @@
 using System;
 using Eto.Forms;
-using JabbR.Eto.Interface.Dialogs;
+using JabbR.Desktop.Interface.Dialogs;
 
-namespace JabbR.Eto.Actions
+namespace JabbR.Desktop.Actions
 {
     public class About : ButtonAction
     {
@@ -11,7 +11,7 @@ namespace JabbR.Eto.Actions
         public About()
         {
             this.ID = ActionID;
-            this.MenuText = "About JabbReto";
+            this.MenuText = "About JabbR";
         }
         
         protected override void OnActivated(EventArgs e)

@@ -11,7 +11,7 @@
 		<string>JabbReto.icns</string>
 	</array>
 	<key>CFBundleIdentifier</key>
-	<string>ca.picoe.jabbr-eto</string>
+	<string>ca.picoe.jabbr</string>
 	<key>CFBundleName</key>
 	<string>JabbReto</string>
 	<key>CFBundleShortVersionString</key>

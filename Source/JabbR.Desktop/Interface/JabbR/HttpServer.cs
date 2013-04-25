@@ -8,7 +8,7 @@ using System.Net.Mime;
 using System.IO;
 using System.ComponentModel;
 
-namespace JabbR.Eto.Interface.JabbR
+namespace JabbR.Desktop.Interface.JabbR
 {
     public class HttpServerRequestEventArgs : CancelEventArgs
     {

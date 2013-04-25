@@ -7,13 +7,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Eto.Drawing;
 
-namespace JabbR.Eto.Model.JabbR
+namespace JabbR.Desktop.Model.JabbR
 {
     public class JabbRChat : JabbRChannel
     {
         User user;
         string initialMessage;
-        static Image image = Bitmap.FromResource("JabbR.Eto.Resources.chat.png", typeof(JabbRChat).Assembly);
+        static Image image = Bitmap.FromResource("JabbR.Desktop.Resources.chat.png", typeof(JabbRChat).Assembly);
         
         public override Image Image { get { return image; } }
         

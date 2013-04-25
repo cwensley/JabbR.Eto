@@ -18,7 +18,7 @@ using xcw = Xilium.CefGlue.WPF;
 using sw = System.Windows;
 
 
-namespace JabbR.Eto.Wpf.Controls
+namespace JabbR.Windows.Controls
 {
     public class CefGlueWebViewHandler : WpfFrameworkElement<xcw.WpfCefBrowser, WebView>, IWebView
 	{

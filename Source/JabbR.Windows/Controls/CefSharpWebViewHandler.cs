@@ -17,7 +17,7 @@ using csw = CefSharp.Wpf;
 using swm = System.Windows.Media;
 
 
-namespace JabbR.Eto.Wpf.Controls
+namespace JabbR.Windows.Controls
 {
 	public class CefSharpWebViewHandler : WpfFrameworkElement<csw.WebView, WebView>, IWebView, CefSharp.IRequestHandler, CefSharp.ILifeSpanHandler
 	{

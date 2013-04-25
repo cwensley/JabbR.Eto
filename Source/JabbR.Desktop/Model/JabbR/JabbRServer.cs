@@ -5,7 +5,7 @@ using System.Linq;
 using Eto.Forms;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
-using JabbR.Eto.Interface.JabbR;
+using JabbR.Desktop.Interface.JabbR;
 using Eto;
 using System.Security;
 using System.Security.Cryptography;
@@ -17,12 +17,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.AspNet.SignalR.Client.Transports;
 using Microsoft.AspNet.SignalR.Client;
-using JabbR.Eto.Interface.Dialogs;
+using JabbR.Desktop.Interface.Dialogs;
 using Microsoft.AspNet.SignalR.Client.Http;
 using System.Threading;
 using System.Text.RegularExpressions;
 
-namespace JabbR.Eto.Model.JabbR
+namespace JabbR.Desktop.Model.JabbR
 {
     public class JabbRServer : Server
     {
@@ -128,7 +128,7 @@ namespace JabbR.Eto.Model.JabbR
             {
                 var logOnInfo = await Client.Connect(UserName, Password);
 #if DEBUG
-                var settings = Path.Combine(EtoEnvironment.GetFolderPath(EtoSpecialFolder.ApplicationSettings), "jabbreto.log");
+                var settings = Path.Combine(EtoEnvironment.GetFolderPath(EtoSpecialFolder.ApplicationSettings), "jabbr.log");
                 Client.Connection.TraceWriter = new TextWriterTraceListener(settings).Writer;
                 Client.Connection.TraceLevel = TraceLevels.All;
 #endif

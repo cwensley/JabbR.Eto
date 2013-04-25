@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using Eto.Platform.Wpf.Forms;
 using System.Security.Cryptography;
+using JabbR.Desktop;
 
-namespace JabbR.Eto.Client.Controls
+namespace JabbR.Windows.Controls
 {
 	public class JabbRApplicationHandler : ApplicationHandler, IJabbRApplication
 	{
-		const string Salt = "JabbR.Eto";
+		const string Salt = "JabbR";
 		static byte[] saltBytes = Encoding.UTF8.GetBytes (Salt);
 		
 		public string EncryptString (string serverName, string accountName, string password)

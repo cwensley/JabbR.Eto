@@ -1,6 +1,6 @@
 
 
-var JabbREto = (function(){
+var JabbR = (function(){
 
 	var v = {
 		scrollPos: 0,
@@ -384,13 +384,13 @@ return pub;
 
 $(function() {
 
-	JabbREto.initialize();
+	JabbR.initialize();
 
-	window.captureDocumentWrite = JabbREto.captureDocumentWrite;
+	window.captureDocumentWrite = JabbR.captureDocumentWrite;
 
-	window.addTweet = JabbREto.addTweet;
+	window.addTweet = JabbR.addTweet;
 
-	window.addGitHubIssue = JabbREto.addGitHubIssue;
+	window.addGitHubIssue = JabbR.addGitHubIssue;
 
 	window.addGitHubIssuesUser = function (user) {
 		var elements = $("a.github-issue-user-" + user.data.login);

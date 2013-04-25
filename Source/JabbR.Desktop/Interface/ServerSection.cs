@@ -1,10 +1,10 @@
 using System;
-using JabbR.Eto.Model;
+using JabbR.Desktop.Model;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace JabbR.Eto.Interface
+namespace JabbR.Desktop.Interface
 {
     public class ServerSection : MessageSection
     {

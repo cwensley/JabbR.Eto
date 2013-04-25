@@ -1,6 +1,6 @@
 using System;
 
-namespace JabbR.Eto.Model
+namespace JabbR.Desktop.Model
 {
     public class MeMessage : Message
     {

@@ -2,11 +2,11 @@ using System;
 using Eto.Forms;
 using System.Collections.Generic;
 using System.Linq;
-using JabbR.Eto.Model;
+using JabbR.Desktop.Model;
 using Eto;
 using Eto.Drawing;
 
-namespace JabbR.Eto.Interface
+namespace JabbR.Desktop.Interface
 {
     public class UserList : Panel
     {

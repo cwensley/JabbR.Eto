@@ -3,8 +3,9 @@ using Eto;
 using System.Security.Cryptography.X509Certificates;
 using System.Net;
 using System.Net.Security;
+using JabbR.Desktop;
 
-namespace JabbR.Eto.Gtk
+namespace JabbR.Linux
 {
     class MainClass
     {

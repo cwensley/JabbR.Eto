@@ -9,10 +9,11 @@ using Eto.Platform.Mac.Forms;
 using System.Diagnostics;
 using MonoMac.Security;
 using MonoMac.WebKit;
-using JabbR.Eto.Mac.Controls;
+using JabbR.Mac.Controls;
 using System.IO;
+using JabbR.Desktop;
 
-namespace JabbR.Eto.Mac
+namespace JabbR.Mac
 {
     class MainClass
     {

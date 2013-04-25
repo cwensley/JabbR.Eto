@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JabbR.Eto.Model
+namespace JabbR.Desktop.Model
 {
     public class UserImageEventArgs : UserEventArgs
     {

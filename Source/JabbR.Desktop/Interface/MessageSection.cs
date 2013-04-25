@@ -9,11 +9,11 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using JabbR.Eto.Model;
+using JabbR.Desktop.Model;
 using System.Diagnostics;
 using Eto.Threading;
 
-namespace JabbR.Eto.Interface
+namespace JabbR.Desktop.Interface
 {
     public abstract class MessageSection : Panel
     {
@@ -216,7 +216,7 @@ namespace JabbR.Eto.Interface
             {
                 vals[i] = JsonConvert.SerializeObject(parameters[i]);
             }
-            var script = string.Format("JabbREto.{0}({1});", command, string.Join(", ", vals));
+            var script = string.Format("JabbR.{0}({1});", command, string.Join(", ", vals));
             Application.Instance.AsyncInvoke(delegate
             {
                 if (!loaded)
@@ -241,7 +241,7 @@ namespace JabbR.Eto.Interface
             {
                 vals[i] = JsonConvert.SerializeObject(parameters[i]);
             }
-            var script = string.Format("JabbREto.{0}({1});", command, string.Join(", ", vals));
+            var script = string.Format("JabbR.{0}({1});", command, string.Join(", ", vals));
             Application.Instance.Invoke(delegate
             {
                 History.ExecuteScript(script);

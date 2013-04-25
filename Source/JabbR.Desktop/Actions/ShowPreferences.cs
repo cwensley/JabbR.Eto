@@ -1,13 +1,13 @@
 using Eto;
 using Eto.Forms;
-using JabbR.Eto.Model;
+using JabbR.Desktop.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using JabbR.Eto.Interface.Dialogs;
+using JabbR.Desktop.Interface.Dialogs;
 
-namespace JabbR.Eto.Actions
+namespace JabbR.Desktop.Actions
 {
     public class ShowPreferences : ButtonAction
     {

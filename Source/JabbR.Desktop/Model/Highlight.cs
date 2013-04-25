@@ -3,7 +3,7 @@ using Eto;
 using System.Xml;
 using System.Text.RegularExpressions;
 
-namespace JabbR.Eto.Model
+namespace JabbR.Desktop.Model
 {
     public class Highlight : IXmlReadable
     {

@@ -124,12 +124,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\server.png" />
-    <EmbeddedResource Include="Resources\JabbReto.ico" />
     <EmbeddedResource Include="Interface\JabbR\AuthHtml.html" />
     <EmbeddedResource Include="Interface\JabbR\GetUserID.html" />
     <EmbeddedResource Include="Resources\room.png" />
     <EmbeddedResource Include="Resources\chat.png" />
     <EmbeddedResource Include="Resources\user.png" />
+    <EmbeddedResource Include="Resources\JabbR.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
