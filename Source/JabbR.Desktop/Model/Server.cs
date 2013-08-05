@@ -67,7 +67,7 @@ namespace JabbR.Desktop.Model
         protected virtual void OnConnectError(ConnectionErrorEventArgs e)
         {
             this.State = ServerState.Disconnected;
-            OnGlobalMessageReceived(new NotificationEventArgs(new NotificationMessage("Could not connect to server {0}. {1}", this.Name, e.Exception.GetBaseException().Message)));
+            OnGlobalMessageReceived(new NotificationEventArgs(new NotificationMessage("Could not connect to server {0}. {1}", this.Name, e.Exception.GetBaseException())));
             if (ConnectError != null)
                 ConnectError(this, e);
         }
@@ -233,7 +233,7 @@ namespace JabbR.Desktop.Model
         
         public abstract Task<IEnumerable<ChannelInfo>> GetCachedChannels();
         
-        string IListItem.Text { get { return this.Name; } }
+        string IListItem.Text { get { return this.Name; } set { } }
         
         string IListItem.Key { get { return this.Id; } }
         

@@ -22,6 +22,8 @@ namespace JabbR.Mac
 #if DEBUG
             Debug.Listeners.Add (new ConsoleTraceListener());
 #endif
+            // so we don't link out mono.runtime for detection
+
             var generator = Generator.Detect;
             generator.Add <IJabbRApplication>(() => new JabbRApplicationHandler());
 

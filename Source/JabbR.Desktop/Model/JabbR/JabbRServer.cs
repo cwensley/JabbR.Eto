@@ -26,6 +26,7 @@ namespace JabbR.Desktop.Model.JabbR
 {
     public class JabbRServer : Server
     {
+        Timer timer;
         List<JabbRRoom> loadingRooms;
         Regex highlighRegex;
         TaskCompletionSource<object> disconnectTask;
@@ -110,13 +111,18 @@ namespace JabbR.Desktop.Model.JabbR
             //ServicePointManager.FindServicePoint (new Uri (Address)).ConnectionLimit = 100;
 
             // force long polling on mono, until SSE works reliably
-            IClientTransport transport;
-            if (EtoEnvironment.Platform.IsMono)
-                transport = new LongPollingTransport();
-            else
-                transport = new AutoTransport(new DefaultHttpClient());
+            Func<IClientTransport> transport;
+            /*if (true) //EtoEnvironment.Platform.IsMono)
+                transport = () => new LongPollingTransport();
+            else*/
+                transport = () => new AutoTransport(new DefaultHttpClient());
 
             Client = new jab.JabbRClient(Address, null, transport);
+#if DEBUG
+            var settings = Path.Combine (EtoEnvironment.GetFolderPath (EtoSpecialFolder.ApplicationSettings), "jabbr.log");
+            Client.TraceWriter = new TextWriterTraceListener (settings).Writer;
+            Client.TraceLevel = TraceLevels.All;
+#endif
 
             if (UseSocialLogin)
             {
@@ -127,11 +133,6 @@ namespace JabbR.Desktop.Model.JabbR
             try
             {
                 var logOnInfo = await Client.Connect(UserName, Password);
-#if DEBUG
-                var settings = Path.Combine(EtoEnvironment.GetFolderPath(EtoSpecialFolder.ApplicationSettings), "jabbr.log");
-                Client.Connection.TraceWriter = new TextWriterTraceListener(settings).Writer;
-                Client.Connection.TraceLevel = TraceLevels.All;
-#endif
                 highlighRegex = null;
                 connected = true;
                 HookupEvents();
@@ -141,6 +142,19 @@ namespace JabbR.Desktop.Model.JabbR
                 this.CurrentUser = new JabbRUser(this, userInfo);
                 loadingRooms = logOnInfo.Rooms.Select(r => new JabbRRoom(this, r)).ToList();
                 InitializeChannels(loadingRooms);
+
+                if (EtoEnvironment.Platform.IsMono) {
+                    var keepAliveTime = TimeSpan.FromMinutes(5);
+                    if (timer != null)
+                        timer.Dispose();
+                    timer = new Timer(state => {
+                        Client.Send(new jm.ClientMessage{ 
+                            Id = Guid.NewGuid().ToString(),
+                            Content = string.Format("/where ", this.CurrentUser.Name)
+                        });
+                    }, null, keepAliveTime, keepAliveTime);
+                }
+
                 OnConnected(EventArgs.Empty);
             }
             catch (Exception ex)
@@ -261,6 +275,11 @@ namespace JabbR.Desktop.Model.JabbR
                 Debug.Print("Disconnected");
                 if (disconnectTask != null)
                     disconnectTask.TrySetResult(null);
+                if (timer != null)
+                {
+                    timer.Dispose();
+                    timer = null;
+                }
                 OnDisconnected(EventArgs.Empty);
             };
             Client.FlagChanged += (user, flag) => {

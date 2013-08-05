@@ -190,6 +190,7 @@ namespace JabbR.Desktop.Model
                 else
                     return this.Name;
             }
+            set { }
         }
 
         internal void TriggerUserIconChanged(UserImageEventArgs e)

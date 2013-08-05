@@ -77,8 +77,8 @@
     <PlatformTarget>x86</PlatformTarget>
     <UseSGen>True</UseSGen>
     <I18n />
-    <MonoBundlingExtraArgs>--linkskip=System.Runtime.Caching</MonoBundlingExtraArgs>
-    <LinkMode>SdkOnly</LinkMode>
+    <MonoBundlingExtraArgs>--xml="${ProjectDir}/linker.xml"</MonoBundlingExtraArgs>
+    <LinkMode>Full</LinkMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release AppStore|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -101,8 +101,8 @@
     <ConsolePause>False</ConsolePause>
     <PlatformTarget>x86</PlatformTarget>
     <I18n />
-    <UseSGen>false</UseSGen>
-    <MonoBundlingExtraArgs>--linkskip=System.Runtime.Caching --linkskip=System --linkskip=JabbR.Desktop --linkskip=Microsoft.AspNet.SignalR.Client --linkskip=JabbR.Client</MonoBundlingExtraArgs>
+    <UseSGen>true</UseSGen>
+    <MonoBundlingExtraArgs>--linkskip=JabbR.Desktop --linkskip=JabbR.Client --linkskip=System --linkskip=Microsoft.AspNet.SignalR.Client --xml="${ProjectDir}/linker.xml"</MonoBundlingExtraArgs>
     <LinkMode>Full</LinkMode>
   </PropertyGroup>
   <ItemGroup>
@@ -120,10 +120,10 @@
     </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.5.0.5\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Client">
-      <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.0.0-beta1-130424\lib\net40\Microsoft.AspNet.SignalR.Client.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.0.0-rtm1-130805-b137\lib\net40\Microsoft.AspNet.SignalR.Client.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -135,6 +135,7 @@
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
     <None Include="packages.config" />
+    <None Include="linker.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
