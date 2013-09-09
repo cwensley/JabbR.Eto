@@ -112,9 +112,9 @@ namespace JabbR.Desktop.Model.JabbR
 
             // force long polling on mono, until SSE works reliably
             Func<IClientTransport> transport;
-            /*if (true) //EtoEnvironment.Platform.IsMono)
+            if (EtoEnvironment.Platform.IsMono)
                 transport = () => new LongPollingTransport();
-            else*/
+            else
                 transport = () => new AutoTransport(new DefaultHttpClient());
 
             Client = new jab.JabbRClient(Address, null, transport);
