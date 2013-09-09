@@ -326,15 +326,15 @@ namespace JabbR.Desktop.Model.JabbR
                     OnChannelInfoChanged(new ChannelEventArgs(chat));
                 }
             };
-            Client.RoomCountChanged += (room, count) => {
-                Debug.Print("RoomCountChanged, Room: {0}, Count: {1}", room.Name, count);
+            Client.RoomChanged += (room) => {
+                Debug.Print("RoomChanged, Room: {0}", room.Name);
             };
-            Client.TopicChanged += (room) => {
-                Debug.Print("TopicChanged, Room: {0}, Topic: {1}", room.Name, room.Topic);
-                var channel = GetRoom(room.Name);
+            Client.TopicChanged += (roomName, topic, who) => {
+                Debug.Print("TopicChanged, Room: {0}, Topic: {1}", roomName, topic);
+                var channel = GetRoom(roomName);
                 if (channel != null)
                 {
-                    channel.SetNewTopic(room.Topic);
+                    channel.SetNewTopic(topic, who);
                 }
             };
             Client.UserActivityChanged += (user) => {

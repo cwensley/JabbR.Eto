@@ -37,7 +37,11 @@
   <ItemGroup>
     <Reference Include="Microsoft.AspNet.SignalR.Client, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.0.0-rtm1-130805-b137\lib\net40\Microsoft.AspNet.SignalR.Client.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.0.0-rtm1-130820-b159\lib\net40\Microsoft.AspNet.SignalR.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -46,9 +50,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.5.0.5\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Libraries\JabbR\JabbR.Client\ClientEvents.cs">

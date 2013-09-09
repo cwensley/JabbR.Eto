@@ -45,7 +45,7 @@ namespace JabbR.Desktop.Model.JabbR
             OnMessageContent(new MessageContentEventArgs(new MessageContent(messageId, content)));
         }
         
-        public void SetNewTopic(string topic)
+        public void SetNewTopic(string topic, string user)
         {
             this.Topic = topic;
             OnTopicChanged(EventArgs.Empty);
