@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Eto.Forms;
 using Eto.Drawing;
 using JabbR.Client;
@@ -24,46 +24,41 @@ namespace JabbR.Desktop.Interface
         bool initialized;
 
         protected string LastHistoryMessageId { get; private set; }
-        
+
         protected WebView History { get; private set; }
 
         protected TextBox TextEntry { get; private set; }
 
         public abstract string TitleLabel { get; }
-        
+
         public virtual bool SupportsAutoComplete
         {
             get { return false; }
         }
-        
+
         public virtual bool AllowNotificationCollapsing
         {
             get { return false; }
         }
-        
+
         struct DelayedCommand
         {
             public string Command { get; set; }
 
             public object[] Parameters { get; set; }
         }
-        
+
         List<DelayedCommand> delayedCommands;
         bool loaded;
         object sync = new object();
-        
+
         public MessageSection()
         {
             History = new WebView();
             History.DocumentLoaded += HandleDocumentLoaded;
             TextEntry = MessageEntry();
         }
-        
-        public override void OnPreLoad(EventArgs e)
-        {
-            base.OnPreLoad(e);
-        }
-        
+
         public new void Initialize()
         {
             if (initialized)
@@ -71,7 +66,7 @@ namespace JabbR.Desktop.Interface
             initialized = true;
             Content = CreateLayout();
         }
-        
+
         protected virtual Control CreateLayout()
         {
             var layout = new DynamicLayout(Padding.Empty, Size.Empty);
@@ -79,7 +74,7 @@ namespace JabbR.Desktop.Interface
             layout.Add(new Panel { Content = TextEntry, Padding = new Padding(10) });
             return layout;
         }
-        
+
         protected virtual void HandleAction(WebViewLoadingEventArgs e)
         {
             FinishLoad();
@@ -87,13 +82,10 @@ namespace JabbR.Desktop.Interface
 
         void HandleOpenNewWindow(object sender, WebViewNewWindowEventArgs e)
         {
-            Application.Instance.AsyncInvoke(delegate
-            {
-                Application.Instance.Open(e.Uri.AbsoluteUri);
-            });
+            Application.Instance.AsyncInvoke(() => Application.Instance.Open(e.Uri.AbsoluteUri));
             e.Cancel = true;
         }
-        
+
         void HandleDocumentLoading(object sender, WebViewLoadingEventArgs e)
         {
             if (e.IsMainFrame)
@@ -117,12 +109,12 @@ namespace JabbR.Desktop.Interface
                 }
             }
         }
-        
+
         protected void BeginLoad()
         {
             SendCommandDirect("beginLoad");
         }
-        
+
         protected void FinishLoad()
         {
             SendCommandDirect("finishLoad");
@@ -147,7 +139,7 @@ namespace JabbR.Desktop.Interface
                 ReplayDelayedCommands();
             });
         }
-        
+
         protected void StartLive()
         {
             loaded = true;
@@ -158,7 +150,7 @@ namespace JabbR.Desktop.Interface
             History.DocumentLoading += HandleDocumentLoading;
             History.OpenNewWindow += HandleOpenNewWindow;
         }
-        
+
         protected void ReplayDelayedCommands()
         {
             lock (sync)
@@ -181,7 +173,7 @@ namespace JabbR.Desktop.Interface
         {
             SendCommand("addMessage", message);
         }
-        
+
         public void AddHistory(IEnumerable<ChannelMessage> messages, bool shouldScroll = false)
         {
             SendCommand("addHistory", messages, shouldScroll);
@@ -194,7 +186,7 @@ namespace JabbR.Desktop.Interface
         {
             SendCommand("setTopic", topic);
         }
-        
+
         public void AddNotification(NotificationMessage notification)
         {
             SendCommand("addNotification", notification, AllowNotificationCollapsing);
@@ -204,12 +196,12 @@ namespace JabbR.Desktop.Interface
         {
             SendCommand("addMessageContent", content);
         }
-        
+
         public void SetMarker()
         {
             SendCommand("setMarker");
         }
-        
+
         protected void SendCommand(string command, params object[] parameters)
         {
             string[] vals = new string[parameters.Length];
@@ -227,14 +219,18 @@ namespace JabbR.Desktop.Interface
                         Debug.Print("*** Adding delayed command : {0}", command);
                         if (delayedCommands == null)
                             delayedCommands = new List<DelayedCommand>();
-                        delayedCommands.Add(new DelayedCommand { Command = command, Parameters = parameters });
+                        delayedCommands.Add(new DelayedCommand
+                        {
+                            Command = command,
+                            Parameters = parameters
+                        });
                     }
                     return;
                 }
                 History.ExecuteScript(script);
             });
         }
-        
+
         protected void SendCommandDirect(string command, params object[] parameters)
         {
             string[] vals = new string[parameters.Length];
@@ -251,10 +247,12 @@ namespace JabbR.Desktop.Interface
 
         TextBox MessageEntry()
         {
-            var control = new TextBox {
+            var control = new TextBox
+            {
                 PlaceholderText = "Send Message..."
             };
-            control.KeyDown += (sender, e) => {
+            control.KeyDown += (sender, e) =>
+            {
                 if (e.KeyData == Key.Enter)
                 {
                     e.Handled = true;
@@ -269,29 +267,30 @@ namespace JabbR.Desktop.Interface
                     ProcessAutoComplete(control.Text);
                 }
             };
-            control.TextChanged += (sender, e) => {
+            control.TextChanged += (sender, e) =>
+            {
                 UserTyping();
                 ResetAutoComplete();
             };
             return control;
         }
-        
+
         public abstract void ProcessCommand(string command);
-        
+
         public virtual void UserTyping()
         {
         }
-        
+
         public override void Focus()
         {
             TextEntry.Focus();
         }
-        
+
         protected virtual Task<IEnumerable<string>> GetAutoCompleteNames(string search)
         {
             return null;
         }
-        
+
         protected virtual void ResetAutoComplete()
         {
             existingPrefix = null;
@@ -299,7 +298,7 @@ namespace JabbR.Desktop.Interface
             autoCompleteIndex = null;
             autoCompleting = false;
         }
-        
+
         public virtual async void ProcessAutoComplete(string text)
         {
             if (autoCompleting)
@@ -331,21 +330,18 @@ namespace JabbR.Desktop.Interface
                 {
                     var allMatches = results.OrderBy(r => r);
                     
-                    var matches = allMatches as IEnumerable<string>;
+                    IEnumerable<string> matches = allMatches.ToArray();
                     if (!string.IsNullOrEmpty(lastAutoComplete))
                     {
-                        matches = matches.Where(r => {
-                            return r.CompareTo(lastAutoComplete) > 0;
-                        });
+                        matches = matches.Where(r => string.Compare(r, lastAutoComplete, StringComparison.CurrentCultureIgnoreCase) > 0);
                     }
                 
-                    var user = matches.FirstOrDefault();
-                    if (user == null)
-                        user = allMatches.FirstOrDefault();
+                    var user = matches.FirstOrDefault() ?? allMatches.FirstOrDefault();
                     if (user != null)
                     {
                         //Debug.Print("Setting Text: {0}" , Thread.IsMainThread());
-                        Application.Instance.Invoke(() => {
+                        Application.Instance.Invoke(() =>
+                        {
                             TextEntry.Text = existingText + TranslateAutoCompleteText(user, searchPrefix);
                             lastAutoComplete = user;
                             if (existingPrefix == null)
@@ -357,13 +353,13 @@ namespace JabbR.Desktop.Interface
                     }
                     autoCompleting = false;
                 }
-                catch (Exception ex)
+                catch
                 {
                     ResetAutoComplete();
                 }
             }
         }
-        
+
         public virtual string TranslateAutoCompleteText(string selection, string search)
         {
             return selection;

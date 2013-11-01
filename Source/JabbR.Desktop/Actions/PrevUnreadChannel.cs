@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Eto.Forms;
 using JabbR.Desktop.Interface;
 using Eto;

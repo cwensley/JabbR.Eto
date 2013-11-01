@@ -1,14 +1,11 @@
-﻿using System;
+using System;
 using Eto.Forms;
 using Eto.Drawing;
-using System.IO;
-using Eto;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using JabbR.Desktop.Model;
 using System.Diagnostics;
-using System.Threading;
 
 namespace JabbR.Desktop.Interface
 {
@@ -33,7 +30,7 @@ namespace JabbR.Desktop.Interface
         {
             get
             {
-                return "#" + this.Channel.Name;
+                return "#" + Channel.Name;
             }
         }
         
@@ -57,7 +54,7 @@ namespace JabbR.Desktop.Interface
         {
             Application.Instance.AsyncInvoke(delegate
             {
-                this.UserList.UsernameChanged(e.OldUsername, e.User);
+                UserList.UsernameChanged(e.OldUsername, e.User);
             });
             AddNotification(new NotificationMessage(DateTimeOffset.Now, "{0}'s nick has changed to {1}.", e.OldUsername, e.User.Name));
         }
@@ -176,10 +173,10 @@ namespace JabbR.Desktop.Interface
 
         protected override void HandleDocumentLoaded(object sender, WebViewLoadedEventArgs e)
         {
-            if (this.Channel != null && Server.IsConnected)
+            if (Channel != null && Server.IsConnected)
             {
                 BeginLoad();
-                var getChannelInfo = this.Channel.GetChannelInfo();
+                var getChannelInfo = Channel.GetChannelInfo();
                 if (getChannelInfo != null)
                 {
                     getChannelInfo.ContinueWith(t => {
@@ -232,14 +229,14 @@ namespace JabbR.Desktop.Interface
 
         protected override void HandleAction(WebViewLoadingEventArgs e)
         {
-            var historyIndex = e.Uri.LocalPath.IndexOf(LOAD_HISTORY_PREFIX);
+            var historyIndex = e.Uri.LocalPath.IndexOf(LOAD_HISTORY_PREFIX, StringComparison.Ordinal);
             if (historyIndex >= 0)
             {
                 LoadHistory();
                 return;
             }
 
-            var joinRoomIndex = e.Uri.LocalPath.IndexOf(JOIN_ROOM_PREFIX);
+            var joinRoomIndex = e.Uri.LocalPath.IndexOf(JOIN_ROOM_PREFIX, StringComparison.Ordinal);
             if (joinRoomIndex >= 0)
             {
                 Channel.Server.JoinChannel(e.Uri.PathAndQuery.Substring(joinRoomIndex + JOIN_ROOM_PREFIX.Length));
@@ -299,27 +296,23 @@ namespace JabbR.Desktop.Interface
         {
             if (Channel.Server.IsConnected)
             {
-                if (search.StartsWith("#"))
+                if (search.StartsWith("#", StringComparison.Ordinal))
                 {
                     search = search.TrimStart('#');
                     var channels = await Channel.Server.GetCachedChannels();
                     return channels.Where(r => r.Name.StartsWith(search, StringComparison.CurrentCultureIgnoreCase)).Select(r => r.Name);
                 }
-                else
-                {
-                    search = search.TrimStart('@');
-                    return Channel.Users.Where(r => r.Name.StartsWith(search, StringComparison.CurrentCultureIgnoreCase)).Select(r => r.Name);
-                }
+                search = search.TrimStart('@');
+                return Channel.Users.Where(r => r.Name.StartsWith(search, StringComparison.CurrentCultureIgnoreCase)).Select(r => r.Name);
             }
             return Enumerable.Empty<string>();
         }
 
         public override string TranslateAutoCompleteText(string selection, string search)
         {
-            if (search.StartsWith("#"))
+            if (search.StartsWith("#", StringComparison.Ordinal))
                 return '#' + base.TranslateAutoCompleteText(selection, search) + ' ';
-            else
-                return '@' + base.TranslateAutoCompleteText(selection, search) + ' ';
+            return '@' + base.TranslateAutoCompleteText(selection, search) + ' ';
         }
     }
 }

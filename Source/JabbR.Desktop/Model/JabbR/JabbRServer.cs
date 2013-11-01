@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using jab = JabbR.Client;
 using jm = JabbR.Models;
 using System.Linq;
@@ -31,30 +31,30 @@ namespace JabbR.Desktop.Model.JabbR
         Regex highlighRegex;
         TaskCompletionSource<object> disconnectTask;
         public const string JabbRTypeId = "jabbr";
-        
+
         public jab.JabbRClient Client { get; private set; }
-        
+
         public jab.Models.LogOnInfo LogOnInfo { get; private set; }
-        
+
         public jab.Models.User CurrentJabbRUser
         { 
             get { return ((JabbRUser)this.CurrentUser).InnerUser; }
         }
-        
+
         public override string TypeId { get { return JabbRTypeId; } }
-        
+
         public string Address { get; set; }
-        
+
         public string UserName { get; set; }
 
         public string Password { get; set; }
-        
+
         public string UserId { get; set; }
 
         public bool UseSocialLogin { get; set; }
-        
+
         public string JanrainAppName { get; set; }
-        
+
         public JabbRServer()
         {
             //this.UseSocialLogin = true;
@@ -73,7 +73,7 @@ namespace JabbR.Desktop.Model.JabbR
                 return highlighRegex;
             }
         }
-        
+
         public override bool IsAuthenticated
         {
             get
@@ -84,7 +84,7 @@ namespace JabbR.Desktop.Model.JabbR
                     return !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Password);
             }
         }
-        
+
         public override async Task Connect()
         {
             OnConnecting(EventArgs.Empty);
@@ -112,10 +112,10 @@ namespace JabbR.Desktop.Model.JabbR
 
             // force long polling on mono, until SSE works reliably
             Func<IClientTransport> transport;
-            if (EtoEnvironment.Platform.IsMono)
+            /*if (EtoEnvironment.Platform.IsMono)
                 transport = () => new LongPollingTransport();
-            else
-                transport = () => new AutoTransport(new DefaultHttpClient());
+            else*/
+            transport = () => new AutoTransport(new DefaultHttpClient());
 
             Client = new jab.JabbRClient(Address, null, transport);
 #if DEBUG
@@ -137,22 +137,22 @@ namespace JabbR.Desktop.Model.JabbR
                 connected = true;
                 HookupEvents();
 
-                this.OnGlobalMessageReceived (new NotificationEventArgs(new NotificationMessage (string.Format ("Using {0} transport", Client.Connection.Transport.Name))));
+                OnGlobalMessageReceived(new NotificationEventArgs(new NotificationMessage(string.Format("Using {0} transport", Client.Connection.Transport.Name))));
                 var userInfo = await Client.GetUserInfo();
-                this.CurrentUser = new JabbRUser(this, userInfo);
+                CurrentUser = new JabbRUser(this, userInfo);
                 loadingRooms = logOnInfo.Rooms.Select(r => new JabbRRoom(this, r)).ToList();
                 InitializeChannels(loadingRooms);
 
-                if (EtoEnvironment.Platform.IsMono) {
+                if (EtoEnvironment.Platform.IsMono)
+                {
                     var keepAliveTime = TimeSpan.FromMinutes(5);
                     if (timer != null)
                         timer.Dispose();
-                    timer = new Timer(state => {
-                        Client.Send(new jm.ClientMessage{ 
-                            Id = Guid.NewGuid().ToString(),
-                            Content = string.Format("/where ", this.CurrentUser.Name)
-                        });
-                    }, null, keepAliveTime, keepAliveTime);
+                    timer = new Timer(state => Client.Send(new jm.ClientMessage
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Content = string.Format("/where {0}", CurrentUser.Name)
+                    }), null, keepAliveTime, keepAliveTime);
                 }
 
                 OnConnected(EventArgs.Empty);
@@ -200,19 +200,20 @@ namespace JabbR.Desktop.Model.JabbR
                 }
             }
         }
-        
+
         public override async Task<IEnumerable<ChannelInfo>> GetChannelList()
         {
             var rooms = await Client.GetRooms();
-            return rooms.Select(r => new ChannelInfo(this) {
+            return rooms.Select(r => new ChannelInfo(this)
+            {
                 Name = r.Name,
                 Topic = r.Topic,
                 Private = r.Private,
                 UserCount = r.Count
-                }
+            }
             );
         }
-        
+
         IEnumerable<ChannelInfo> cachedChannels;
         DateTime? cachedChannelTime;
 
@@ -228,14 +229,15 @@ namespace JabbR.Desktop.Model.JabbR
             }
             return cachedChannels;
         }
-        
+
         public override Task Disconnect()
         {
             OnDisconnecting(EventArgs.Empty);
             if (Client != null)
             {
                 disconnectTask = new TaskCompletionSource<object>();
-                Task.Run(() => {
+                Task.Run(() =>
+                {
                     try
                     {
                         Client.Disconnect();
@@ -249,7 +251,7 @@ namespace JabbR.Desktop.Model.JabbR
             }
             return Task.FromResult<object>(null);
         }
-        
+
         public JabbRRoom GetRoom(string roomName)
         {
             return Channels.OfType<JabbRRoom>().FirstOrDefault(r => r.Name == roomName);
@@ -259,10 +261,11 @@ namespace JabbR.Desktop.Model.JabbR
         {
             return Channels.OfType<JabbRChat>().FirstOrDefault(r => r.Name == userName);
         }
-        
+
         void HookupEvents()
         {
-            Client.MessageReceived += (message, room) => {
+            Client.MessageReceived += (message, room) =>
+            {
                 Debug.Print("MessageReceived, Room: {3}, When: {0}, User: {1}, Content: {2}", message.When, message.User.Name, message.Content, room);
                 var channel = GetRoom(room);
                 if (channel != null)
@@ -271,7 +274,8 @@ namespace JabbR.Desktop.Model.JabbR
                     OnChannelInfoChanged(new ChannelEventArgs(channel));
                 }
             };
-            Client.Disconnected += () => {
+            Client.Disconnected += () =>
+            {
                 Debug.Print("Disconnected");
                 if (disconnectTask != null)
                     disconnectTask.TrySetResult(null);
@@ -282,43 +286,52 @@ namespace JabbR.Desktop.Model.JabbR
                 }
                 OnDisconnected(EventArgs.Empty);
             };
-            Client.FlagChanged += (user, flag) => {
+            Client.FlagChanged += (user, flag) =>
+            {
                 Debug.Print("FlagChanged, User: {0}, Flag: {1}", user.Name, flag);
             };
-            Client.GravatarChanged += (user, gravatar) => {
+            Client.GravatarChanged += (user, gravatar) =>
+            {
                 Debug.Print("GravatarChanged, User: {0}, Gravatar: {1}", user.Name, gravatar);
             };
-            Client.Kicked += (user) => {
+            Client.Kicked += user =>
+            {
                 Debug.Print("Kicked: {0}", user);
             };
-            Client.LoggedOut += (rooms) => {
+            Client.LoggedOut += rooms =>
+            {
                 Debug.Print("LoggedOut, Rooms: {0}", string.Join(", ", rooms));
             };
-            Client.MeMessageReceived += (user, content, room) => {
+            Client.MeMessageReceived += (user, content, room) =>
+            {
                 Debug.Print("MeMessageReceived, User: {0}, Content: {1}, Room: {2}", user, content, room);
                 var channel = GetRoom(room);
-                if (channel != null) 
+                if (channel != null)
                     channel.TriggerMeMessage(user, content);
             };
-            Client.NoteChanged += (user, room) => {
+            Client.NoteChanged += (user, room) =>
+            {
                 Debug.Print("NoteChanged, User: {0}, Room: {1}", user.Name, room);
             };
-            Client.OwnerAdded += (user, room) => {
+            Client.OwnerAdded += (user, room) =>
+            {
                 Debug.Print("OwnerAdded, User: {0}, Room: {1}", user.Name, room);
                 var channel = GetRoom(room);
-                if (channel != null) 
+                if (channel != null)
                     channel.TriggerOwnerAdded(user);
             };
-            Client.OwnerRemoved += (user, room) => {
+            Client.OwnerRemoved += (user, room) =>
+            {
                 Debug.Print("OwnerRemoved, User: {0}, Room: {1}", user.Name, room);
                 var channel = GetRoom(room);
-                if (channel != null) 
+                if (channel != null)
                     channel.TriggerOwnerRemoved(user);
             };
-            Client.PrivateMessage += (from, to, message) => {
+            Client.PrivateMessage += (from, to, message) =>
+            {
                 Debug.Print("PrivateMessage, From: {0}, To: {1}, Message: {2} ", from, to, message);
                 
-                var user = from == this.CurrentUser.Name ? to : from;
+                var user = from == CurrentUser.Name ? to : from;
                 JabbRChat chat;
                 if (InternalStartChat(new JabbRUser(this, user) { Active = true }, false, message, out chat))
                 {
@@ -326,10 +339,12 @@ namespace JabbR.Desktop.Model.JabbR
                     OnChannelInfoChanged(new ChannelEventArgs(chat));
                 }
             };
-            Client.RoomChanged += (room) => {
+            Client.RoomChanged += room =>
+            {
                 Debug.Print("RoomChanged, Room: {0}", room.Name);
             };
-            Client.TopicChanged += (roomName, topic, who) => {
+            Client.TopicChanged += (roomName, topic, who) =>
+            {
                 Debug.Print("TopicChanged, Room: {0}, Topic: {1}", roomName, topic);
                 var channel = GetRoom(roomName);
                 if (channel != null)
@@ -337,14 +352,16 @@ namespace JabbR.Desktop.Model.JabbR
                     channel.SetNewTopic(topic, who);
                 }
             };
-            Client.UserActivityChanged += (user) => {
+            Client.UserActivityChanged += user =>
+            {
                 Debug.Print("UserActivityChanged, User: {0}, Activity: {1}", user.Name, user.Active);
-                foreach (var channel in this.Channels.OfType<JabbRChannel>())
+                foreach (var channel in Channels.OfType<JabbRChannel>())
                 {
                     channel.TriggerActivityChanged(new jab.Models.User[] { user });
                 }
             };
-            Client.JoinedRoom += (room) => {
+            Client.JoinedRoom += room =>
+            {
                 Debug.Print("JoinedRoom, Room: {0}", room.Name);
                 var channel = GetRoom(room.Name);
                 bool newlyJoined = false;
@@ -356,7 +373,8 @@ namespace JabbR.Desktop.Model.JabbR
                 }
                 OnOpenChannel(new OpenChannelEventArgs(channel, true, newlyJoined));
             };
-            Client.UserJoined += (user, room, isOwner) => {
+            Client.UserJoined += (user, room, isOwner) =>
+            {
                 Debug.Print("UserJoined, User: {0}, Room: {1}", user.Name, room);
                 var channel = GetRoom(room);
                 if (channel != null)
@@ -366,7 +384,8 @@ namespace JabbR.Desktop.Model.JabbR
                     channel.TriggerUserJoined(new UserEventArgs(new JabbRUser(this, user), DateTimeOffset.Now));
                 }
             };
-            Client.UserLeft += (user, room) => {
+            Client.UserLeft += (user, room) =>
+            {
                 Debug.Print("UserLeft, User: {0}, Room: {1}", user.Name, room);
                 var channel = GetRoom(room);
                 if (channel != null)
@@ -382,7 +401,8 @@ namespace JabbR.Desktop.Model.JabbR
                     }
                 }
             };
-            Client.UsernameChanged += (oldUserName, user, room) => {
+            Client.UsernameChanged += (oldUserName, user, room) =>
+            {
                 Debug.Print("UsernameChanged, OldUserName: {0}, NewUserName: {1}, Room: {2}", oldUserName, user.Name, room);
                 if (oldUserName == CurrentUser.Name)
                 {
@@ -408,30 +428,34 @@ namespace JabbR.Desktop.Model.JabbR
                     channel.TriggerUsernameChanged(oldUserName, user);
                 }
             };
-            Client.UsersInactive += (users) => {
+            Client.UsersInactive += users =>
+            {
                 Debug.Print("UsersInactive, Users: {0}", string.Join(", ", users.Select(r => r.Name)));
-                foreach (var channel in this.Channels.OfType<JabbRChannel>())
+                foreach (var channel in Channels.OfType<JabbRChannel>())
                 {
                     channel.TriggerActivityChanged(users);
                 }
             };
-            Client.UserTyping += (user, room) => {
+            Client.UserTyping += (user, room) =>
+            {
                 Debug.Print("UserTyping, User: {0}, Room: {1}", user.Name, room);   
             };
-            Client.AddMessageContent += (messageId, content, room) => {
+            Client.AddMessageContent += (messageId, content, room) =>
+            {
                 Debug.Print("AddMessageContent, Id: {0}, Room: {1}, Content: {2}", messageId, room, content);
                 var channel = GetRoom(room);
                 if (channel != null)
                     channel.TriggerMessageContent(messageId, content);
             };
-            Client.StateChanged += (status) => {
+            Client.StateChanged += status =>
+            {
                 Debug.Print("StateChange, Old State: {0}, New State: {1}", status.OldState, status.NewState);
                 /*if (this.IsConnected && status.NewState == ConnectionState.Disconnected) {
                     OnDisconnected(EventArgs.Empty);
                 }*/
             };
         }
-        
+
         public override async void SendMessage(string command)
         {
             if (Client == null)
@@ -439,8 +463,9 @@ namespace JabbR.Desktop.Model.JabbR
                 OnGlobalMessageReceived(new NotificationEventArgs(new NotificationMessage(DateTimeOffset.Now, "Cannot send command. You are not connected.")));
                 return;
             }
-            var message = new jm.ClientMessage{
-                Id = Guid.NewGuid ().ToString (),
+            var message = new jm.ClientMessage
+            {
+                Id = Guid.NewGuid().ToString(),
                 Content = command
             };
             try
@@ -449,13 +474,10 @@ namespace JabbR.Desktop.Model.JabbR
             }
             catch (Exception ex)
             {
-                Application.Instance.Invoke(() => {
-                    MessageBox.Show(Application.Instance.MainForm, string.Format("Error sending message: {0}", ex));
-                });
+                Application.Instance.Invoke(() => MessageBox.Show(Application.Instance.MainForm, string.Format("Error sending message: {0}", ex)));
             }
-            ;
         }
-        
+
         public override void JoinChannel(string name)
         {
             var room = GetRoom(name);
@@ -464,7 +486,7 @@ namespace JabbR.Desktop.Model.JabbR
             else
                 OnOpenChannel(new OpenChannelEventArgs(room, true, false));
         }
-        
+
         public override void LeaveChannel(Channel channel)
         {
             var chat = channel as JabbRChat;
@@ -476,16 +498,16 @@ namespace JabbR.Desktop.Model.JabbR
             else
                 Client.LeaveRoom(channel.Name);
         }
-        
+
         public override void StartChat(User user)
         {
             JabbRChat chat;
             InternalStartChat(new JabbRUser(user), true, null, out chat);
         }
-        
+
         bool InternalStartChat(User user, bool shouldFocus, string initialMessage, out JabbRChat chat)
         {
-            if (user.Name == this.CurrentUser.Name)
+            if (user.Name == CurrentUser.Name)
             {
                 chat = null;
                 return false;
@@ -501,29 +523,29 @@ namespace JabbR.Desktop.Model.JabbR
             return true;
             
         }
-        
+
         public override void GenerateEditControls(DynamicLayout layout, bool isNew)
         {
             base.GenerateEditControls(layout, isNew);
             new JabbRServerEdit(this, layout);
         }
-        
+
         public override Control GenerateSection()
         {
             var section = new Interface.ServerSection(this);
             section.Initialize();
             return section;
         }
-        
+
         public override bool Authenticate(Control parent)
         {
-            if (this.UseSocialLogin)
+            if (UseSocialLogin)
             {
-                var dlg = new JabbRAuthDialog(this.Address, this.JanrainAppName);
+                var dlg = new JabbRAuthDialog(Address, JanrainAppName);
                 var result = dlg.ShowDialog(parent);
                 if (result == DialogResult.Ok)
                 {
-                    this.UserId = dlg.UserID;
+                    UserId = dlg.UserID;
                     return true;
                 }
             }
@@ -541,7 +563,7 @@ namespace JabbR.Desktop.Model.JabbR
         {
             OnChannelInfoChanged(e);
         }
-        
+
         public override bool CheckAuthentication(Control parent, bool allowCancel, bool isEditing)
         {
             if (!IsAuthenticated)
@@ -550,7 +572,7 @@ namespace JabbR.Desktop.Model.JabbR
                 {
                     var result = MessageBox.Show(parent, "You have not authenticated with this server. Do you want to authenticate now?", allowCancel ? MessageBoxButtons.YesNoCancel : MessageBoxButtons.YesNo);
                     if (result == DialogResult.Yes)
-                        return this.Authenticate(parent);
+                        return Authenticate(parent);
                     else if (allowCancel)
                         return result == DialogResult.No;
                     else
@@ -568,40 +590,40 @@ namespace JabbR.Desktop.Model.JabbR
         public override void ClearPasswords()
         {
             base.ClearPasswords();
-            JabbRApplication.Instance.EncryptString(this.Address, this.Id + "-user", null);
-            JabbRApplication.Instance.EncryptString(this.Address, this.Id + "-pass", null);
+            JabbRApplication.Instance.EncryptString(Address, Id + "-user", null);
+            JabbRApplication.Instance.EncryptString(Address, Id + "-pass", null);
         }
 
         public override void ReadXml(System.Xml.XmlElement element)
         {
             base.ReadXml(element);
-            this.UseSocialLogin = false; //element.GetBoolAttribute ("useSocialLogin") ?? false;
-            this.Address = element.GetStringAttribute("address");
-            if (this.UseSocialLogin)
+            UseSocialLogin = false; //element.GetBoolAttribute ("useSocialLogin") ?? false;
+            Address = element.GetStringAttribute("address");
+            if (UseSocialLogin)
             {
-                this.JanrainAppName = element.GetStringAttribute("janrainAppName") ?? "jabbr";
-                this.UserId = JabbRApplication.Instance.DecryptString(this.Address, this.Id, element.GetStringAttribute("userId"));
+                JanrainAppName = element.GetStringAttribute("janrainAppName") ?? "jabbr";
+                UserId = JabbRApplication.Instance.DecryptString(Address, Id, element.GetStringAttribute("userId"));
             }
             else
             {
-                this.UserName = JabbRApplication.Instance.DecryptString(this.Address, this.Id + "-user", element.GetStringAttribute("userName"));
-                this.Password = JabbRApplication.Instance.DecryptString(this.Address, this.Id + "-pass", element.GetStringAttribute("password"));
+                UserName = JabbRApplication.Instance.DecryptString(Address, Id + "-user", element.GetStringAttribute("userName"));
+                Password = JabbRApplication.Instance.DecryptString(Address, Id + "-pass", element.GetStringAttribute("password"));
             }
         }
-        
+
         public override void WriteXml(System.Xml.XmlElement element)
         {
             base.WriteXml(element);
-            element.SetAttribute("useSocialLogin", this.UseSocialLogin);
-            element.SetAttribute("address", this.Address);
-            if (this.UseSocialLogin)
+            element.SetAttribute("useSocialLogin", UseSocialLogin);
+            element.SetAttribute("address", Address);
+            if (UseSocialLogin)
             {
                 element.SetAttribute("janrainAppName", JanrainAppName);
-                element.SetAttribute("userId", JabbRApplication.Instance.EncryptString(this.Address, this.Id, this.UserId));
+                element.SetAttribute("userId", JabbRApplication.Instance.EncryptString(Address, Id, UserId));
             }
             else
             {
-                element.SetAttribute("userName", JabbRApplication.Instance.EncryptString(this.Address, this.Id + "-user", this.UserName));
+                element.SetAttribute("userName", JabbRApplication.Instance.EncryptString(Address, Id + "-user", this.UserName));
                 element.SetAttribute("password", JabbRApplication.Instance.EncryptString(this.Address, this.Id + "-pass", this.Password));
             }
         }

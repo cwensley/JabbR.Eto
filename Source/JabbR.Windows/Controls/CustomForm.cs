@@ -1,4 +1,4 @@
-﻿using Eto.Platform.Wpf.Forms;
+using Eto.Platform.Wpf.Forms;
 using JabbR.Desktop;
 using System;
 using System.Collections.Generic;

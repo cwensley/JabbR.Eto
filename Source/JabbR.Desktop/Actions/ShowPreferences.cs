@@ -1,4 +1,4 @@
-﻿using Eto;
+using Eto;
 using Eto.Forms;
 using JabbR.Desktop.Model;
 using System;

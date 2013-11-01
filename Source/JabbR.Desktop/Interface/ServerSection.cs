@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using JabbR.Desktop.Model;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -22,7 +22,7 @@ namespace JabbR.Desktop.Interface
         {
             get
             {
-                return this.Server.Name;
+                return Server.Name;
             }
         }
         
@@ -48,16 +48,12 @@ namespace JabbR.Desktop.Interface
         protected override Task<IEnumerable<string>> GetAutoCompleteNames(string search)
         {
             var task = new TaskCompletionSource<IEnumerable<string>>();
-            if (search.StartsWith("#") && Server.IsConnected)
+            if (search.StartsWith("#", StringComparison.Ordinal) && Server.IsConnected)
             {
                 search = search.TrimStart('#');
                 var getChannels = Server.GetCachedChannels();
-                getChannels.ContinueWith(t => {
-                    task.TrySetResult(t.Result.Where(r => r.Name.StartsWith(search, StringComparison.CurrentCultureIgnoreCase)).Select(r => r.Name));
-                }, TaskContinuationOptions.OnlyOnRanToCompletion);
-                getChannels.ContinueWith(t => {
-                    task.TrySetException(t.Exception);
-                }, TaskContinuationOptions.OnlyOnFaulted);
+                getChannels.ContinueWith(t => task.TrySetResult(t.Result.Where(r => r.Name.StartsWith(search, StringComparison.CurrentCultureIgnoreCase)).Select(r => r.Name)), TaskContinuationOptions.OnlyOnRanToCompletion);
+                getChannels.ContinueWith(t => task.TrySetException(t.Exception), TaskContinuationOptions.OnlyOnFaulted);
             }
             return task.Task;
         }

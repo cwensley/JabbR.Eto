@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Eto.Forms;
 using System.Collections.Generic;
 using System.Linq;
@@ -164,9 +164,9 @@ namespace JabbR.Desktop.Interface
         
         void Update()
         {
-            owners.Children.Sort((x, y) => x.Text.CompareTo(y.Text));
-            online.Children.Sort((x, y) => x.Text.CompareTo(y.Text));
-            away.Children.Sort((x, y) => x.Text.CompareTo(y.Text));
+            owners.Children.Sort((x, y) => string.Compare(x.Text, y.Text, StringComparison.CurrentCulture));
+            online.Children.Sort((x, y) => string.Compare(x.Text, y.Text, StringComparison.CurrentCulture));
+            away.Children.Sort((x, y) => string.Compare(x.Text, y.Text, StringComparison.CurrentCulture));
             tree.RefreshData();
         }
     

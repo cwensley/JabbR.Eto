@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Eto.Forms;
 using JabbR.Desktop.Model;
 using Eto.Drawing;
@@ -48,7 +48,7 @@ namespace JabbR.Desktop.Interface.Dialogs
             layout.AddRow(Connect(), Disconnect(), null, cancelButton = this.CancelButton(), this.OkButton("Save", () => SaveData()));
             
             layout.EndVertical();
-            
+
             Content = layout;
             
             SetVisibility();
@@ -61,8 +61,7 @@ namespace JabbR.Desktop.Interface.Dialogs
             {
                 return true;
             }
-            else
-                return false;
+            return false;
         }
         
         void SetVisibility()
@@ -95,7 +94,7 @@ namespace JabbR.Desktop.Interface.Dialogs
                 {
                     Server.Connect();
                     Debug.WriteLine("Closing Dialog!");
-                    this.Close(DialogResult.Ok);
+                    Close(DialogResult.Ok);
                 }
             };
             return control;
@@ -110,14 +109,14 @@ namespace JabbR.Desktop.Interface.Dialogs
                 try
                 {
                     Server.Disconnect();
-                    this.Close(DialogResult.Ok);
+                    Close(DialogResult.Ok);
                 }
                 catch (Exception ex)
                 {
                     var msg = string.Format("Error disconnecting from server {0}", ex.GetBaseException().Message);
                     MessageBox.Show(this, msg, MessageBoxType.Error);
                 }
-                this.Close(DialogResult.Ok);
+                Close(DialogResult.Ok);
             };
             return control;
         }

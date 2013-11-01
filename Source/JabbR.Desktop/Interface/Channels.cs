@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Eto.Forms;
 using System.Linq;
 using System.Collections.Generic;
@@ -33,10 +33,7 @@ namespace JabbR.Desktop.Interface
         { 
             get
             {
-                if (SelectedChannel != null)
-                    return SelectedChannel.Server;
-                else
-                    return channelList.SelectedItem as Server;
+                return SelectedChannel != null ? SelectedChannel.Server : channelList.SelectedItem as Server;
             }
         }
         
@@ -55,21 +52,19 @@ namespace JabbR.Desktop.Interface
             this.Config = config;
             channelList = new TreeView { Style = "channelList" };
             channelList.DataStore = servers;
-            channelList.SelectionChanged += (sender, e) => {
-                OnChannelChanged(e);
-            };
+            channelList.SelectionChanged += (sender, e) => OnChannelChanged(e);
             channelList.Activated += HandleActivated;
             
             config.ServerAdded += HandleServerAdded;
             config.ServerRemoved += HandleServerRemoved;
-            
-            this.AddDockedControl(channelList);
+
+            Content = channelList;
         }
         
         public override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            this.ParentWindow.GotFocus += (sender, ee) => {
+            ParentWindow.GotFocus += (sender, ee) => {
                 var selected = SelectedChannel;
                 if (selected != null)
                 {
@@ -78,7 +73,7 @@ namespace JabbR.Desktop.Interface
                     Update();
                 }
             };
-            this.ParentWindow.LostFocus += (sender, ee) => {
+            ParentWindow.LostFocus += (sender, ee) => {
                 var section = GetCurrentSection();
                 if (section != null)
                     section.SetMarker();
@@ -143,7 +138,7 @@ namespace JabbR.Desktop.Interface
             }
             else
             {
-                MessageBox.Show(this, e.Exception.GetBaseException().Message, string.Format("Could not connect to server {0}. {1}", e.Server.Name));
+                MessageBox.Show(this, e.Exception.GetBaseException().Message, string.Format("Could not connect to server {0}", e.Server.Name));
             }
         }
         
@@ -158,7 +153,7 @@ namespace JabbR.Desktop.Interface
                     channelList.SelectedItem = server;
                 }
 
-                Update(false);
+                Update();
             });
         }
 
@@ -167,7 +162,7 @@ namespace JabbR.Desktop.Interface
             var server = sender as Server;
             Application.Instance.AsyncInvoke(delegate
             {
-                Update(false);
+                Update();
                 if (channelList.SelectedItem == null)
                     channelList.SelectedItem = server;
                 RemoveSections(server);
@@ -209,7 +204,7 @@ namespace JabbR.Desktop.Interface
         {
             Application.Instance.AsyncInvoke(delegate
             {
-                if (SelectedChannel == e.Channel && this.ParentWindow.HasFocus)
+                if (SelectedChannel == e.Channel && ParentWindow.HasFocus)
                 {
                     e.Channel.ResetUnreadCount();
                 }
@@ -220,12 +215,12 @@ namespace JabbR.Desktop.Interface
         
         void SetUnreadCount()
         {
-            var count = this.EnumerateChannels().Sum(r => r.UnreadCount);
+            var count = EnumerateChannels().Sum(r => r.UnreadCount);
             
-            var form = this.ParentWindow as MainForm;
+            var form = ParentWindow as MainForm;
             if (form != null)
             {
-                var section = this.GetCurrentSection();
+                var section = GetCurrentSection();
                 form.SetUnreadCount(section != null ? section.TitleLabel : null, count);
             }
         }
@@ -374,10 +369,14 @@ namespace JabbR.Desktop.Interface
             var listOfItems = channels;
             var channel = channelList.SelectedItem as Channel;
             if (channel != null)
-                listOfItems = channels.SkipWhile(r => r != channel).Skip(1).Union(channels.TakeWhile(r => r != channel));
-            
+            {
+                listOfItems = listOfItems.SkipWhile(r => r != channel).Skip(1).Union(listOfItems.TakeWhile(r => r != channel));
+            }
+
             if (reverse)
+            {
                 listOfItems = listOfItems.Reverse();
+            }
             
             var next = listOfItems.FirstOrDefault(r => !unreadOnly || r.UnreadCount > 0);
             if (next != null)
@@ -397,7 +396,7 @@ namespace JabbR.Desktop.Interface
         void Update(bool sort = false)
         {
             if (sort)
-                servers.Sort((x,y) => x.Text.CompareTo(y.Text));
+                servers.Sort((x, y) => string.Compare(x.Text, y.Text, StringComparison.Ordinal));
             channelList.RefreshData();
         }
         

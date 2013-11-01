@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using JabbR.Desktop.Interface;
 using Eto;
 using System.Xml;
@@ -204,7 +204,7 @@ namespace JabbR.Desktop.Model
             if (alt == null)
                 return -1;
             else
-                return this.Name.CompareTo(alt.Name);
+                return string.Compare(Name, alt.Name, StringComparison.CurrentCulture);
         }
 
         public virtual Image Image { get { return null; } }

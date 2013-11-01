@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Eto.Forms;
 using System.Runtime.Remoting;
 using System.Linq;
@@ -39,16 +39,14 @@ namespace JabbR.Desktop.Interface.Dialogs
             layout.BeginVertical();
             layout.AddRow(null, this.CancelButton(), this.OkButton("Join Channel", CanJoin));
             layout.EndVertical();
-            
+
             Content = layout;
             
             var channelTask = server.GetChannelList();
-            channelTask.ContinueWith(task => {
-                Application.Instance.AsyncInvoke(delegate
-                {
-                    grid.DataStore = new GridItemCollection(task.Result.OrderBy(r => r.Name).OrderByDescending(r => r.UserCount));
-                });
-            }, System.Threading.Tasks.TaskContinuationOptions.OnlyOnRanToCompletion);
+            channelTask.ContinueWith(task => Application.Instance.AsyncInvoke(delegate
+            {
+                grid.DataStore = new GridItemCollection(task.Result.OrderBy(r => r.Name).OrderByDescending(r => r.UserCount));
+            }), System.Threading.Tasks.TaskContinuationOptions.OnlyOnRanToCompletion);
         }
 
         void HandleMouseDoubleClick(object sender, MouseEventArgs e)

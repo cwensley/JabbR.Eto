@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Eto.Forms;
 using System.Threading.Tasks;
 using System.Linq;

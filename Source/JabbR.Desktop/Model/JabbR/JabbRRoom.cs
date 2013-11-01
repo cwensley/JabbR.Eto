@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Eto.Forms;
 using System.Threading.Tasks;
 using System.Linq;
@@ -87,7 +87,6 @@ namespace JabbR.Desktop.Model.JabbR
                 getChannelInfo.SetException(ex);
                 recentMessages.SetException(ex);
             }
-            ;
         }
         
         User GetUser(string id)
@@ -142,7 +141,7 @@ namespace JabbR.Desktop.Model.JabbR
                 Room = this.Name,
                 Content = command
             };
-            if (!command.TrimStart().StartsWith("/"))
+            if (!command.TrimStart().StartsWith("/", StringComparison.Ordinal))
             {
                 OnMessageReceived(new MessageEventArgs(new ChannelMessage(message.Id, DateTimeOffset.Now, Server.CurrentUser.Name, command)));
             }
@@ -245,7 +244,6 @@ namespace JabbR.Desktop.Model.JabbR
                         owners.Add(user.Name);
                         added = true;
                     }
-                    ;
                 }
                 if (added)
                     OnOwnerAdded(new UserEventArgs(new JabbRUser(this.Server, user), DateTimeOffset.Now));

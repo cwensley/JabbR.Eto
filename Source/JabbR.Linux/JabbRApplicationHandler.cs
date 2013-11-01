@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Eto.Platform.GtkSharp;
 using System.Text;
 using System.Security.Cryptography;

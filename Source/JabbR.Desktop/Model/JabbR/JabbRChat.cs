@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Eto.Forms;
 using System.Threading.Tasks;
 using System.Linq;
@@ -14,9 +14,9 @@ namespace JabbR.Desktop.Model.JabbR
         User user;
         string initialMessage;
         static Image image = Bitmap.FromResource("JabbR.Desktop.Resources.chat.png", typeof(JabbRChat).Assembly);
-        
+
         public override Image Image { get { return image; } }
-        
+
         public override IEnumerable<User> Users
         {
             get
@@ -25,9 +25,9 @@ namespace JabbR.Desktop.Model.JabbR
                 yield return user;
             }
         }
-        
+
         public override IEnumerable<string> Owners { get { return Enumerable.Empty<string>(); } }
-        
+
         public JabbRChat(JabbRServer server, User user, string initialMessage)
             : base(server)
         {
@@ -49,26 +49,23 @@ namespace JabbR.Desktop.Model.JabbR
             }
             return null;
         }
-        
+
         public override void SendMessage(string command)
         {
-            if (command.StartsWith("/"))
+            if (command.StartsWith("/", StringComparison.Ordinal))
             {
                 // chat channel does not support commands, so send to lobby
                 Server.SendMessage(command);
                 return;
             }
             
-            Server.Client.SendPrivateMessage(user.Name, command).ContinueWith(task => {
-                Application.Instance.Invoke(() => {
-                    MessageBox.Show(
-                        Application.Instance.MainForm,
-                        string.Format("Error sending message: {0}", task.Exception)
-                    );
-                });
-            }, TaskContinuationOptions.OnlyOnFaulted);
+            Server.Client.SendPrivateMessage(user.Name, command)
+            .ContinueWith(task => 
+                Application.Instance.Invoke(() => 
+                    MessageBox.Show(Application.Instance.MainForm, string.Format("Error sending message: {0}", task.Exception))), 
+                TaskContinuationOptions.OnlyOnFaulted);
         }
-        
+
         public override void UserTyping()
         {
         }
@@ -80,15 +77,14 @@ namespace JabbR.Desktop.Model.JabbR
 
         internal void TriggerUsernameChanged(string oldUserName, jab.Models.User jabuser, bool isCurrentUser)
         {
-            if (this.Name == oldUserName)
+            if (Name == oldUserName)
             {
                 user.Name = jabuser.Name;
                 user.Id = jabuser.Name;
-                this.Name = user.Name;
+                Name = user.Name;
                 OnUsernameChanged(new UsernameChangedEventArgs(oldUserName, user, DateTimeOffset.Now));
                 OnNameChanged(EventArgs.Empty);
-                var server = Server as JabbRServer;
-                server.TriggerChannelInfoChanged(new ChannelEventArgs(this));
+                Server.TriggerChannelInfoChanged(new ChannelEventArgs(this));
             }
             else if (isCurrentUser)
             {
@@ -100,8 +96,7 @@ namespace JabbR.Desktop.Model.JabbR
         {
             if (obj is JabbRRoom)
                 return 1;
-            else
-                return base.CompareTo(obj);
+            return base.CompareTo(obj);
         }
     }
 }

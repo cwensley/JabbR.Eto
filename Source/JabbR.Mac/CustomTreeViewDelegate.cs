@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 using Eto.Platform.Mac.Forms.Controls;

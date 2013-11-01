@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Eto.Forms;
 using Eto.Drawing;
 using JabbR.Desktop.Interface.Dialogs;
@@ -21,7 +21,7 @@ namespace JabbR.Desktop
         TopSection top;
         Configuration config;
         const string DEFAULT_TITLE = "JabbR";
-        
+
         public MainForm(Configuration config)
         {
             this.config = config;
@@ -34,7 +34,7 @@ namespace JabbR.Desktop
             Content = top;
             HandleEvent(ShownEvent);
         }
-        
+
         public void SetUnreadCount(string titleLabel, int count)
         {
             var sb = new StringBuilder();
@@ -52,7 +52,7 @@ namespace JabbR.Desktop
                 sb.AppendFormat(" - {0}", titleLabel);
             this.Title = sb.ToString();
         }
-        
+
         void CreateActions()
         {
             var args = new GenerateActionArgs();
@@ -107,7 +107,7 @@ namespace JabbR.Desktop
             
             this.Menu = args.Menu.GenerateMenuBar();
         }
-        
+
         public new void Initialize()
         {
             top.Initialize();
@@ -117,9 +117,9 @@ namespace JabbR.Desktop
         {
             base.OnLoadComplete(e);
         }
-        
+
         #region IXmlReadable implementation
-        
+
         public void ReadXml(XmlElement element)
         {
             var bounds = element.ReadChildRectangleXml("bounds");
@@ -150,7 +150,7 @@ namespace JabbR.Desktop
             
             element.WriteChildXml("top", top);
         }
-        
+
         #endregion
     }
 }

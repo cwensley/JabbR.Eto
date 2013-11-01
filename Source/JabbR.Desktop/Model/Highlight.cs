@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Eto;
 using System.Xml;
 using System.Text.RegularExpressions;

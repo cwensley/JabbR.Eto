@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Eto.Platform.Mac.Forms;
 using MonoMac.Security;
 using System.Text;
@@ -14,9 +14,6 @@ namespace JabbR.Mac.Controls
 {
     public class JabbRApplicationHandler : ApplicationHandler, IJabbRApplication
     {
-        public JabbRApplicationHandler()
-        {
-        }
 
         public void SendNotification(string text)
         {

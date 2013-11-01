@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Eto.Forms;
 using Eto.Drawing;
 using JabbR.Desktop.Model.JabbR;
@@ -57,7 +57,7 @@ namespace JabbR.Desktop.Interface.JabbR
             var layout = new DynamicLayout();
             layout.Add(web, yscale: true);
             layout.AddSeparateRow(Padding.Empty).Add(null, this.CancelButton());
-            
+
             Content = layout;
             
             HandleEvent(ClosedEvent);

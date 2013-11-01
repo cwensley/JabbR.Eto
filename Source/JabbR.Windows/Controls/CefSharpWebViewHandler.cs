@@ -1,4 +1,4 @@
-﻿
+
 #if CEFSHARP
 //#define ENABLE_DEV_TOOLS
 

@@ -1,4 +1,4 @@
-﻿
+
 #if CEFGLUE
 
 using Eto;

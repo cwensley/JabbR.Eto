@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Eto.Drawing;
 
@@ -12,10 +12,10 @@ namespace JabbR.Desktop.Model
 
         public User(Server server)
         {
-            this.Server = Server;
+            Server = server;
         }
 
-        public string Id { get; set; }
+                public string Id { get; set; }
         
         public string Name { get; set; }
 

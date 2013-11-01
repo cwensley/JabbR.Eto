@@ -31,9 +31,7 @@ namespace JabbR.Desktop.Interface.JabbR
             LoginSection();
             SocialSection();
             
-            authSection.DataContextChanged += (sender, e) => {
-                SetVisibility();
-            };
+            authSection.DataContextChanged += (sender, e) => SetVisibility();
         }
         
         void SetVisibility()
