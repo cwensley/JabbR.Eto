@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using Eto.Forms;
 
 namespace JabbR.Desktop.Model
 {
-    public class ChannelInfo : IGridItem
+    public class ChannelInfo
     {
         public Server Server { get; private set; }
         

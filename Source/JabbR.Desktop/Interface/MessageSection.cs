@@ -69,14 +69,15 @@ namespace JabbR.Desktop.Interface
             if (initialized)
                 return;
             initialized = true;
-            CreateLayout(this);
+            Content = CreateLayout();
         }
         
-        protected virtual void CreateLayout(Container container)
+        protected virtual Control CreateLayout()
         {
-            var layout = new DynamicLayout(container, Padding.Empty, Size.Empty);
+            var layout = new DynamicLayout(Padding.Empty, Size.Empty);
             layout.Add(History, yscale: true);
-            layout.Add(DockLayout.CreatePanel(TextEntry, new Padding(10)));
+            layout.Add(new Panel { Content = TextEntry, Padding = new Padding(10) });
+            return layout;
         }
         
         protected virtual void HandleAction(WebViewLoadingEventArgs e)

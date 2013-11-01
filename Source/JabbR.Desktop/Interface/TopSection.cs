@@ -26,7 +26,7 @@ namespace JabbR.Desktop.Interface
                 Position = 160
             };
             
-            this.AddDockedControl(splitter);
+            Content = splitter;
             
             SetView();
         }

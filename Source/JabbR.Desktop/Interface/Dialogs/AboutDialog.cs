@@ -18,7 +18,7 @@ namespace JabbR.Desktop.Interface.Dialogs
             var versionString = string.Format("Version {0}.{1} ({2}.{3})", version.Major, version.Minor, version.Build, version.Revision);
             
             
-            var layout = new DynamicLayout(this);
+            var layout = new DynamicLayout();
             
             layout.AddCentered(new ImageView { Image = Icon.FromResource ("JabbR.Desktop.Resources.JabbR.ico"), Size = new Size(128, 128) }, yscale: true);
 
@@ -32,6 +32,8 @@ namespace JabbR.Desktop.Interface.Dialogs
             {
                 layout.AddCentered(CloseButton());
             }
+
+            Content = layout;
         }
         
         Control CloseButton()

@@ -32,7 +32,7 @@ namespace JabbR.Desktop.Interface.Dialogs
             this.MinimumSize = new Size(300, 0);
             this.DataContext = server;
             
-            var layout = new DynamicLayout(this);
+            var layout = new DynamicLayout();
             
             layout.BeginVertical();
             
@@ -48,6 +48,8 @@ namespace JabbR.Desktop.Interface.Dialogs
             layout.AddRow(Connect(), Disconnect(), null, cancelButton = this.CancelButton(), this.OkButton("Save", () => SaveData()));
             
             layout.EndVertical();
+            
+            Content = layout;
             
             SetVisibility();
         }

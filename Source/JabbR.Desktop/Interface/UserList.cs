@@ -38,7 +38,7 @@ namespace JabbR.Desktop.Interface
             }
             tree.DataStore = items;
             
-            this.AddDockedControl(tree);
+            Content = tree;
         }
 
         void HandleActivated(object sender, TreeViewItemEventArgs e)

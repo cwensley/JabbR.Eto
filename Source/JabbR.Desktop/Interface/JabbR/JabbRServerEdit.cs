@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Eto.Forms;
 using JabbR.Desktop.Model;
 using JabbR.Desktop.Model.JabbR;
@@ -11,9 +11,9 @@ namespace JabbR.Desktop.Interface.JabbR
     public class JabbRServerEdit
     {
         JabbRServer server;
-        Container authSection;
-        Container loginSection;
-        Container socialSection;
+        DockContainer authSection;
+        DockContainer loginSection;
+        DockContainer socialSection;
         CheckBox useSocialLogin;
         Label statusLabel;
         TextBox janrainAppName;
@@ -41,7 +41,7 @@ namespace JabbR.Desktop.Interface.JabbR
             var useSocial = useSocialLogin.Checked ?? false;
             if (useSocial)
             {
-                authSection.AddDockedControl(socialSection);
+                authSection.Content = socialSection;
                 var authenticated = !string.IsNullOrEmpty(server.UserId);
                 if (authenticated)
                 {
@@ -58,12 +58,12 @@ namespace JabbR.Desktop.Interface.JabbR
                     
             }
             else
-                authSection.AddDockedControl(loginSection);
+                authSection.Content = loginSection;
         }
         
         Control LoginSection()
         {
-            var layout = new DynamicLayout(loginSection = new GroupBox{ Text = "Login"});
+            var layout = new DynamicLayout();
             
             layout.Add(null);
             layout.BeginVertical();
@@ -73,7 +73,7 @@ namespace JabbR.Desktop.Interface.JabbR
             layout.AddSeparateRow(null, CreateAccountButton(), null);
             layout.Add(null);
 
-            return layout.Container;
+            return new GroupBox{ Text = "Login", Content = layout };
         }
 
         Control CreateAccountButton()
@@ -91,7 +91,7 @@ namespace JabbR.Desktop.Interface.JabbR
 
         Control SocialSection()
         {
-            var layout = new DynamicLayout(socialSection = new GroupBox{ Text = "Janrain"});
+            var layout = new DynamicLayout();
 
             layout.Add(null);
             layout.AddSeparateRow(new Label { Text = "App Name" }, JanrainAppName());
@@ -102,7 +102,7 @@ namespace JabbR.Desktop.Interface.JabbR
             layout.EndVertical();
             layout.Add(null);
 
-            return layout.Container;
+            return new GroupBox{ Text = "Janrain", Content = layout };
         }
         
         Control JanrainAppName()

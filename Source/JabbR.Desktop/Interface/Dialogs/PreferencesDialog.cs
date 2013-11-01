@@ -20,19 +20,18 @@ namespace JabbR.Desktop.Interface.Dialogs
             this.Title = "JabbR Preferences";
             this.Resizable = true;
 
-            var layout = new DynamicLayout(this);
+            var layout = new DynamicLayout();
 
             layout.Add(Tabs(), yscale: true);
             layout.AddSeparateRow(null, this.CancelButton(), this.OkButton(clicked: SaveData));
+            Content = layout;
         }
 
         Control Tabs()
         {
             var tabs = new TabControl();
-            var page = new TabPage { Text = "General" };
-            tabs.TabPages.Add(page);
 
-            var layout = new DynamicLayout(page);
+            var layout = new DynamicLayout();
             
             var desc = string.Format("Show {0} Badge", (Generator.IsMac) ? "Dock" : "TaskBar");
             
@@ -40,6 +39,8 @@ namespace JabbR.Desktop.Interface.Dialogs
             if (Generator.ID == Generators.Wpf)
                 layout.AddRow(new Panel(), UseMetroTheme());
             layout.AddRow();
+
+            tabs.TabPages.Add(new TabPage { Text = "General", Content = layout });
             return tabs;
         }
 

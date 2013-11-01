@@ -31,7 +31,7 @@ namespace JabbR.Desktop
             this.Style = "mainForm";
             top = new TopSection(config);
             CreateActions();
-            this.AddDockedControl(top);
+            Content = top;
             HandleEvent(ShownEvent);
         }
         
@@ -71,10 +71,10 @@ namespace JabbR.Desktop
             args.Actions.Add(new Actions.About());
             args.Actions.Add(new Actions.ShowPreferences(config));
             
-            var file = args.Menu.FindAddSubMenu("&File", 100);
-            var help = args.Menu.FindAddSubMenu("&Help", 900);
-            var server = args.Menu.FindAddSubMenu("&Server", 500);
-            var view = args.Menu.FindAddSubMenu("&View", 500);
+            var file = args.Menu.GetSubmenu("&File", 100);
+            var help = args.Menu.GetSubmenu("&Help", 900);
+            var server = args.Menu.GetSubmenu("&Server", 500);
+            var view = args.Menu.GetSubmenu("&View", 500);
             
 
             server.Actions.Add(Actions.ServerConnect.ActionID);
@@ -88,7 +88,7 @@ namespace JabbR.Desktop
             
             if (Generator.IsMac)
             {
-                var application = args.Menu.FindAddSubMenu(Application.Instance.Name, 100);
+                var application = args.Menu.GetSubmenu(Application.Instance.Name, 100);
                 application.Actions.Add(Actions.About.ActionID, 100);
 #if DEBUG
                 // TODO: not yet implemented!

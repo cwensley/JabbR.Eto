@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -33,7 +33,8 @@
     <CodeSigningKey>Mac Developer</CodeSigningKey>
     <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
     <CodeSignEntitlements>Entitlements.plist</CodeSignEntitlements>
-    <I18n />
+    <I18n>
+    </I18n>
     <UseSGen>False</UseSGen>
     <MonoBundlingExtraArgs>--linkskip=mscorlib --linkskip=System --linkskip=System.Configuration</MonoBundlingExtraArgs>
   </PropertyGroup>
@@ -53,7 +54,8 @@
     <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
     <CodeSignEntitlements>Entitlements.plist</CodeSignEntitlements>
     <UseSGen>False</UseSGen>
-    <I18n />
+    <I18n>
+    </I18n>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release Developer|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -64,11 +66,6 @@
     <PackageSigningKey>Developer ID Installer</PackageSigningKey>
     <IncludeMonoRuntime>True</IncludeMonoRuntime>
     <CodeSignEntitlements>Entitlements.plist</CodeSignEntitlements>
-    <CustomCommands>
-      <CustomCommands>
-        <Command type="AfterBuild" command="${ProjectDir}/codesign.sh &quot;${TargetDir}&quot; &quot;Developer ID Application:&quot;" />
-      </CustomCommands>
-    </CustomCommands>
     <EnablePackageSigning>True</EnablePackageSigning>
     <CreatePackage>False</CreatePackage>
     <CodeSigningKey>Developer ID Application</CodeSigningKey>
@@ -76,9 +73,10 @@
     <ConsolePause>False</ConsolePause>
     <PlatformTarget>x86</PlatformTarget>
     <UseSGen>True</UseSGen>
-    <I18n />
+    <I18n>
+    </I18n>
     <MonoBundlingExtraArgs>--xml="${ProjectDir}/linker.xml"</MonoBundlingExtraArgs>
-    <LinkMode>Full</LinkMode>
+    <LinkMode>SdkOnly</LinkMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release AppStore|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -100,7 +98,8 @@
     <EnableCodeSigning>True</EnableCodeSigning>
     <ConsolePause>False</ConsolePause>
     <PlatformTarget>x86</PlatformTarget>
-    <I18n />
+    <I18n>
+    </I18n>
     <UseSGen>true</UseSGen>
     <MonoBundlingExtraArgs>--linkskip=JabbR.Desktop --linkskip=JabbR.Client --linkskip=System --linkskip=Microsoft.AspNet.SignalR.Client --xml="${ProjectDir}/linker.xml"</MonoBundlingExtraArgs>
     <LinkMode>Full</LinkMode>
@@ -119,11 +118,17 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.ServiceModel" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Client">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.0.0-rtm1-130820-b159\lib\net40\Microsoft.AspNet.SignalR.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Eto">
+      <HintPath>..\packages\Eto.Forms.1.2.1\lib\net40\Eto.dll</HintPath>
+    </Reference>
+    <Reference Include="Eto.Platform.XamMac">
+      <HintPath>..\packages\Eto.Platform.XamMac.1.2.1\lib\net40\Eto.Platform.XamMac.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -143,14 +148,6 @@
     <ProjectReference Include="..\JabbR.Desktop\JabbR.Desktop.csproj">
       <Project>{1CC5D427-7C46-44BB-ABE6-DA6F30828ED8}</Project>
       <Name>JabbR.Desktop</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\Eto.Forms\Source\Eto\Eto.csproj">
-      <Project>{16289D2F-044C-49EF-83E9-9391AFF8FD2B}</Project>
-      <Name>Eto</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\Eto.Forms\Source\Eto.Platform.Mac\Eto.Platform.XamMac.csproj">
-      <Project>{15490F6C-C579-4A86-AD16-8D9B5B41EB87}</Project>
-      <Name>Eto.Platform.XamMac</Name>
     </ProjectReference>
     <ProjectReference Include="..\JabbR.Client\JabbR.Client.csproj">
       <Project>{A4A1D183-FD80-4DBD-806F-883DDADD4967}</Project>

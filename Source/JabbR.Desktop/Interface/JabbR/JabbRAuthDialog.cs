@@ -54,9 +54,11 @@ namespace JabbR.Desktop.Interface.JabbR
             web.DocumentLoaded += HandleDocumentLoaded;
             web.Url = webserver.Url;
             
-            var layout = new DynamicLayout(this);
+            var layout = new DynamicLayout();
             layout.Add(web, yscale: true);
             layout.AddSeparateRow(Padding.Empty).Add(null, this.CancelButton());
+            
+            Content = layout;
             
             HandleEvent(ClosedEvent);
         }

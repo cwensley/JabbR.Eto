@@ -33,12 +33,14 @@ namespace JabbR.Desktop.Interface.Dialogs
             grid.Columns.Add(new GridColumn { DataCell = new TextBoxCell ("UserCount"), HeaderText = "Users", Width = 60, AutoSize = false });
             grid.Columns.Add(new GridColumn { DataCell = new TextBoxCell ("Topic"), HeaderText = "Topic", Width = 350, AutoSize = false });
             
-            var layout = new DynamicLayout(this);
+            var layout = new DynamicLayout();
             
             layout.Add(grid, yscale: true);
             layout.BeginVertical();
             layout.AddRow(null, this.CancelButton(), this.OkButton("Join Channel", CanJoin));
             layout.EndVertical();
+            
+            Content = layout;
             
             var channelTask = server.GetChannelList();
             channelTask.ContinueWith(task => {

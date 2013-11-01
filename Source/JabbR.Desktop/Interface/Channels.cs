@@ -409,7 +409,7 @@ namespace JabbR.Desktop.Interface
             args.Actions.Add(new Actions.PrevUnreadChannel(this));
             args.Actions.Add(new Actions.LeaveChannel(this));
             
-            var channel = args.Menu.FindAddSubMenu("&Channel", 800);
+            var channel = args.Menu.GetSubmenu("&Channel", 800);
             
             channel.Actions.Add(Actions.NextChannel.ActionID);
             channel.Actions.Add(Actions.NextUnreadChannel.ActionID);

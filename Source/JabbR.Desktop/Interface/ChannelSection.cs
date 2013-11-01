@@ -150,7 +150,7 @@ namespace JabbR.Desktop.Interface
             AddMessage(e.Message);
         }
 
-        protected override void CreateLayout(Container container)
+        protected override Control CreateLayout()
         {
             var split = new Splitter{
                 Size = new Size(200, 200),
@@ -158,12 +158,10 @@ namespace JabbR.Desktop.Interface
                 FixedPanel = SplitterFixedPanel.Panel2
             };
             
-            split.Panel1 = new Panel();
-            split.Panel2 = UserList = new UserList(this.Channel);
+            split.Panel1 = base.CreateLayout();
+            split.Panel2 = UserList = new UserList(Channel);
             
-            base.CreateLayout(split.Panel1 as Panel);
-            
-            container.AddDockedControl(split);
+            return split;
         }
         
         void LoadError(Exception ex, string message)

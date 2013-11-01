@@ -1,6 +1,3 @@
-[submodule "Libraries/Eto.Forms"]
-	path = Libraries/Eto.Forms
-	url = git://github.com/picoe/Eto.git
 [submodule "Libraries/JabbR"]
 	path = Libraries/JabbR
 	url = https://github.com/JabbR/JabbR.git
