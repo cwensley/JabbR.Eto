@@ -15,15 +15,15 @@ namespace JabbR.Desktop.Interface
         bool retrievingHistory;
         const string JOIN_ROOM_PREFIX = "?join-room=";
         const string LOAD_HISTORY_PREFIX = "?load-history";
-        
+
         public UserList UserList { get; private set; }
-        
+
         public Channel Channel { get; private set; }
-        
+
         public Server Server { get { return Channel.Server; } }
-        
+
         public override bool SupportsAutoComplete { get { return true; } }
-        
+
         public override bool AllowNotificationCollapsing { get { return true; } }
 
         public override string TitleLabel
@@ -33,7 +33,7 @@ namespace JabbR.Desktop.Interface
                 return "#" + Channel.Name;
             }
         }
-        
+
         public ChannelSection(Channel channel)
         {
             this.Channel = channel;
@@ -149,9 +149,8 @@ namespace JabbR.Desktop.Interface
 
         protected override Control CreateLayout()
         {
-            var split = new Splitter{
-                Size = new Size(200, 200),
-                Position = 50,
+            var split = new Splitter
+            {
                 FixedPanel = SplitterFixedPanel.Panel2
             };
             
@@ -160,7 +159,7 @@ namespace JabbR.Desktop.Interface
             
             return split;
         }
-        
+
         void LoadError(Exception ex, string message)
         {
             Debug.Print("{0} {1}", message, ex);
@@ -171,53 +170,34 @@ namespace JabbR.Desktop.Interface
             FinishLoad();
         }
 
-        protected override void HandleDocumentLoaded(object sender, WebViewLoadedEventArgs e)
+        protected override async void HandleDocumentLoaded(object sender, WebViewLoadedEventArgs e)
         {
             if (Channel != null && Server.IsConnected)
             {
                 BeginLoad();
-                var getChannelInfo = Channel.GetChannelInfo();
-                if (getChannelInfo != null)
+                try
                 {
-                    getChannelInfo.ContinueWith(t => {
-                        if (t.IsFaulted)
+                    var channel = await Channel.GetChannelInfo();
+                    if (channel != null)
+                    {
+                        SetTopic(channel.Topic);
+                        UserList.SetUsers(channel.Users);
+                        var history = await channel.GetHistory(LastHistoryMessageId);
+                        if (history != null)
                         {
-                            LoadError(t.Exception, "Error getting channel info");
-                            return;
+                            StartLive();
+                            AddHistory(history, true);
+                            AddNotification(new NotificationMessage(DateTimeOffset.Now, string.Format("You just entered {0}", Channel.Name)));
+                            SetMarker();
+                            ReplayDelayedCommands();
                         }
-                        var channel = t.Result;
-                        Application.Instance.AsyncInvoke(delegate
-                        {
-                            SetTopic(channel.Topic);
-                            UserList.SetUsers(channel.Users);
-                            var getHistory = channel.GetHistory(LastHistoryMessageId);
-                            if (getHistory != null)
-                            {
-                                getHistory.ContinueWith(r => {
-                                    if (r.IsFaulted)
-                                    {
-                                        LoadError(r.Exception, "Error getting history");
-                                        return;
-                                    }
-                                    Application.Instance.AsyncInvoke(delegate
-                                    {
-                                        StartLive();
-                                        AddHistory(r.Result, true);
-                                        AddNotification(new NotificationMessage(DateTimeOffset.Now, string.Format("You just entered {0}", Channel.Name)));
-                                        SetMarker();
-                                        ReplayDelayedCommands();
-
-                                        FinishLoad();
-                                    });
-                                });
-                            }
-                            else
-                                FinishLoad();
-                        });
-                    });
+                    }
                 }
-                else
-                    FinishLoad();
+                catch (Exception ex)
+                {
+                    LoadError(ex, "Error getting channel info");
+                }
+                FinishLoad();
             }
             else
             {
@@ -245,29 +225,26 @@ namespace JabbR.Desktop.Interface
             
             base.HandleAction(e);
         }
-        
-        protected void LoadHistory()
+
+        protected async void LoadHistory()
         {
             if (!noHistory && !retrievingHistory)
             {
                 retrievingHistory = true;
-                //Debug.Print ("**LOADING HISTORY");
-                var history = Channel.GetHistory(LastHistoryMessageId);
-                history.ContinueWith(t => {
-                    //Debug.Print ("History loaded");
-                    if (t.Result != null)
+                try
+                {
+                    var history = await Channel.GetHistory(LastHistoryMessageId);
+                    if (history != null)
                     {
-                        noHistory = !t.Result.Any();
-                        AddHistory(t.Result);
+                        noHistory = !history.Any();
+                        AddHistory(history);
                     }
+                }
+                finally
+                {
                     FinishLoad();
                     retrievingHistory = false;
-                }, TaskContinuationOptions.OnlyOnRanToCompletion);
-                
-                history.ContinueWith(t => {
-                    FinishLoad();
-                    retrievingHistory = false;
-                }, TaskContinuationOptions.OnlyOnFaulted);
+                }
             }
             else if (noHistory)
                 FinishLoad();
@@ -278,12 +255,12 @@ namespace JabbR.Desktop.Interface
         {
             SendCommand("addMeMessage", message);
         }
-        
+
         public override void UserTyping()
         {
             Channel.UserTyping();
         }
-        
+
         public override void ProcessCommand(string command)
         {
             if (string.IsNullOrWhiteSpace(command))

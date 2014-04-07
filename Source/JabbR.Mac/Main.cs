@@ -29,30 +29,24 @@ namespace JabbR.Mac
 
             NSApplication.CheckForIllegalCrossThreadCalls = false;
 
-            Style.Add<TreeViewHandler>("channelList", h => {
-                h.Control.Delegate = new CustomTreeViewDelegate { Handler = h, AllowGroupSelection = true };
-                h.Control.SelectionHighlightStyle = NSTableViewSelectionHighlightStyle.SourceList;
-                h.Scroll.BorderType = NSBorderType.NoBorder;
+            Style.Add<TreeViewHandler>("channelList", handler => {
+                handler.Control.Delegate = new CustomTreeViewDelegate { Handler = handler, AllowGroupSelection = true };
+                handler.Control.SelectionHighlightStyle = NSTableViewSelectionHighlightStyle.SourceList;
+                handler.Scroll.BorderType = NSBorderType.NoBorder;
             });
             
-            Style.Add<FormHandler>("mainForm", h => {
-                h.Control.CollectionBehavior |= NSWindowCollectionBehavior.FullScreenPrimary;
-            });
+            Style.Add<FormHandler>("mainForm", handler => handler.Control.CollectionBehavior |= NSWindowCollectionBehavior.FullScreenPrimary);
             
-            Style.Add<ApplicationHandler>("application", h => {
-                h.EnableFullScreen();
-            });
+            Style.Add<ApplicationHandler>("application", handler => handler.EnableFullScreen());
             
-            Style.Add<TreeViewHandler>("userList", h => {
-                h.Control.Delegate = new CustomTreeViewDelegate { Handler = h };
-                h.Control.SelectionHighlightStyle = NSTableViewSelectionHighlightStyle.SourceList;
-                h.Scroll.BorderType = NSBorderType.NoBorder;
+            Style.Add<TreeViewHandler>("userList", handler => {
+                handler.Control.Delegate = new CustomTreeViewDelegate { Handler = handler };
+                handler.Control.SelectionHighlightStyle = NSTableViewSelectionHighlightStyle.SourceList;
+                handler.Scroll.BorderType = NSBorderType.NoBorder;
                 
             });
             
-            Style.Add<WebViewHandler>(null, h => {
-                h.Control.Preferences.UsesPageCache = false;
-            });
+            Style.Add<WebViewHandler>(null, handler => handler.Control.Preferences.UsesPageCache = false);
             
             var app = new JabbRApplication();
             app.Initialized += delegate

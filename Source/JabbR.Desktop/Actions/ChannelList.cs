@@ -5,7 +5,7 @@ using JabbR.Desktop.Interface;
 
 namespace JabbR.Desktop.Actions
 {
-    public class ChannelList : ButtonAction
+    public class ChannelList : Command
     {
         Channels channels;
         public const string ActionID = "ChannelList";
@@ -15,7 +15,7 @@ namespace JabbR.Desktop.Actions
             this.channels = channels;
             this.ID = ActionID;
             this.MenuText = "Channel List...";
-            this.Accelerator = Application.Instance.CommonModifier | Key.L;
+            this.Shortcut = Application.Instance.CommonModifier | Keys.L;
         }
         
         public override bool Enabled
@@ -29,9 +29,10 @@ namespace JabbR.Desktop.Actions
                 base.Enabled = value;
             }
         }
-        
-        protected override void OnActivated(EventArgs e)
+
+        public override void OnExecuted(EventArgs e)
         {
+            base.OnExecuted(e);
             var server = channels.SelectedServer;
             if (!server.IsConnected)
                 return;

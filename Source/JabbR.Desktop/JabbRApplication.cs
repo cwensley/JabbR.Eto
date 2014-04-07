@@ -27,6 +27,12 @@ namespace JabbR.Desktop
 
         XmlElement interfaceElement;
 
+		bool? useMetroTheme;
+		public bool UseMetroTheme
+		{
+			get { return useMetroTheme ?? (useMetroTheme = Configuration.UseMetroTheme) ?? false; }
+		}
+
         public Configuration Configuration { get; private set; }
 
         public static new JabbRApplication Instance
@@ -46,13 +52,12 @@ namespace JabbR.Desktop
                 MessageBox.Show(string.Format("An unexpected error has occurred. Please report this to support@picoe.ca\n\nDetails: {0}", e.ExceptionObject));
         }
 
-        public JabbRApplication()
-            : base(Generator.Detect, typeof(IJabbRApplication))
+        public JabbRApplication(Generator generator = null)
+            : base(generator, typeof(IJabbRApplication))
         {
             this.Style = "application";
             this.Name = "JabbR";
             this.Configuration = new JabbR.Desktop.Model.Configuration();
-            HandleEvent(TerminatingEvent);
         }
 
         string SettingsFileName
@@ -104,7 +109,7 @@ namespace JabbR.Desktop
                     var action = new Actions.AddServer {
                         AutoConnect = true
                     };
-                    action.Activate();
+                    action.Execute();
                 });
             }
             else

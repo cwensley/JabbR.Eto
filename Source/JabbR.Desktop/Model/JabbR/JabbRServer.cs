@@ -117,7 +117,7 @@ namespace JabbR.Desktop.Model.JabbR
             else*/
             transport = () => new AutoTransport(new DefaultHttpClient());
 
-            Client = new jab.JabbRClient(Address, null, transport);
+            Client = new jab.JabbRClient(Address, transport);
 #if DEBUG
             var settings = Path.Combine (EtoEnvironment.GetFolderPath (EtoSpecialFolder.ApplicationSettings), "jabbr.log");
             Client.TraceWriter = new TextWriterTraceListener (settings).Writer;

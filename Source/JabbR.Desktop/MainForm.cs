@@ -32,7 +32,6 @@ namespace JabbR.Desktop
             top = new TopSection(config);
             CreateActions();
             Content = top;
-            HandleEvent(ShownEvent);
         }
 
         public void SetUnreadCount(string titleLabel, int count)
@@ -55,57 +54,45 @@ namespace JabbR.Desktop
 
         void CreateActions()
         {
-            var args = new GenerateActionArgs();
-            
-            Application.Instance.GetSystemActions(args, true);
-            
-            //top.GetActions(args);
-            
-            args.Actions.Add(new Actions.AddServer { AutoConnect = true });
-            args.Actions.Add(new Actions.EditServer(top.Channels));
-            args.Actions.Add(new Actions.RemoveServer(top.Channels, config));
-            args.Actions.Add(new Actions.ServerConnect(top.Channels));
-            args.Actions.Add(new Actions.ServerDisconnect(top.Channels));
-            args.Actions.Add(new Actions.ChannelList(top.Channels));
-            args.Actions.Add(new Actions.Quit());
-            args.Actions.Add(new Actions.About());
-            args.Actions.Add(new Actions.ShowPreferences(config));
-            
-            var file = args.Menu.GetSubmenu("&File", 100);
-            var help = args.Menu.GetSubmenu("&Help", 900);
-            var server = args.Menu.GetSubmenu("&Server", 500);
-            var view = args.Menu.GetSubmenu("&View", 500);
+            var menu = new MenuBar();
+            Application.Instance.CreateStandardMenu(menu.Items);
+
+            var file = menu.Items.GetSubmenu("&File", 100);
+            var help = menu.Items.GetSubmenu("&Help", 900);
+            var server = menu.Items.GetSubmenu("&Server", 500);
+            var view = menu.Items.GetSubmenu("&View", 500);
             
 
-            server.Actions.Add(Actions.ServerConnect.ActionID);
-            server.Actions.Add(Actions.ServerDisconnect.ActionID);
-            server.Actions.AddSeparator();
-            server.Actions.Add(Actions.AddServer.ActionID);
-            server.Actions.Add(Actions.EditServer.ActionID);
-            server.Actions.Add(Actions.RemoveServer.ActionID);
-            server.Actions.AddSeparator();
-            server.Actions.Add(Actions.ChannelList.ActionID);
+            server.Items.Add(new Actions.ServerConnect(top.Channels), 500);
+            server.Items.Add(new Actions.ServerDisconnect(top.Channels), 500);
+            server.Items.AddSeparator(500);
+            server.Items.Add(new Actions.AddServer { AutoConnect = true }, 500);
+            server.Items.Add(new Actions.EditServer(top.Channels), 500);
+            server.Items.Add(new Actions.RemoveServer(top.Channels, config), 500);
+            server.Items.AddSeparator(500);
+            server.Items.Add(new Actions.ChannelList(top.Channels), 500);
             
             if (Generator.IsMac)
             {
-                var application = args.Menu.GetSubmenu(Application.Instance.Name, 100);
-                application.Actions.Add(Actions.About.ActionID, 100);
+                var application = menu.Items.GetSubmenu(Application.Instance.Name, 100);
+                application.Items.Add(new Actions.About(), 100);
 #if DEBUG
                 // TODO: not yet implemented!
-                application.Actions.Add (Actions.ShowPreferences.ActionID);
+				application.Items.Add(new Actions.ShowPreferences(config), 500);
 #endif
-                application.Actions.Add(Actions.Quit.ActionID, 900);
+                application.Items.Add(new Actions.Quit(), 900);
             }
             else
             {
-                file.Actions.Add(Actions.Quit.ActionID, 900);
-                view.Actions.Add(Actions.ShowPreferences.ActionID);
-                help.Actions.Add(Actions.About.ActionID, 100);
+                file.Items.Add(new Actions.Quit(), 900);
+                view.Items.Add(new Actions.ShowPreferences(config), 500);
+                help.Items.Add(new Actions.About(), 100);
             }
             
-            top.CreateActions(args);
-            
-            this.Menu = args.Menu.GenerateMenuBar();
+            top.CreateActions(menu.Items);
+
+			menu.Items.Trim();
+            Menu = menu;
         }
 
         public new void Initialize()

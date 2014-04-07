@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{1CC5D427-7C46-44BB-ABE6-DA6F30828ED8}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -39,14 +39,14 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Runtime.Caching" />
-    <Reference Include="Microsoft.AspNet.SignalR.Client">
-      <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.0.0-rtm1-130820-b159\lib\net40\Microsoft.AspNet.SignalR.Client.dll</HintPath>
-    </Reference>
     <Reference Include="Eto">
-      <HintPath>..\packages\Eto.Forms.1.2.1\lib\net40\Eto.dll</HintPath>
+      <HintPath>..\packages\Eto.Forms.1.3.0-alpha\lib\net40\Eto.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Client">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.0.3\lib\net45\Microsoft.AspNet.SignalR.Client.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -54,9 +54,13 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="AsyncExtensions.cs" />
     <Compile Include="Interface\Dialogs\DialogExtensions.cs" />
-    <Compile Include="Interface\Dialogs\PreferencesDialog.cs" />
+    <Compile Include="Interface\Dialogs\PreferencesDialog.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
     <Compile Include="JabbRApplication.cs" />
-    <Compile Include="MainForm.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
     <Compile Include="Actions\Quit.cs" />
     <Compile Include="Actions\About.cs" />
     <Compile Include="Model\ChannelMessage.cs" />
@@ -68,32 +72,50 @@
     <Compile Include="Model\Channel.cs" />
     <Compile Include="Model\JabbR\JabbRChannel.cs" />
     <Compile Include="Model\JabbR\JabbRServer.cs" />
-    <Compile Include="Interface\Channels.cs" />
-    <Compile Include="Interface\UserList.cs" />
+    <Compile Include="Interface\Channels.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
+    <Compile Include="Interface\UserList.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
     <Compile Include="Interface\JabbR\JabbRServerEdit.cs" />
     <Compile Include="Model\JabbR\JabbRUser.cs" />
-    <Compile Include="Interface\ChannelSection.cs" />
+    <Compile Include="Interface\ChannelSection.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
     <Compile Include="Interface\ISectionGenerator.cs" />
-    <Compile Include="Interface\MessageSection.cs" />
-    <Compile Include="Interface\TopSection.cs" />
+    <Compile Include="Interface\MessageSection.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
+    <Compile Include="Interface\TopSection.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
     <Compile Include="Model\ChannelEventArgs.cs" />
     <Compile Include="Model\UserChannelEventArgs.cs" />
     <Compile Include="Model\UserEventArgs.cs" />
     <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\ServerEventArgs.cs" />
-    <Compile Include="Interface\ServerSection.cs" />
+    <Compile Include="Interface\ServerSection.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
     <Compile Include="Model\MessageEventArgs.cs" />
     <Compile Include="Model\NotificationEventArgs.cs" />
     <Compile Include="Actions\RemoveServer.cs" />
     <Compile Include="Actions\EditServer.cs" />
     <Compile Include="Actions\ServerConnect.cs" />
     <Compile Include="Actions\ServerDisconnect.cs" />
-    <Compile Include="Interface\Dialogs\AboutDialog.cs" />
-    <Compile Include="Interface\Dialogs\ServerDialog.cs" />
+    <Compile Include="Interface\Dialogs\AboutDialog.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
+    <Compile Include="Interface\Dialogs\ServerDialog.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
     <Compile Include="Model\UserImageEventArgs.cs" />
     <Compile Include="Model\UsernameChangedEventArgs.cs" />
     <Compile Include="Model\UsersEventArgs.cs" />
-    <Compile Include="Interface\JabbR\JabbRAuthDialog.cs" />
+    <Compile Include="Interface\JabbR\JabbRAuthDialog.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
     <Compile Include="Interface\JabbR\HttpServer.cs" />
     <Compile Include="Model\MessageContentEventArgs.cs" />
     <Compile Include="Actions\NextUnreadChannel.cs" />
@@ -107,11 +129,15 @@
     <Compile Include="Model\JabbR\JabbRRoom.cs" />
     <Compile Include="Model\MeMessage.cs" />
     <Compile Include="Model\MeMessageEventArgs.cs" />
-    <Compile Include="Interface\Dialogs\ChannelListDialog.cs" />
+    <Compile Include="Interface\Dialogs\ChannelListDialog.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
     <Compile Include="Model\Message.cs" />
     <Compile Include="Model\ConnectionErrorEventArgs.cs" />
     <Compile Include="Model\Highlight.cs" />
-    <Compile Include="Interface\Controls\PreferencesDialog.cs" />
+    <Compile Include="Interface\Controls\PreferencesDialog.cs">
+      <SubType>Eto.Forms</SubType>
+    </Compile>
     <Compile Include="Model\NotAuthenticatedException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

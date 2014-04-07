@@ -54,9 +54,9 @@ namespace JabbR.Desktop.Interface
                 view.Focus();
         }
 
-        public void CreateActions(GenerateActionArgs args)
+        public void CreateActions(MenuItemCollection menu)
         {
-            Channels.CreateActions(args);
+            Channels.CreateActions(menu);
         }
         
         #region IXmlReadable implementation

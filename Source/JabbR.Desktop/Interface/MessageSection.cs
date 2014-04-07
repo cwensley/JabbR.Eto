@@ -253,14 +253,14 @@ namespace JabbR.Desktop.Interface
             };
             control.KeyDown += (sender, e) =>
             {
-                if (e.KeyData == Key.Enter)
+                if (e.KeyData == Keys.Enter)
                 {
                     e.Handled = true;
                     var text = control.Text;
                     control.Text = string.Empty;
                     ProcessCommand(text);
                 }
-                if (SupportsAutoComplete && e.KeyData == Key.Tab)
+                if (SupportsAutoComplete && e.KeyData == Keys.Tab)
                 {
                     e.Handled = true;
                     //Debug.Print("Completing: {0}" , Thread.IsMainThread());

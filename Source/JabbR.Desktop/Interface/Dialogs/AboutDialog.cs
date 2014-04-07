@@ -33,7 +33,7 @@ namespace JabbR.Desktop.Interface.Dialogs
                 layout.AddCentered(CloseButton());
             }
 
-            Content = layout;
+			Content = layout;
         }
         
         Control CloseButton()

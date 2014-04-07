@@ -5,7 +5,7 @@ using Eto;
 
 namespace JabbR.Desktop.Actions
 {
-    public class LeaveChannel : ButtonAction
+    public class LeaveChannel : Command
     {
         public const string ActionID = "LeaveChannel";
         Channels channels;
@@ -15,7 +15,7 @@ namespace JabbR.Desktop.Actions
             this.channels = channels;
             this.ID = ActionID;
             this.MenuText = "Leave Channel";
-            this.Accelerator = Application.Instance.CommonModifier | Key.Backspace;
+            this.Shortcut = Application.Instance.CommonModifier | Keys.Backspace;
         }
         
         public override bool Enabled
@@ -29,9 +29,10 @@ namespace JabbR.Desktop.Actions
                 base.Enabled = value;
             }
         }
-        
-        protected override void OnActivated(EventArgs e)
+
+        public override void OnExecuted(EventArgs e)
         {
+            base.OnExecuted(e);
             var channel = channels.SelectedChannel;
             if (channel != null)
             {

@@ -20,11 +20,12 @@ namespace JabbR.Desktop.Interface
                 
         public UserList(Channel channel)
         {
-            this.Channel = channel;
+            Channel = channel;
+            Size = new Size(150, 100);
             tree = new TreeView();
             tree.Style = "userList";
             tree.Activated += HandleActivated;
-            
+
             items = new TreeItemCollection();
             items.Add(owners = new TreeItem { Text = "Room Owners", Expanded = true });
             items.Add(online = new TreeItem { Text = "Online", Expanded = true });

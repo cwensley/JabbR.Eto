@@ -9,7 +9,7 @@ using JabbR.Desktop.Interface.Dialogs;
 
 namespace JabbR.Desktop.Actions
 {
-    public class ShowPreferences : ButtonAction
+    public class ShowPreferences : Command
     {
         Configuration config;
         public const string ActionID = "ShowPreferences";
@@ -22,7 +22,7 @@ namespace JabbR.Desktop.Actions
             if (Generator.Current.IsMac)
             {
                 this.MenuText = "Preferences...";
-                this.Accelerator = Application.Instance.CommonModifier | Key.Comma;
+                this.Shortcut = Application.Instance.CommonModifier | Keys.Comma;
             }
             else
             {
@@ -30,9 +30,9 @@ namespace JabbR.Desktop.Actions
             }
         }
 
-        protected override void OnActivated (EventArgs e)
+        public override void OnExecuted(EventArgs e)
         {
-            base.OnActivated (e);
+            base.OnExecuted(e);
 
             var dialog = new Interface.Dialogs.PreferencesDialog (config);
             if (dialog.ShowDialog (Application.Instance.MainForm) == DialogResult.Ok)

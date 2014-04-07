@@ -5,7 +5,7 @@ using JabbR.Desktop.Model;
 
 namespace JabbR.Desktop.Actions
 {
-    public class RemoveServer : ButtonAction
+    public class RemoveServer : Command
     {
         public const string ActionID = "RemoveServer";
         Channels channels;
@@ -30,10 +30,10 @@ namespace JabbR.Desktop.Actions
                 base.Enabled = value;
             }
         }
-        
-        protected override void OnActivated(EventArgs e)
+
+        public override void OnExecuted(EventArgs e)
         {
-            base.OnActivated(e);
+            base.OnExecuted(e);
             var server = channels.SelectedServer;
             if (server != null)
             {

@@ -22,7 +22,6 @@ namespace JabbR.Windows
             //generator.Add<IWebView>(() => new Controls.CefSharpWebViewHandler());
             generator.Add<IWebView>(() => new Controls.CefGlueWebViewHandler());
             generator.Add<IJabbRApplication>(() => new Controls.JabbRApplicationHandler());
-            Generator.Initialize(generator);
 
 			Style.Add<Controls.CustomForm> (null, handler => {
 				AddResources (handler.Control);
@@ -37,19 +36,19 @@ namespace JabbR.Windows
 				handler.Control.BorderThickness = new sw.Thickness (0);
 			});
 
-			var app = new JabbRApplication();
+			var app = new JabbRApplication(generator);
 			app.Initialized += CheckForNewVersion;
 			app.Run (args);
 		}
 
-		static void AddResources (System.Windows.Window window)
+		public static void AddResources (System.Windows.Window window)
 		{
-			if (JabbRApplication.Instance.Configuration.UseMetroTheme) {
-				window.Resources.MergedDictionaries.Add (new sw.ResourceDictionary { Source = new Uri ("pack://application:,,,/MahApps.Metro;component/Styles/Colours.xaml", UriKind.RelativeOrAbsolute) });
-				window.Resources.MergedDictionaries.Add (new sw.ResourceDictionary { Source = new Uri ("pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml", UriKind.RelativeOrAbsolute) });
-				window.Resources.MergedDictionaries.Add (new sw.ResourceDictionary { Source = new Uri ("pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml", UriKind.RelativeOrAbsolute) });
-				window.Resources.MergedDictionaries.Add (new sw.ResourceDictionary { Source = new Uri ("pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml", UriKind.RelativeOrAbsolute) });
-				window.Resources.MergedDictionaries.Add (new sw.ResourceDictionary { Source = new Uri ("pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml", UriKind.RelativeOrAbsolute) });
+			if (JabbRApplication.Instance.UseMetroTheme) {
+				window.Resources.MergedDictionaries.Add(new sw.ResourceDictionary { Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml", UriKind.RelativeOrAbsolute) });
+				window.Resources.MergedDictionaries.Add(new sw.ResourceDictionary { Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml", UriKind.RelativeOrAbsolute) });
+				window.Resources.MergedDictionaries.Add(new sw.ResourceDictionary { Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml", UriKind.RelativeOrAbsolute) });
+				window.Resources.MergedDictionaries.Add(new sw.ResourceDictionary { Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml", UriKind.RelativeOrAbsolute) });
+				window.Resources.MergedDictionaries.Add(new sw.ResourceDictionary { Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml", UriKind.RelativeOrAbsolute) });
 			}
 		}
 

@@ -3,7 +3,7 @@ using Eto.Forms;
 
 namespace JabbR.Desktop.Actions
 {
-    public class Quit : ButtonAction
+    public class Quit : Command
     {
         public const string ActionID = "Quit";
         
@@ -12,12 +12,12 @@ namespace JabbR.Desktop.Actions
             this.ID = ActionID;
             this.ToolBarText = "Quit";
             this.MenuText = "&Quit";
-            this.Accelerator = Application.Instance.CommonModifier | Key.Q;
+            this.Shortcut = Application.Instance.CommonModifier | Keys.Q;
         }
-        
-        protected override void OnActivated(EventArgs e)
+
+        public override void OnExecuted(EventArgs e)
         {
-            base.OnActivated(e);
+            base.OnExecuted(e);
             Application.Instance.Quit();
         }
     }

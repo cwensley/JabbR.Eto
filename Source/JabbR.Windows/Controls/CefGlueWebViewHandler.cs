@@ -56,12 +56,16 @@ namespace JabbR.Windows.Controls
             Control.Loaded += (s, e) =>
             {
                 // make the dpi match the screen
-                var m = sw.PresentationSource.FromVisual(Control).CompositionTarget.TransformToDevice;
-                var dpiTransform = new swm.ScaleTransform(1 / m.M11, 1 / m.M22);
-                if (dpiTransform.CanFreeze)
-                    dpiTransform.Freeze();
-                Control.LayoutTransform = dpiTransform;
-                zoomLevel = Math.Log(m.M11) / Math.Log(1.2);
+				var visual = sw.PresentationSource.FromVisual(Control);
+				if (visual != null)
+				{
+					var m = visual.CompositionTarget.TransformToDevice;
+					var dpiTransform = new swm.ScaleTransform(1 / m.M11, 1 / m.M22);
+					if (dpiTransform.CanFreeze)
+						dpiTransform.Freeze();
+					Control.LayoutTransform = dpiTransform;
+					zoomLevel = Math.Log(m.M11) / Math.Log(1.2);
+				}
             };
             Control.LoadingStateChanged += (sender, e) =>
             {

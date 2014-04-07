@@ -5,7 +5,7 @@ using Eto;
 
 namespace JabbR.Desktop.Actions
 {
-    public class PrevUnreadChannel : ButtonAction
+    public class PrevUnreadChannel : Command
     {
         public const string ActionID = "PrevUnreadChannel";
         
@@ -17,14 +17,14 @@ namespace JabbR.Desktop.Actions
             this.ID = ActionID;
             this.MenuText = "Previous Unread Channel";
             if (channels.Generator.IsMac)
-                this.Accelerator = Application.Instance.CommonModifier | Key.Up;
+                this.Shortcut = Application.Instance.CommonModifier | Keys.Up;
             else
-                this.Accelerator = Key.Alt | Key.Up;
+                this.Shortcut = Keys.Alt | Keys.Up;
         }
-        
-        protected override void OnActivated(EventArgs e)
+
+        public override void OnExecuted(EventArgs e)
         {
-            base.OnActivated(e);
+            base.OnExecuted(e);
             Channels.GoToPreviousChannel(true);
         }
     }

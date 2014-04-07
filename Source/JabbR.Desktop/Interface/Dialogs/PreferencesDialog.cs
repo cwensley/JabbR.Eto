@@ -47,7 +47,7 @@ namespace JabbR.Desktop.Interface.Dialogs
         Control UseMetroTheme()
         {
             var control = new CheckBox { Text = "Use Metro Theme" };
-            control.Bind(r => r.Checked, config, r => r.UseMetroTheme, DualBindingMode.OneWay);
+            control.CheckedBinding.Bind(config, r => r.UseMetroTheme, (r,v) => r.UseMetroTheme = v ?? false);
             return control;
         }
 
@@ -66,7 +66,7 @@ namespace JabbR.Desktop.Interface.Dialogs
             control.Items.Add ("Higlighted Messages only", BadgeDisplayMode.Highlighted.ToString());
             control.Items.Add ("None", BadgeDisplayMode.None.ToString ());
              */
-            control.Bind(r => r.SelectedValue, config, r => r.BadgeDisplay, DualBindingMode.OneWay);
+            control.SelectedValueBinding.Bind(config, r => r.BadgeDisplay, (r,v) => r.BadgeDisplay = v);
             return control;
         }
     }

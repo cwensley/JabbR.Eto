@@ -11,9 +11,9 @@ namespace JabbR.Desktop.Interface.JabbR
     public class JabbRServerEdit
     {
         JabbRServer server;
-        DockContainer authSection;
-        DockContainer loginSection;
-        DockContainer socialSection;
+        Panel authSection;
+        Control loginSection;
+        Control socialSection;
         CheckBox useSocialLogin;
         Label statusLabel;
         TextBox janrainAppName;
@@ -28,10 +28,11 @@ namespace JabbR.Desktop.Interface.JabbR
             layout.AddRow(UseSocialLogin());
             layout.Add(authSection = new Panel { MinimumSize = new Size(0, 100) });
             layout.EndBeginVertical();
-            LoginSection();
-            SocialSection();
+            loginSection = LoginSection();
+            socialSection = SocialSection();
             
             authSection.DataContextChanged += (sender, e) => SetVisibility();
+			SetVisibility();
         }
         
         void SetVisibility()

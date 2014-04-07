@@ -45,17 +45,15 @@ namespace JabbR.Desktop.Interface
             Server.SendMessage(command);
         }
         
-        protected override Task<IEnumerable<string>> GetAutoCompleteNames(string search)
+        protected override async Task<IEnumerable<string>> GetAutoCompleteNames(string search)
         {
-            var task = new TaskCompletionSource<IEnumerable<string>>();
             if (search.StartsWith("#", StringComparison.Ordinal) && Server.IsConnected)
             {
                 search = search.TrimStart('#');
-                var getChannels = Server.GetCachedChannels();
-                getChannels.ContinueWith(t => task.TrySetResult(t.Result.Where(r => r.Name.StartsWith(search, StringComparison.CurrentCultureIgnoreCase)).Select(r => r.Name)), TaskContinuationOptions.OnlyOnRanToCompletion);
-                getChannels.ContinueWith(t => task.TrySetException(t.Exception), TaskContinuationOptions.OnlyOnFaulted);
+                var channels = await Server.GetCachedChannels();
+                return channels.Where(r => r.Name.StartsWith(search, StringComparison.CurrentCultureIgnoreCase)).Select(r => r.Name);
             }
-            return task.Task;
+            return Enumerable.Empty<string>();
         }
         
         public override string TranslateAutoCompleteText(string selection, string search)

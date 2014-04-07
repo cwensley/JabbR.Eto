@@ -18,10 +18,10 @@ namespace JabbR.Linux
         public static void Main(string[] args)
         {
             ServicePointManager.ServerCertificateValidationCallback = Validator;
-            var generator = Generator.Detect;
+            var generator = new Eto.Platform.GtkSharp.Generator();
             generator.Add <IJabbRApplication>(() => new JabbRApplicationHandler());
             
-            var app = new JabbRApplication();
+            var app = new JabbRApplication(generator);
             app.Run(args);
         }
     }

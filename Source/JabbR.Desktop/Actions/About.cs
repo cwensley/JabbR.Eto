@@ -4,7 +4,7 @@ using JabbR.Desktop.Interface.Dialogs;
 
 namespace JabbR.Desktop.Actions
 {
-    public class About : ButtonAction
+    public class About : Command
     {
         public const string ActionID = "About";
         
@@ -13,11 +13,10 @@ namespace JabbR.Desktop.Actions
             this.ID = ActionID;
             this.MenuText = "About JabbR";
         }
-        
-        protected override void OnActivated(EventArgs e)
+
+        public override void OnExecuted(EventArgs e)
         {
-            base.OnActivated(e);
-            
+            base.OnExecuted(e);
             var dlg = new AboutDialog();
             dlg.ShowDialog(Application.Instance.MainForm);
         }

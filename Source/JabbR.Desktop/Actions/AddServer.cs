@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace JabbR.Desktop.Actions
 {
-    public class AddServer : ButtonAction
+    public class AddServer : Command
     {
         public const string ActionID = "AddServer";
         
@@ -17,10 +17,10 @@ namespace JabbR.Desktop.Actions
             this.ID = ActionID;
             this.MenuText = "Add Server...";
         }
-        
-        protected override void OnActivated(EventArgs e)
+
+        public override void OnExecuted(EventArgs e)
         {
-            base.OnActivated(e);
+            base.OnExecuted(e);
             var server = new JabbRServer { Name = "JabbR.net", Address = "https://jabbr.net", JanrainAppName = "jabbr" };
             using (var dialog = new ServerDialog(server, true, true))
             {

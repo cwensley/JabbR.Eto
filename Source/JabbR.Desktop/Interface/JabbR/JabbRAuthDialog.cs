@@ -59,8 +59,6 @@ namespace JabbR.Desktop.Interface.JabbR
             layout.AddSeparateRow(Padding.Empty).Add(null, this.CancelButton());
 
             Content = layout;
-            
-            HandleEvent(ClosedEvent);
         }
         
         void HandleReceivedRequest(object sender, HttpServerRequestEventArgs e)
@@ -72,20 +70,19 @@ namespace JabbR.Desktop.Interface.JabbR
                 var tokens = tokenString.Split('=');
                 if (tokens.Length == 2 && tokens[0] == "token")
                 {
-                    Application.Instance.AsyncInvoke(delegate
+                    Application.Instance.AsyncInvoke(async delegate
                     {
-                        var getUserTask = this.GetUserId(tokens[1]);
-                        getUserTask.ContinueWith(task => {
-                            Application.Instance.AsyncInvoke(delegate
-                            {
-                                this.UserID = task.Result;
-                                this.Close(DialogResult.Ok);
-                            });
-                        }, TaskContinuationOptions.OnlyOnRanToCompletion);
-                        
-                        getUserTask.ContinueWith(task => {
+                        try
+                        {
+                            var userId = await GetUserId(tokens[1]);
+                            UserID = userId;
+                            Close(DialogResult.Ok);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.Print("Error getting user ID {0}", ex);
                             MessageBox.Show(this, "Cannot get User ID from token", MessageBoxButtons.OK, MessageBoxType.Error);
-                        }, TaskContinuationOptions.OnlyOnFaulted);
+                        }
                     });
                 }
             }
@@ -134,19 +131,9 @@ namespace JabbR.Desktop.Interface.JabbR
             return new StreamReader(stream).ReadToEnd();
         }
         
-        Task<string> GetUserId(string token)
+        async Task<string> GetUserId(string token)
         {
-            var completion = new TaskCompletionSource<string>();
-            
-            var tokenAuthentication = Task.Factory.StartNew(() => AuthenticateToken(token));
-            tokenAuthentication.ContinueWith(failedTokenTask => {
-                completion.TrySetException(failedTokenTask.Exception);
-            }, TaskContinuationOptions.OnlyOnFaulted);
-            
-            tokenAuthentication.ContinueWith(tokenTask => {
-                completion.TrySetResult(tokenTask.Result);
-            }, TaskContinuationOptions.OnlyOnRanToCompletion);
-            return completion.Task;
+            return await Task.Factory.StartNew(() => AuthenticateToken(token));
         }
         
         string AuthenticateToken(string token)

@@ -86,7 +86,7 @@ namespace JabbR.Desktop.Interface
             if (server != null)
             {
                 var action = new Actions.EditServer(this);
-                action.Activate();
+                action.Execute();
             }
         }
         
@@ -125,7 +125,7 @@ namespace JabbR.Desktop.Interface
             server.ChannelInfoChanged -= HandleChannelInfoChanged;
         }
         
-        void HandleConnectError(object sender, ConnectionErrorEventArgs e)
+        async void HandleConnectError(object sender, ConnectionErrorEventArgs e)
         {
             GetServerSection(e.Server);
             if (e.Exception is NotAuthenticatedException)
@@ -133,7 +133,7 @@ namespace JabbR.Desktop.Interface
                 if (e.Server.Authenticate(this))
                 {
                     JabbRApplication.Instance.SaveConfiguration();
-                    e.Server.Connect();
+                    await e.Server.Connect();
                 }
             }
             else
@@ -233,7 +233,7 @@ namespace JabbR.Desktop.Interface
                 if (!server.Channels.Any())
                 {
                     var action = new Actions.ChannelList(this);
-                    action.Activate();
+                    action.Execute();
                 }
                 else
                 {
@@ -400,23 +400,17 @@ namespace JabbR.Desktop.Interface
             channelList.RefreshData();
         }
         
-        public void CreateActions(GenerateActionArgs args)
+        public void CreateActions(MenuItemCollection menu)
         {
-            args.Actions.Add(new Actions.NextChannel(this));
-            args.Actions.Add(new Actions.NextUnreadChannel(this));
-            args.Actions.Add(new Actions.PrevChannel(this));
-            args.Actions.Add(new Actions.PrevUnreadChannel(this));
-            args.Actions.Add(new Actions.LeaveChannel(this));
+            var channel = menu.GetSubmenu("&Channel", 800);
             
-            var channel = args.Menu.GetSubmenu("&Channel", 800);
+            channel.Items.Add(new Actions.NextChannel(this), 500);
+            channel.Items.Add(new Actions.NextUnreadChannel(this), 500);
+            channel.Items.Add(new Actions.PrevChannel(this), 500);
+            channel.Items.Add(new Actions.PrevUnreadChannel(this), 500);
+            channel.Items.AddSeparator(500);
             
-            channel.Actions.Add(Actions.NextChannel.ActionID);
-            channel.Actions.Add(Actions.NextUnreadChannel.ActionID);
-            channel.Actions.Add(Actions.PrevChannel.ActionID);
-            channel.Actions.Add(Actions.PrevUnreadChannel.ActionID);
-            channel.Actions.AddSeparator();
-            
-            channel.Actions.Add(Actions.LeaveChannel.ActionID);
+            channel.Items.Add(new Actions.LeaveChannel(this), 500);
         }
     }
     
