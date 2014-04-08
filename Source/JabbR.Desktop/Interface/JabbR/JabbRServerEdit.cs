@@ -24,15 +24,15 @@ namespace JabbR.Desktop.Interface.JabbR
         {
             this.server = server;
             layout.AddRow(new Label { Text = "Address" }, EditAddress());
-            layout.EndBeginVertical();
+            layout.EndBeginVertical(yscale: true);
             layout.AddRow(UseSocialLogin());
-            layout.Add(authSection = new Panel { MinimumSize = new Size(0, 100) });
+            layout.Add(authSection = new Panel {  }, yscale: true);
             layout.EndBeginVertical();
             loginSection = LoginSection();
             socialSection = SocialSection();
             
             authSection.DataContextChanged += (sender, e) => SetVisibility();
-			SetVisibility();
+            SetVisibility();
         }
         
         void SetVisibility()

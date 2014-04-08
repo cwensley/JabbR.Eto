@@ -230,26 +230,13 @@ namespace JabbR.Desktop.Model.JabbR
             return cachedChannels;
         }
 
-        public override Task Disconnect()
+        public override async Task Disconnect()
         {
             OnDisconnecting(EventArgs.Empty);
             if (Client != null)
             {
-                disconnectTask = new TaskCompletionSource<object>();
-                Task.Run(() =>
-                {
-                    try
-                    {
-                        Client.Disconnect();
-                    }
-                    finally
-                    {
-                        disconnectTask.TrySetResult(null);
-                    }
-                });
-                return disconnectTask.Task;
+                await Task.Run(() => Client.Disconnect());
             }
-            return Task.FromResult<object>(null);
         }
 
         public JabbRRoom GetRoom(string roomName)
@@ -357,21 +344,21 @@ namespace JabbR.Desktop.Model.JabbR
                 Debug.Print("UserActivityChanged, User: {0}, Activity: {1}", user.Name, user.Active);
                 foreach (var channel in Channels.OfType<JabbRChannel>())
                 {
-                    channel.TriggerActivityChanged(new jab.Models.User[] { user });
+                    channel.TriggerActivityChanged(new [] { user });
                 }
             };
-            Client.JoinedRoom += room =>
+            Client.JoinedRoom += async room =>
             {
                 Debug.Print("JoinedRoom, Room: {0}", room.Name);
                 var channel = GetRoom(room.Name);
-                bool newlyJoined = false;
+                bool newChannel = channel == null;
                 if (channel == null)
                 {
                     channel = new JabbRRoom(this, room);
-                    channel.LoadRoomInfo().Start();
-                    newlyJoined = true;
                 }
-                OnOpenChannel(new OpenChannelEventArgs(channel, true, newlyJoined));
+                OnOpenChannel(new OpenChannelEventArgs(channel, true, newChannel));
+                if (newChannel)
+                    await channel.LoadRoomInfo();
             };
             Client.UserJoined += (user, room, isOwner) =>
             {
