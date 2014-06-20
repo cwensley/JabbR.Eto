@@ -116,17 +116,17 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="XamMac, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065" />
     <Reference Include="System.ServiceModel" />
-    <Reference Include="Eto">
-      <HintPath>..\packages\Eto.Forms.1.3.0-alpha\lib\net40\Eto.dll</HintPath>
-    </Reference>
-    <Reference Include="Eto.Platform.XamMac">
-      <HintPath>..\packages\Eto.Platform.XamMac.1.3.0-alpha\lib\net40\Eto.Platform.XamMac.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Client">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.0.3\lib\net45\Microsoft.AspNet.SignalR.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Eto">
+      <HintPath>..\packages\Eto.Forms.1.3.0\lib\net40\Eto.dll</HintPath>
+    </Reference>
+    <Reference Include="Eto.Platform.XamMac">
+      <HintPath>..\packages\Eto.Platform.XamMac.1.3.0\lib\net40\Eto.Platform.XamMac.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
