@@ -1,3 +1,5 @@
+NOTE: This project is no longer maintained and is obsolete.
+
 JabbR.Desktop
 =========
 ### A cross platform JabbR client for OS X, Windows, and Linux
